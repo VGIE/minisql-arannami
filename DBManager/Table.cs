@@ -14,43 +14,41 @@ namespace DbManager
         public Table(string name, List<ColumnDefinition> columns)
         {
             //TODO DEADLINE 1.A: Initialize member variables
-            
+            this.Name = name;
+            //
         }
 
         public Row GetRow(int i)
         {
             //TODO DEADLINE 1.A: Return the i-th row
-            
-            return null;
+            return Rows[i];
             
         }
 
         public void AddRow(Row row)
         {
             //TODO DEADLINE 1.A: Add a new row
-            
+            Rows.Add(row);
         }
 
         public int NumRows()
         {
             //TODO DEADLINE 1.A: Return the number of rows
-            
-            return 0;
+            return Rows.Count;
             
         }
 
         public ColumnDefinition GetColumn(int i)
         {
             //TODO DEADLINE 1.A: Return the i-th column
-            
-            return null;
+            return ColumnDefinitions[i];
             
         }
 
         public int NumColumns()
         {
             //TODO DEADLINE 1.A: Return the number of columns
-            
+            return ColumnDefinitions.Count;
             return 0;
             
         }
@@ -58,14 +56,26 @@ namespace DbManager
         public ColumnDefinition ColumnByName(string column)
         {
             //TODO DEADLINE 1.A: Return the number of columns
-            
+            for (int i=0; i<ColumnDefinitions.Count; i++)
+            {
+                if (column == ColumnDefinitions[i].Name)
+                {
+                    return ColumnDefinitions[i];
+                }
+            }
             return null;
             
         }
         public int ColumnIndexByName(string columnName)
         {
             //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
-            
+            for (int i=0; i<ColumnDefinitions.Count; i++)
+            {
+                if (columnName == ColumnDefinitions[i].Name)
+                {
+                    return i;
+                }
+            }
             return -1;
             
         }
@@ -87,14 +97,27 @@ namespace DbManager
         public void DeleteIthRow(int row)
         {
             //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
-            
+            for (int i=0; i<Rows.Count; i++)
+            {
+                if (row == i)
+                {
+                    Rows[i] = null;
+                }
+            }
         }
 
         private List<int> RowIndicesWhereConditionIsTrue(Condition condition)
         {
             //TODO DEADLINE 1.A: Returns the indices of all the rows where the condition is true. Check Row.IsTrue()
-            
-            return null;
+            var listaIndices = new List<int>();
+            for (int i=0; i<Rows.Count; i++)
+            {
+                if (condition == Rows[i].IsTrue())
+                {
+                    listaIndices.Add(i);
+                }
+            }
+            return listaIndices;
             
         }
 
