@@ -112,10 +112,10 @@ namespace DbManager
             var listaIndices = new List<int>();
             for (int i=0; i<Rows.Count; i++)
             {
-                if (condition == Rows[i].IsTrue())
-                {
-                    listaIndices.Add(i);
-                }
+                //if (condition == Rows[i].IsTrue())
+                //{
+                //    listaIndices.Add(i);
+                //}
             }
             return listaIndices;
             
