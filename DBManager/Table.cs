@@ -109,15 +109,15 @@ namespace DbManager
         private List<int> RowIndicesWhereConditionIsTrue(Condition condition)
         {
             //TODO DEADLINE 1.A: Returns the indices of all the rows where the condition is true. Check Row.IsTrue()
-            var listaIndices = new List<int>();
-            for (int i=0; i<Rows.Count; i++)
-            {
-                if (condition == Rows[i].IsTrue())
-                {
-                    listaIndices.Add(i);
-                }
-            }
-            return listaIndices;
+            //var listaIndices = new List<int>();
+            //for (int i=0; i<Rows.Count; i++)
+            //{
+            //    if (condition == Rows[i].IsTrue())
+            //    {
+            //        listaIndices.Add(i);
+            //    }
+            //}
+            return null;
             
         }
 
