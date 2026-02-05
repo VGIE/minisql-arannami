@@ -38,14 +38,14 @@ namespace DbManager
             
         }
 
-        public ColumnDefinition GetColumn(int i)
+        public ColumnDefinition GetColumn(int i) //Naroa
         {
             //TODO DEADLINE 1.A: Return the i-th column
             return ColumnDefinitions[i];
             
         }
 
-        public int NumColumns()
+        public int NumColumns() //Naroa
         {
             //TODO DEADLINE 1.A: Return the number of columns
             return ColumnDefinitions.Count;

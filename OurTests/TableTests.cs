@@ -10,5 +10,16 @@ namespace OurTests
 
         }
         */
+
+        [Fact]
+        public void GetColumn()
+        {
+            
+        }
+        [Fact]
+        public void NumColumn()
+        {
+
+        }
     }
 }
