@@ -1,3 +1,5 @@
+using DbManager;
+
 namespace OurTests
 {
     public class TableTests
@@ -10,5 +12,15 @@ namespace OurTests
 
         }
         */
+
+        [Fact]
+        public void GetRow()
+        {
+            Table table = new Table()
+            {
+                //Row r1 = new Row()
+            };
+
+        }
     }
 }
