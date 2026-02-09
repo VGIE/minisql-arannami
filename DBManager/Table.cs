@@ -15,7 +15,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Initialize member variables
             this.Name = name;
-            columns = new List<ColumnDefinition>();
+            this.ColumnDefinitions = columns;
         }
 
         public Table()

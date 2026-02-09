@@ -4,23 +4,60 @@ namespace OurTests
 {
     public class TableTests
     {
-        //TODO DEADLINE 1A : Create your own tests for Table
-        /*
         [Fact]
-        public void Test1()
+        public void TableConstructor()
         {
-
-        }
-        */
-
-        [Fact]
-        public void GetRow()
-        {
-            Table table = new Table()
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
-                //Row r1 = new Row()
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
             };
 
+            Table table = new Table("Person", columns);
+
+            Assert.Equal("Person", table.Name);
+           
         }
+
+        [Fact]
+        public void GetRow_Works()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            Table table = new Table();
+            Row r1 = new Row(columns, new List<string> { "Jacinto", "37"});
+            Row r2 = new Row(columns, new List<string> { "Paco", "20" });
+            Row r3 = new Row(columns, new List<string> { "Alma", "27" });
+
+            table.AddRow(r1);
+            table.AddRow(r2);
+            table.AddRow(r3);
+
+            var result1 = table.GetRow(0);
+            Assert.Equal(r1, result1);
+            var result2 = table.GetRow(1);
+            Assert.Equal(r2, result2);
+        }
+
+        //*[Fact]
+        /*public void AddRow_Works() 
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            Table table = new Table();
+
+            Row row = new Row(columns, new List<string> { "Jacinto", "37"});
+            table.AddRow(row);
+            Assert.Equal(1, table.NumRows());
+            Assert.Equal(row, table.GetRow(0));
+        }*/
     }
 }
