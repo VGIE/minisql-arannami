@@ -43,8 +43,8 @@ namespace OurTests
             Assert.Equal(r2, result2);
         }
 
-        //*[Fact]
-        /*public void AddRow_Works() 
+        [Fact]
+        public void AddRow_Works() 
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -58,6 +58,6 @@ namespace OurTests
             table.AddRow(row);
             Assert.Equal(1, table.NumRows());
             Assert.Equal(row, table.GetRow(0));
-        }*/
+        }
     }
 }
