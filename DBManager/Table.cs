@@ -97,12 +97,9 @@ namespace DbManager
         public void DeleteIthRow(int row)
         {
             //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
-            for (int i=0; i<Rows.Count; i++)
+            if (row >= 0 && row < Rows.Count)
             {
-                if (row == i)
-                {
-                    Rows[i] = null;
-                }
+                Rows.RemoveAt(row);
             }
         }
 
@@ -124,7 +121,14 @@ namespace DbManager
         public void DeleteWhere(Condition condition)
         {
             //TODO DEADLINE 1.A: Delete all rows where the condition is true. Check RowIndicesWhereConditionIsTrue()
-            
+            var indices = RowIndicesWhereConditionIsTrue(condition);
+            indices.Sort((a, b) => b.CompareTo(a));
+
+            foreach (var index in indices)
+            {
+                DeleteIthRow(index);
+            }
+
         }
 
         public Table Select(List<string> columnNames, Condition condition)
@@ -148,9 +152,20 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues (ColumnName-Value). If condition is null,
             //return false, otherwise return true
-            
-            return false;
-            
+
+            if (condition == null) return false;
+
+            var indices = RowIndicesWhereConditionIsTrue(condition);
+            foreach (var idx in indices)
+            {
+                var row = GetRow(idx);
+                foreach (var sv in setValues)
+                {
+                    row.SetValue(sv.ColumnName, sv.Value);
+                }
+            }
+            return true;
+
         }
 
 
