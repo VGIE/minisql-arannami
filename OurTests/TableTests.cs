@@ -23,8 +23,7 @@ namespace OurTests
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition> 
             { 
-                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
-                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
             }; 
             
             Table table = new Table(null, columns); 
