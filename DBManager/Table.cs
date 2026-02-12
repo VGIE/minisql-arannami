@@ -15,7 +15,11 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Initialize member variables
             this.Name = name;
-            //
+            this.ColumnDefinitions = columns;
+        }
+
+        public Table()
+        {
         }
 
         public Row GetRow(int i)
