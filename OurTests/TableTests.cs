@@ -1,3 +1,6 @@
+using DbManager;
+using DbManager.Parser;
+
 namespace OurTests
 {
     public class TableTests
@@ -7,19 +10,8 @@ namespace OurTests
         [Fact]
         public void Test1()
         {
-            
+
         }
         */
-
-        [Fact]
-        public void GetColumn()
-        {
-            
-        }
-        [Fact]
-        public void NumColumn()
-        {
-
-        }
     }
 }
