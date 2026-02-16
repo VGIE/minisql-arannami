@@ -135,15 +135,61 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Return a new table (with name 'Result') that contains the result of the select. The condition
             //may be null (if no condition, all rows should be returned). This is the most difficult method in this class
-            
-            return null;
+            List<ColumnDefinition> selectedColumns = new List<ColumnDefinition>();
+            List<int> selected= new List<int>();
+
+            if (columnNames == null || columnNames.Count == 0)
+            {
+                for (int i = 0; i < ColumnDefinitions.Count; i++)
+                {
+                    selected.Add(i);
+                    selectedColumns.Add(ColumnDefinitions[i]);
+                }
+            }
+            else
+            {
+                for (int j=0; j<columnNames.Count; j++)
+                {
+                    string name = columnNames[j];
+                    int index = ColumnIndexByName(name);
+
+                    if(index >= 0)
+                    {
+                        selected.Add(index);
+                        selectedColumns.Add(ColumnDefinitions[index]);
+                    }
+                }
+            }
+
+            Table table = new Table("Result", selectedColumns);
+
+            for(int z=0; z<Rows.Count; z++)
+            {
+                Row row = Rows[z];
+                if (condition==null || row.IsTrue(condition))
+                {
+                    List<string> newValues = new List<string>();
+                    for (int k = 0; k<selected.Count; k++)
+                    {
+                        newValues.Add(row.Values[selected[k]]);
+                    }
+                    table.AddRow(new Row(selectedColumns, newValues));
+                }
+            }
+
+            return table;
             
         }
 
         public bool Insert(List<string> values)
         {
             //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false. True otherwise
-            
+            /* comprobar 3 cosas
+             * 1. si tiene las filas que dice tener pero no las columnas
+             * 2. que tenga las columnas que dice tener pero no las filas
+             * 3. si no coincide en ninguno
+             * 4. los valores no son correctos -> false
+            */
             return false;
             
         }
