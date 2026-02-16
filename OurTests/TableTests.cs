@@ -144,5 +144,71 @@ namespace OurTests
             table.AddRow(r3);
             Assert.Equal(3, table.NumRows());
         }
+    
+        [Fact]
+        public void ColumnByName()
+        {
+            var table = Table.CreateTestTable();
+            var column = table.ColumnByName("Name"); // usa el nombre exacto que CreateTestTable crea
+            Assert.NotNull(column);
+            Assert.Equal("Name", column.Name);
+        }
+//         [Fact]
+//         public void ColumnByName()
+//         {
+//             var table = Table.CreateTestTable();
+//             var column = table.ColumnByName(Table.TestColumn1Name);
+//             Assert.NotNull(column);
+//             Assert.Equal(Table.TestColumn1Name, column.Name);
+//         }
+
+        [Fact]
+        public void ColumnByName_NoHayColumnas()
+        {
+            var table = Table.CreateTestTable();
+            var column = table.ColumnByName("DoesNotExist"); // ninguna columna con este nombre
+            Assert.Null(column);
+        }
+//         [Fact]
+//         public void ColumnByName_NoHayColumnas()
+//         {
+//             var table = Table.CreateTestTable();
+//             var column = table.ColumnByName("DoesNotExist");
+//             Assert.Null(column);
+//         }
+
+
+        [Fact]
+        public void ColumnIndexByName()
+        {
+            var table = Table.CreateTestTable();
+            int index = table.ColumnIndexByName("Height"); // coincide con TestColumn2Name
+            Assert.Equal(1, index); // segunda columna -> índice 1
+        }
+//         [Fact]
+//         public void ColumnIndexByName()
+//         {
+//             var table = Table.CreateTestTable();
+//             int index = table.ColumnIndexByName(Table.TestColumn2Name);
+//             Assert.Equal(1, index);
+//         }
+
+
+        [Fact]
+        public void ColumnIndexByName_NoHayColumnas()
+        {
+            var table = Table.CreateTestTable();
+            int index = table.ColumnIndexByName("Unknown");
+            Assert.Equal(-1, index);
+        }
+
+//         [Fact]
+//         public void ColumnIndexByName_NoHayColumnas()
+//         {
+//             var table = Table.CreateTestTable();
+//             int index = table.ColumnIndexByName("Unknown");
+//             Assert.Equal(-1, index);
+//         }
+
     }
 }
