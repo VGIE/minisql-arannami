@@ -149,7 +149,7 @@ namespace OurTests
         public void ColumnByName()
         {
             var table = Table.CreateTestTable();
-            var column = table.ColumnByName("Name"); // usa el nombre exacto que CreateTestTable crea
+            var column = table.ColumnByName("Name"); 
             Assert.NotNull(column);
             Assert.Equal("Name", column.Name);
         }
@@ -166,7 +166,7 @@ namespace OurTests
         public void ColumnByName_NoHayColumnas()
         {
             var table = Table.CreateTestTable();
-            var column = table.ColumnByName("DoesNotExist"); // ninguna columna con este nombre
+            var column = table.ColumnByName("DoesNotExist"); 
             Assert.Null(column);
         }
 //         [Fact]
@@ -182,7 +182,7 @@ namespace OurTests
         public void ColumnIndexByName()
         {
             var table = Table.CreateTestTable();
-            int index = table.ColumnIndexByName("Height"); // coincide con TestColumn2Name
+            int index = table.ColumnIndexByName("Height"); 
             Assert.Equal(1, index); // segunda columna -> índice 1
         }
 //         [Fact]
