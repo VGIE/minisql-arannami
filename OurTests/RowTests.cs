@@ -1,14 +1,20 @@
+using DbManager;
+
 namespace OurTests
 {
     public class RowTests
     {
-        //TODO DEADLINE 1A : Create your own tests for Row
-        /*
         [Fact]
-        public void Test1()
+        public void RowConstructor()
         {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>();
+            List<string> values = new List<string> { "Name" };
 
+            Row row = new Row(columns, values);
+
+            Assert.Equal("Name", row.Values[0]);
         }
-        */
+
+
     }
 }
