@@ -15,7 +15,7 @@ namespace DbManager
         public ColumnDefinition(DataType type, string name)
         {
             //TODO DEADLINE 1.A: Initialize member variables
-            this.Type = type; 
+            this.Type = type;
             this.Name = name;
 
         }

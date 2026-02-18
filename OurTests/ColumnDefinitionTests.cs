@@ -1,14 +1,16 @@
+using DbManager;
+
 namespace OurTests
 {
     public class ColumnDefinitionsTests
     {
-        //TODO DEADLINE 1A : Create your own tests for Table
-        /*
         [Fact]
-        public void Test1()
+        public void ColumnDefinitionConstructor()
         {
+            ColumnDefinition column = new ColumnDefinition(ColumnDefinition.DataType.String, "Name");
 
+            Assert.Equal("Name", column.Name);
+            Assert.Equal(ColumnDefinition.DataType.String, column.Type);
         }
-        */
     }
 }
