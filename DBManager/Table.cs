@@ -8,7 +8,7 @@ namespace DbManager
     {
         private List<ColumnDefinition> ColumnDefinitions = new List<ColumnDefinition>();
         private List<Row> Rows = new List<Row>();
-        
+
         public string Name { get; private set; } = null;
 
         // public Table(string name, List<ColumnDefinition> columns)
@@ -50,7 +50,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Return the number of rows
             return Rows.Count;
-            
+
         }
 
         public ColumnDefinition GetColumn(int i)
@@ -66,62 +66,36 @@ namespace DbManager
             return ColumnDefinitions.Count;
             
         }
-        
-        // public ColumnDefinition ColumnByName(string column)
-        // {
-        //     if (column == null) return null;
 
-        //     // foreach (var col in ColumnDefinitions)
-        //     // {
-        //     //     if (string.Equals(col.Name, column, StringComparison.OrdinalIgnoreCase))
-        //     //         return col;
-        //     // }
-        //     foreach (var col in ColumnDefinitions)
-        //     {
-        //         Console.WriteLine("DEBUG COLUMN: " + col.Name);
-        //     }
-
-        //     return null;
-        // }
-        public ColumnDefinition ColumnByName(string name)
+        public ColumnDefinition ColumnByName(string column)
         {
-            int index = ColumnIndexByName(name);
-            if (index == -1) return null;
-            return ColumnDefinitions[index];
-        }
-
-        // public int ColumnIndexByName(string columnName)
-        // {
-        //     //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
-        //     if (columnName == null) return -1;
-
-        //     for (int i = 0; i < ColumnDefinitions.Count; i++)
-        //     {
-        //         if (string.Equals(ColumnDefinitions[i].Name, columnName, StringComparison.OrdinalIgnoreCase))
-        //             return i;
-        //     }
-
-        //     return -1;
-        // }
-        public int ColumnIndexByName(string name)
-        {
-            if (string.IsNullOrEmpty(name)) return -1;
-
+            //TODO DEADLINE 1.A: Return the number of columns
             for (int i = 0; i < ColumnDefinitions.Count; i++)
             {
-                var colName = ColumnDefinitions[i].Name;
-                if (!string.IsNullOrEmpty(colName) && colName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                if (column == ColumnDefinitions[i].Name)
+                {
+                    return ColumnDefinitions[i];
+                }
+            }
+            return null;
+
+        }
+        public int ColumnIndexByName(string columnName)
+        {
+            //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
+            for (int i = 0; i < ColumnDefinitions.Count; i++)
+            {
+                if (columnName == ColumnDefinitions[i].Name)
+                {
                     return i;
             }
 
             return -1;
+
         }
 
 
-
-
-
-        public override string ToString()
+        public override string ToString() //Naroa
         {
             //TODO DEADLINE 1.A: Return the table as a string. The format is specified in the documentation
             //Valid examples:
@@ -129,46 +103,46 @@ namespace DbManager
             //"['Name','Age']{'Adolfo','23'}{'Jacinto','24'}" <- two columns, two rows
             //"" <- no columns, no rows
             //"['Name']" <- one column, no rows
-            
-            return null;
-            
+
+            return null; 
         }
 
-        // public void DeleteIthRow(int row)
-        // {
-        //     //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
-        //     for (int i=0; i<Rows.Count; i++)
-        //     {
-        //         if (row == i)
-        //         {
-        //             Rows[i] = null;
-        //         }
-        //     }
-        // }
+            return result;
 
-        public void DeleteIthRow(int index)
+        }
+
+        public void DeleteIthRow(int row) //Naroa
         {
-            if (index >= 0 && index < Rows.Count)
+            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
+            if (row >= 0 && row < Rows.Count)
             {
-                Rows.RemoveAt(index);
+                Rows.RemoveAt(row);
             }
         }
 
         private List<int> RowIndicesWhereConditionIsTrue(Condition condition)
         {
-            //TODO DEADLINE 1.A: Returns the indices of all the rows where the condition is true. Check Row.IsTrue()
+
             var listaIndices = new List<int>();
-        
-            for (int i=0; i<Rows.Count; i++)
+            if (condition == null)
             {
-                if (Rows[i] == null) continue;
-                if (condition == null || Rows[i].IsTrue(condition))
+                for (int i = 0; i < Rows.Count; i++)
                 {
                     listaIndices.Add(i);
                 }
             }
+            else
+            {
+                for (int i = 0; i < Rows.Count; i++)
+                {
+                    if (Rows[i].IsTrue(condition))
+                    {
+                        listaIndices.Add(i);
+                    }
+                }
+            }
             return listaIndices;
-            
+
         }
 
         public void DeleteWhere(Condition condition)
@@ -256,6 +230,8 @@ namespace DbManager
             return false;
             
         }
+
+
 
 
 

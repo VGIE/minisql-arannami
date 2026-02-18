@@ -40,14 +40,8 @@ namespace DbManager
                     int intLiteral = int.Parse(LiteralValue, CultureInfo.InvariantCulture);
                     return ComparaNumeros(intValue, intLiteral);
 
-                case ColumnDefinition.DataType.Double:
-                    double doubleValue = double.Parse(value, CultureInfo.InvariantCulture);
-                    double doubleLiteral = double.Parse(LiteralValue, CultureInfo.InvariantCulture);
-                    return ComparaNumeros(doubleValue, doubleLiteral);
-
-                default:
-                    return false;
-            }
+            
+            return false;
             
         }
 
