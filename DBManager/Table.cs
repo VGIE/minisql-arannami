@@ -90,21 +90,10 @@ namespace DbManager
             return ColumnDefinitions[index];
         }
 
-        // public int ColumnIndexByName(string columnName)
-        // {
-        //     //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
-        //     if (columnName == null) return -1;
-
-        //     for (int i = 0; i < ColumnDefinitions.Count; i++)
-        //     {
-        //         if (string.Equals(ColumnDefinitions[i].Name, columnName, StringComparison.OrdinalIgnoreCase))
-        //             return i;
-        //     }
-
-        //     return -1;
-        // }
         public int ColumnIndexByName(string name)
         {
+            //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
+
             if (string.IsNullOrEmpty(name)) return -1;
 
             for (int i = 0; i < ColumnDefinitions.Count; i++)
@@ -116,10 +105,6 @@ namespace DbManager
 
             return -1;
         }
-
-
-
-
 
         public override string ToString()
         {
@@ -134,20 +119,10 @@ namespace DbManager
             
         }
 
-        // public void DeleteIthRow(int row)
-        // {
-        //     //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
-        //     for (int i=0; i<Rows.Count; i++)
-        //     {
-        //         if (row == i)
-        //         {
-        //             Rows[i] = null;
-        //         }
-        //     }
-        // }
-
         public void DeleteIthRow(int index)
         {
+            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
+
             if (index >= 0 && index < Rows.Count)
             {
                 Rows.RemoveAt(index);
@@ -227,23 +202,43 @@ namespace DbManager
             
         }
 
-        // public bool Insert(List<string> values)
-        // {
-        //     //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false. True otherwise
-            
-        //     return false;
-            
-        // }
         public bool Insert(List<string> values)
         {
+            //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false. True otherwise
+
             if (values == null) return false;
 
             if (values.Count != ColumnDefinitions.Count)
                 return false;
 
-            Row newRow = new Row(ColumnDefinitions, values);
-            Rows.Add(newRow);
+            for (int i = 0; i < values.Count; i++)
+            {
+                var columnDef = ColumnDefinitions[i];
+                string value = values[i];
 
+                /*switch (columnDef.Type)
+                {
+                    case ColumnDefinition.DataType.String:
+                        // Always valid as string
+                        break;
+
+                    case ColumnDefinition.DataType.Int:
+                        if (!int.TryParse(value, out _))
+                            return false;
+                        break;
+
+                    case ColumnDefinition.DataType.Double:
+                        if (!double.TryParse(value, System.Globalization.NumberStyles.Any,
+                                             System.Globalization.CultureInfo.InvariantCulture, out _))
+                            return false;
+                        break;
+
+                    default:
+                        return false;
+                }*/
+            }
+            Row row = new Row(ColumnDefinitions,values);
+            AddRow(row);
             return true;
         }
 
