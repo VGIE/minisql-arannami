@@ -1,4 +1,5 @@
-using DbManager;
+﻿using DbManager;
+using DbManager.Parser;
 
 namespace OurTests
 {
@@ -32,7 +33,7 @@ namespace OurTests
         }*/
 
         [Fact]
-        public void TableConstructorWhenEmpty() 
+        public void TableConstructorWhenEmpty()
         {
             Table table = new Table();
             Assert.Null(table.Name);
@@ -86,7 +87,7 @@ namespace OurTests
         }*/
 
         [Fact]
-        public void AddRow_Works() 
+        public void AddRow_Works()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -96,7 +97,7 @@ namespace OurTests
 
             Table table = new Table();
 
-            Row row = new Row(columns, new List<string> { "Jacinto", "37"});
+            Row row = new Row(columns, new List<string> { "Jacinto", "37" });
             table.AddRow(row);
             Assert.Equal(1, table.NumRows());
             Assert.Equal(row, table.GetRow(0));
@@ -143,6 +144,137 @@ namespace OurTests
             Assert.Equal(2, table.NumRows());
             table.AddRow(r3);
             Assert.Equal(3, table.NumRows());
+
         }
+
+        [Fact]
+        public void GetColumn()
+        {
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>()
+                {
+                    new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                    new ColumnDefinition(ColumnDefinition.DataType.Int, "Age"),
+                };
+
+            Table table = new Table("Person", columns);
+
+            var col0 = table.GetColumn(0);
+            Assert.NotNull(col0);
+            Assert.Equal("Name", col0.Name);
+            Assert.Equal(ColumnDefinition.DataType.String, col0.Type);
+
+            var col1 = table.GetColumn(1);
+            Assert.NotNull(col1);
+            Assert.Equal("Age", col1.Name);
+            Assert.Equal(ColumnDefinition.DataType.Int, col1.Type);
+
+            Assert.Null(table.GetColumn(2));
+            Assert.Null(table.GetColumn(-1));
+        }
+        [Fact]
+        public void NumColumns()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age"),
+                new ColumnDefinition(ColumnDefinition.DataType.Double, "Height")
+            };
+
+            Table table = new Table("Person", columns);
+            int result = table.NumColumns();
+            Assert.Equal(3, result);
+        }
+        [Fact]
+        public void DeleteIthRow()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            Table table = new Table();
+
+            Row r1 = new Row(columns, new List<string> { "Ane", "20" });
+            Row r2 = new Row(columns, new List<string> { "Arene", "30" });
+            Row r3 = new Row(columns, new List<string> { "Mikel", "40" });
+
+            table.AddRow(r1);
+            table.AddRow(r2);
+            table.AddRow(r3);//hirurak batea ipini
+            table.DeleteIthRow(1);
+            Assert.Equal(2, table.NumRows());
+            Assert.Equal(r1, table.GetRow(0));
+            Assert.Equal(r3, table.GetRow(1));
+        }
+
+        [Fact]
+        public void DeleteWhere()
+        {
+          List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            Table table = new Table();
+            Row r1 = new Row(columns, new List<string> { "Ane", "20" });
+            Row r2 = new Row(columns, new List<string> { "Jon", "30" });
+            Row r3 = new Row(columns, new List<string> { "Mikel", "40" });
+            Row r4 = new Row(columns, new List<string> { "Arene", "30" });
+
+            table.AddRow(r1);
+            table.AddRow(r2);
+            table.AddRow(r3);
+            table.AddRow(r4);
+            Condition condition = new Condition("Age", "=", "30");
+            table.DeleteWhere(condition);
+            Assert.Equal(2, table.NumRows());
+            Assert.Equal(r1, table.GetRow(0));  
+            Assert.Equal(r3, table.GetRow(1));  
+        }
+        [Fact]
+        public bool Update(List<SetValue> setValues, Condition condition)
+        { 
+            if (condition == null)
+                return false;
+                var indices = RowIndicesWhereConditionIsTrue(condition);
+
+            if (indices.Count == 0)
+                return false;
+
+            foreach (var idx in indices)
+            {
+                Row row = GetRow(idx);
+                foreach (var sv in setValues)
+                {
+                    row.SetValue(sv.ColumnName, sv.Value);
+                }
+            }
+
+            return true;
+        }
+
+        [Fact]
+        public void ToString_Works()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+    {
+        new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+        new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+    };
+
+            Table table = new Table("People", columns);
+
+            table.AddRow(new Row(columns, new List<string> { "Adolfo", "23" }));
+            table.AddRow(new Row(columns, new List<string> { "Jacinto", "24" }));
+
+            string expected = "['Name','Age']{'Adolfo','23'}{'Jacinto','24'}";
+
+            Assert.Equal(expected, table.ToString());
+        }
+
     }
 }

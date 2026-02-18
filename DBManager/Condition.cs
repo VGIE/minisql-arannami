@@ -15,7 +15,10 @@ namespace DbManager
         public Condition(string column, string op, string literalValue)
         {
             //TODO DEADLINE 1A: Initialize member variables
-            
+            ColumnName = column; 
+            Operator = op; 
+            LiteralValue = literalValue;
+
         }
 
 
@@ -28,7 +31,7 @@ namespace DbManager
             //9 < 10
             //Convert first the strings to the appropriate type and then compare (depending on the operator of the condition)
 
-            
+
             return false;
             
         }
