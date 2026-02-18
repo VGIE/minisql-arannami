@@ -21,6 +21,8 @@ namespace DbManager
 
         public Table()
         {
+            ColumnDefinitions = new List<ColumnDefinition>();
+            Rows = new List<Row>();
         }
 
         public Row GetRow(int i)
@@ -58,7 +60,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Return the number of columns
             return ColumnDefinitions.Count;
-            
+
         }
         
         public ColumnDefinition ColumnByName(string column)
@@ -97,9 +99,23 @@ namespace DbManager
             //"['Name','Age']{'Adolfo','23'}{'Jacinto','24'}" <- two columns, two rows
             //"" <- no columns, no rows
             //"['Name']" <- one column, no rows
+            if (ColumnDefinitions.Count == 0)
+                return "";
 
-            return null; 
-        }
+            List<string> columnNames = new List<string>();
+            foreach (var col in ColumnDefinitions)
+                columnNames.Add($"'{col.Name}'");
+            string result = "[" + string.Join(",", columnNames) + "]";
+
+            foreach (var row in Rows)
+            {
+                if (row == null) continue;
+
+                List<string> values = new List<string>();
+                foreach (var v in row.Values)
+                    values.Add($"'{v}'");
+                result += "{" + string.Join(",", values) + "}";
+            }
 
         public void DeleteIthRow(int row)
         {
@@ -110,30 +126,21 @@ namespace DbManager
             }
         }
 
+
         private List<int> RowIndicesWhereConditionIsTrue(Condition condition)
-        {
+        //{
+            //TODO DEADLINE 1.A: Returns the indices of all the rows where the condition is true. Check Row.IsTrue()
+            //var listaIndices = new List<int>();
+            //for (int i=0; i<Rows.Count; i++)
+            //{
+            //    if (condition == Rows[i].IsTrue())
+            //    {
+            //        listaIndices.Add(i);
+            //    }
+            //}
 
-            var listaIndices = new List<int>();
-            if (condition == null)
-            {
-                for (int i = 0; i < Rows.Count; i++)
-                {
-                    listaIndices.Add(i);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < Rows.Count; i++)
-                {
-                    if (Rows[i].IsTrue(condition))
-                    {
-                        listaIndices.Add(i);
-                    }
-                }
-            }
-            return listaIndices;
 
-        }
+        //}
 
         public void DeleteWhere(Condition condition)
         {
@@ -152,9 +159,9 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Return a new table (with name 'Result') that contains the result of the select. The condition
             //may be null (if no condition, all rows should be returned). This is the most difficult method in this class
-
-            
-            
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            { };
+            Table table = new Table("Result", columns);
             return null;
 
         }
@@ -162,14 +169,13 @@ namespace DbManager
         public bool Insert(List<string> values)
         {
             //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false. True otherwise
-
-            if (values.Count != ColumnDefinitions.Count)
-            {
-                return false;
-            }
-
-            Rows.Add(new Row(ColumnDefinitions, values));
-            return true;
+            /* comprobar 3 cosas
+             * 1. si tiene las filas que dice tener pero no las columnas
+             * 2. que tenga las columnas que dice tener pero no las filas
+             * 3. si no coincide en ninguno
+             * 4. los valores no son correctos -> false
+            */
+            return false;
 
         }
 
@@ -190,6 +196,9 @@ namespace DbManager
                 }
             }
             return true;
+
+        }
+
 
         }
 
@@ -247,3 +256,6 @@ namespace DbManager
         }
     }
 }
+
+
+
