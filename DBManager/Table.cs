@@ -201,32 +201,34 @@ namespace DbManager
             if (values == null) return false;
             if (values.Count != ColumnDefinitions.Count)
                 return false;
+
             for (int i = 0; i < values.Count; i++)
             {
                 var columnDef = ColumnDefinitions[i];
                 string value = values[i];
+
                 /*switch (columnDef.Type)
                 {
                     case ColumnDefinition.DataType.String:
-                    // Always valid as string
+                        // Always valid as string
                         break;
 
                     case ColumnDefinition.DataType.Int:
                         if (!int.TryParse(value, out _))
                             return false;
                         break;
+
                     case ColumnDefinition.DataType.Double:
-                        if (!double.TryParse(value, 
-                            System.Globalization.NumberStyles.Any,
-                            System.Globalization.CultureI
-                            nfo.InvariantCulture, out _))
+                        if (!double.TryParse(value, System.Globalization.NumberStyles.Any,
+                                             System.Globalization.CultureInfo.InvariantCulture, out _))
                             return false;
                         break;
+
                     default:
                         return false;
                 }*/
             }
-            Row row = new Row(ColumnDefinitions, values);
+            Row row = new Row(ColumnDefinitions,values);
             AddRow(row);
             return true;
         }
