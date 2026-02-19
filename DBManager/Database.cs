@@ -26,23 +26,37 @@ namespace DbManager
         public Database(string adminUsername, string adminPassword)
         {
             //DEADLINE 1.B: Initalize the member variables
-            
+            Tables = new List<Table>();
+            m_username = adminUsername;
+            SecurityManager = new Manager(adminUsername);
         }
 
         public bool AddTable(Table table)
         {
             //DEADLINE 1.B: Add a new table to the database
-            
-            return false;
+            if (table == null)
+                return false;
+            if (TableByName(table.Name) != null)
+                return false;
+
+            Tables.Add(table);
+            return true;
             
         }
 
         public Table TableByName(string tableName)
         {
             //DEADLINE 1.B: Find and return the table with the given name
-            
+            if (tableName == null)
+                return null;
+
+            foreach (var table in Tables)
+            {
+                if (table.Name != null &&
+                    table.Name.Equals(tableName, StringComparison.OrdinalIgnoreCase))
+                    return table;
+            }
             return null;
-            
         }
 
         public bool CreateTable(string tableName, List<ColumnDefinition> ColumnDefinition)
