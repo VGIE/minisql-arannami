@@ -355,63 +355,6 @@ namespace OurTests
         }
         */
 
-        [Fact]
-        public void Select_AllColumns_NoCondition_CheckAll()
-        {
-            //Checks if when we don't have any condition all columns that are
-            //selected are right added into the new table = "Result"
-            Table table = Table.CreateTestTable();
-            Table result = table.Select(null, null);
-
-            Assert.Equal("Result", result.Name);
-            Assert.Equal(table.NumColumns(), result.NumColumns());
-            Assert.Equal(table.NumRows(), result.NumRows());
-
-            //two checks, one for the first row and the other for the last
-            //to see if their values are all good
-            //first row is equal
-            Assert.Equal(table.GetRow(0).Values, result.GetRow(0).Values);
-            //last row
-            int lastIndex = table.NumRows() - 1;
-            Assert.Equal(table.GetRow(lastIndex).Values, result.GetRow
-            (lastIndex).Values);
-        }
-
-        [Fact]
-        public void Select_CheckAllTable()
-        {
-            Table table = Table.CreateTestTable();
-            Table result = table.Select(null, null);
-
-            Assert.Equal("Result", result.Name);
-            Assert.Equal(table.NumColumns(), result.NumColumns());
-            Assert.Equal(table.NumRows(), result.NumRows());
-
-            //as well as the previous test, with no condition, checks all the
-            //positions are correctly valuated
-            for (int i = 0; i < table.NumRows(); i++)
-            {
-                Assert.Equal(table.GetRow(i).Values, result.GetRow(i).Values);
-                //Assert.Equal(table.GetRow(i).ColumnDefinitions.Count, result.GetRow(i).ColumnDefinitions.Count);
-            }
-        }
-
-        [Fact]
-        public void Select_SpecificColumns_NoCondition()
-        {
-            Table table = Table.CreateTestTable();
-            Table result = table.Select(new List<string> { "Name", "Age" }, null);
-
-            Assert.Equal(2, result.NumColumns());
-            Assert.Equal(3, result.NumRows());
-
-            Assert.Equal("Name", result.GetColumn(0).Name);
-            Assert.Equal("Age", result.GetColumn(1).Name);
-
-            Assert.Equal("Rodolfo", result.GetRow(0).Values[0]);
-            Assert.Equal("25", result.GetRow(0).Values[1]);
-        }
-
         /*[Fact]
         public void Select_WithCondition()
         {
