@@ -17,8 +17,7 @@ namespace DbManager
             //TODO DEADLINE 1A: Initialize member variables
             ColumnName = column;
             Operator = op;
-            LiteralValue = literalValue;
-            
+            LiteralValue = literalValue;  
         }
 
 
@@ -76,6 +75,5 @@ namespace DbManager
                 _ => false
             };
         }
-
     }
 }
