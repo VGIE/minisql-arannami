@@ -40,9 +40,9 @@ namespace DbManager
         public Table TableByName(string tableName)
         {
             //DEADLINE 1.B: Find and return the table with the given name
-            
-            return null;
-            
+
+            return Tables.FirstOrDefault(t => t.Name == tableName);
+
         }
 
         public bool CreateTable(string tableName, List<ColumnDefinition> ColumnDefinition)
@@ -88,9 +88,22 @@ namespace DbManager
             //DEADLINE 1.B: Delete all the rows where the condition is true. 
             //If the table or the column in the condition don't exist, return null and set LastErrorMessage (Check Constants.cs)
             //If everything goes ok, return true
-            
-            return false;
-            
+         
+            Table table = TableByName(tableName);
+            if (table == null)
+            {
+                LastErrorMessage = Constants.TableDoesNotExistError;
+                return false;
+            }
+            if (columnCondition != null &&
+                table.ColumnIndexByName(columnCondition.ColumnName) == -1)
+            {
+                LastErrorMessage = Constants.ColumnDoesNotExistError;
+                return false;
+            }
+            table.DeleteWhere(columnCondition);
+            LastErrorMessage = Constants.DeleteSuccess;
+            return true;
         }
 
         public bool Update(string tableName, List<SetValue> columnNames, Condition columnCondition)
@@ -98,10 +111,45 @@ namespace DbManager
             //DEADLINE 1.B: Update in the given table all the rows where the condition is true using the SetValues
             //If the table or the column in the condition don't exist, return null and set LastErrorMessage (Check Constants.cs)
             //If everything goes ok, return true
-            
-            return false;
-            
+
+          
+            Table table = TableByName(tableName);
+            if (table == null)
+            {
+                LastErrorMessage = Constants.TableDoesNotExistError;
+                return false;
+            }
+
+            if (columnCondition != null &&
+                table.ColumnIndexByName(columnCondition.ColumnName) == -1)
+            {
+                LastErrorMessage = Constants.ColumnDoesNotExistError;
+                return false;
+            }
+            foreach (var sv in columnNames)
+            {
+                if (table.ColumnIndexByName(sv.ColumnName) == -1)
+                {
+                    LastErrorMessage = Constants.ColumnDoesNotExistError;
+                    return false;
+                }
+            }
+            bool updated = table.Update(columnNames, columnCondition);
+
+            if (!updated)
+            {
+              
+                LastErrorMessage = Constants.ColumnDoesNotExistError;
+                return false;
+            }
+
+           
+            LastErrorMessage = Constants.UpdateSuccess;
+            return true;
         }
+
+           
+   
 
         
         

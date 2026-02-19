@@ -17,7 +17,7 @@ namespace OurTests
 
 
         [Fact]
-        public void GetValue_Works()
+        public void GetValue()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -38,7 +38,7 @@ namespace OurTests
 
 
         [Fact]
-        public void SetValue_Works()
+        public void SetValue()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -56,7 +56,7 @@ namespace OurTests
 
 
         [Fact]
-        public void IsTrue_Works()
+        public void IsTrue()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -75,7 +75,7 @@ namespace OurTests
 
 
         [Fact]
-        public void IsTrue_ReturnsFalse()
+        public void IsTrue_()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
             {
@@ -109,5 +109,30 @@ namespace OurTests
 
             Assert.False(result);
         }
+
+        //[Fact]
+        //public void Decode()
+        //{
+        //string encoded = "Value1[SEPARATOR]Value2";
+        //var decoded = (string)typeof(Row)
+        //.GetMethod("Decode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+        //.Invoke(null, new object[] { encoded });
+        //Assert.Equal("Value1:Value2", decoded);
+        // }
+        [Fact]
+        public void Decode_Works()
+        {
+            string encoded = "Value1[SEPARATOR]Value2";
+            var method = typeof(Row).GetMethod(
+                "Decode",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static
+            );
+
+            string decoded = (string)method.Invoke(null, new object[] { encoded });
+            Assert.Equal("Value1:Value2", decoded);
+        }
+
+
     }
 }
+
