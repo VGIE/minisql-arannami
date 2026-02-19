@@ -57,7 +57,43 @@ namespace DbManager
             //TODO DEADLINE 1.A: Return the number of columns
             return ColumnDefinitions.Count;
         }
+        
+        // public ColumnDefinition ColumnByName(string column)
+        // {
+        //     if (column == null) return null;
 
+        //     // foreach (var col in ColumnDefinitions)
+        //     // {
+        //     //     if (string.Equals(col.Name, column, StringComparison.OrdinalIgnoreCase))
+        //     //         return col;
+        //     // }
+        //     foreach (var col in ColumnDefinitions)
+        //     {
+        //         Console.WriteLine("DEBUG COLUMN: " + col.Name);
+        //     }
+
+        //     return null;
+        // }
+        public ColumnDefinition ColumnByName(string name)
+        {
+            int index = ColumnIndexByName(name);
+            if (index == -1) return null;
+            return ColumnDefinitions[index];
+        }
+
+        // public int ColumnIndexByName(string columnName)
+        // {
+        //     //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
+        //     if (columnName == null) return -1;
+
+        //     for (int i = 0; i < ColumnDefinitions.Count; i++)
+        //     {
+        //         if (string.Equals(ColumnDefinitions[i].Name, columnName, StringComparison.OrdinalIgnoreCase))
+        //             return i;
+        //     }
+
+        //     return -1;
+        // }
         public int ColumnIndexByName(string name)
         {
             //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
@@ -81,6 +117,7 @@ namespace DbManager
         public override string ToString()
         {
             /*TODO DEADLINE 1.A: Return the table as a string. The format 
+            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
             is specified in the documentation
             Valid examples:
             "['Name']{'Adolfo'}{'Jacinto'}" <- one column, two rows
@@ -94,7 +131,6 @@ namespace DbManager
 
         public void DeleteIthRow(int index)
         {
-            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
             if (index >= 0 && index < Rows.Count)
             {
                 Rows.RemoveAt(index);
@@ -158,6 +194,7 @@ namespace DbManager
                 Row row = Rows[z];
                 if (condition == null || row.IsTrue(condition))
                 {
+            //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
                     List<string> newValues = new List<string>();
                     for (int k = 0; k < selected.Count; k++)
                     {
@@ -171,20 +208,6 @@ namespace DbManager
 
         public bool Insert(List<string> values)
         {
-            //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
-            if (values == null) return false;
-            if (values.Count != ColumnDefinitions.Count)
-                return false;
-            for (int i = 0; i < values.Count; i++)
-            {
-                var columnDef = ColumnDefinitions[i];
-                string value = values[i];
-                /*switch (columnDef.Type)
-                {
-                    case ColumnDefinition.DataType.String:
-                    // Always valid as string
-                        break;
-
                     case ColumnDefinition.DataType.Int:
                         if (!int.TryParse(value, out _))
                             return false;
@@ -202,6 +225,19 @@ namespace DbManager
             }
             Row row = new Row(ColumnDefinitions, values);
             AddRow(row);
+            for (int i = 0; i < values.Count; i++)
+            {
+                var columnDef = ColumnDefinitions[i];
+                string value = values[i];
+                /*switch (columnDef.Type)
+                {
+                    case ColumnDefinition.DataType.String:
+                    // Always valid as string
+                        break;
+
+            Row newRow = new Row(ColumnDefinitions, values);
+            Rows.Add(newRow);
+
             return true;
         }
 
