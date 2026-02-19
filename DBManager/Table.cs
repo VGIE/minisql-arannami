@@ -49,7 +49,12 @@ namespace DbManager
         public ColumnDefinition GetColumn(int i)
         {
             //TODO DEADLINE 1.A: Return the i-th column
-            return ColumnDefinitions[i];
+            if (i >= 0 && i < ColumnDefinitions.Count)
+            {
+                return ColumnDefinitions[i];
+            }
+            return null;
+
         }
 
         public int NumColumns()
@@ -57,7 +62,7 @@ namespace DbManager
             //TODO DEADLINE 1.A: Return the number of columns
             return ColumnDefinitions.Count;
         }
-        
+
         public ColumnDefinition ColumnByName(string name)
         {
             int index = ColumnIndexByName(name);
@@ -77,8 +82,8 @@ namespace DbManager
             }
             return -1;
         }
-
-        public override string ToString()
+        /*
+        public override string ToString() //naroa
         {
             /*TODO DEADLINE 1.A: Return the table as a string. The format 
             //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
@@ -89,10 +94,42 @@ namespace DbManager
             columns, two rows
             "" <- no columns, no rows
             "['Name']" <- one column, no rows
-            */
-            return null;
-        }
+            
+            //TODO DEADLINE 1.A: Return the table as a string. The format is specified in the documentation
+            //Valid examples:
+            //"['Name']{'Adolfo'}{'Jacinto'}" <- one column, two rows
+            //"['Name','Age']{'Adolfo','23'}{'Jacinto','24'}" <- two columns, two rows
+            //"" <- no columns, no rows
+            //"['Name']" <- one column, no rows
+            
+        
+            if (ColumnDefinitions.Count == 0)
+                return "";
 
+            string result = "[";
+            for (int i = 0; i < ColumnDefinitions.Count; i++)
+            {
+                result += $"'{ColumnDefinitions[i].Name}'";
+                if (i < ColumnDefinitions.Count - 1)
+                    result += ",";
+            }
+            result += "]";
+
+            foreach (var row in Rows)
+            {
+                result += "{";
+                for (int i = 0; i < row.Values.Count; i++)
+                {
+                    result += $"'{row.Values[i]}'";
+                    if (i < row.Values.Count - 1)
+                        result += ",";
+                }
+                result += "}";
+            }
+
+            return result;
+        }
+        */
         public void DeleteIthRow(int index)
         {
             if (index >= 0 && index < Rows.Count)
@@ -120,6 +157,15 @@ namespace DbManager
         public void DeleteWhere(Condition condition)
         {
             //TODO DEADLINE 1.A: Delete all rows where the condition is true.Check RowIndicesWhereConditionIsTrue()
+            var indices = RowIndicesWhereConditionIsTrue(condition);
+            indices.Sort((a, b) => b.CompareTo(a));
+
+            foreach (var index in indices)
+            {
+                DeleteIthRow(index);
+            }
+
+
 
         }
 
@@ -158,7 +204,7 @@ namespace DbManager
                 Row row = Rows[z];
                 if (condition == null || row.IsTrue(condition))
                 {
-            //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
+                    //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
                     List<string> newValues = new List<string>();
                     for (int k = 0; k < selected.Count; k++)
                     {
@@ -203,14 +249,14 @@ namespace DbManager
             AddRow(row);
             return true;
         }
-
+        /*
         public bool Update(List<SetValue> setValues, Condition condition)
         {
             //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues(ColumnName - Value).If condition is null,
             //return false, otherwise return true
             return false;
         }
-
+        */
 
         //Only for testing purposes
         public const string TestTableName = "TestTable";
@@ -241,9 +287,9 @@ namespace DbManager
                 new ColumnDefinition(TestColumn2Type, TestColumn2Name),
                 new ColumnDefinition(TestColumn3Type, TestColumn3Name)
             });
-            table.Insert(new List<string>() { TestColumn1Row1,TestColumn2Row1, TestColumn3Row1 });
-            table.Insert(new List<string>() { TestColumn1Row2,TestColumn2Row2, TestColumn3Row2 });
-            table.Insert(new List<string>() { TestColumn1Row3,TestColumn2Row3, TestColumn3Row3 });
+            table.Insert(new List<string>() { TestColumn1Row1, TestColumn2Row1, TestColumn3Row1 });
+            table.Insert(new List<string>() { TestColumn1Row2, TestColumn2Row2, TestColumn3Row2 });
+            table.Insert(new List<string>() { TestColumn1Row3, TestColumn2Row3, TestColumn3Row3 });
             return table;
         }
 
@@ -267,3 +313,4 @@ namespace DbManager
         }
     }
 }
+
