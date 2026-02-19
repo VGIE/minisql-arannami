@@ -68,8 +68,8 @@ namespace DbManager
             }
 
             return false;
-            
         }
+
 
         private const string Delimiter = ":";
         private const string DelimiterEncoded = "[SEPARATOR]";
@@ -78,33 +78,48 @@ namespace DbManager
         {
             //TODO DEADLINE 1.C: Encode the delimiter in value
 
-            
+
             return null;
-            
+
         }
 
         private static string Decode(string value)
         {
-            //TODO DEADLINE 1.C: Decode the value doing the opposite of Encode()
-            
-            return null;
-            
+            //TODO DEADLINE 1.C: Decode the value doing the opposite of Encode
+            if (value == null)
+                return null;
+
+            return value.Replace(DelimiterEncoded, Delimiter);
         }
+
+
 
         public string AsText()
         {
             //TODO DEADLINE 1.C: Return the row as string with all values separated by the delimiter
-            
+
             return null;
-            
+
         }
 
         public static Row Parse(List<ColumnDefinition> columns, string value)
         {
             //TODO DEADLINE 1.C: Parse a rowReturn the row as string with all values separated by the delimiter
-            
+
             return null;
-            
+
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
