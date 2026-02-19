@@ -58,22 +58,6 @@ namespace DbManager
             return ColumnDefinitions.Count;
         }
         
-        // public ColumnDefinition ColumnByName(string column)
-        // {
-        //     if (column == null) return null;
-
-        //     // foreach (var col in ColumnDefinitions)
-        //     // {
-        //     //     if (string.Equals(col.Name, column, StringComparison.OrdinalIgnoreCase))
-        //     //         return col;
-        //     // }
-        //     foreach (var col in ColumnDefinitions)
-        //     {
-        //         Console.WriteLine("DEBUG COLUMN: " + col.Name);
-        //     }
-
-        //     return null;
-        // }
         public ColumnDefinition ColumnByName(string name)
         {
             int index = ColumnIndexByName(name);
@@ -81,19 +65,6 @@ namespace DbManager
             return ColumnDefinitions[index];
         }
 
-        // public int ColumnIndexByName(string columnName)
-        // {
-        //     //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
-        //     if (columnName == null) return -1;
-
-        //     for (int i = 0; i < ColumnDefinitions.Count; i++)
-        //     {
-        //         if (string.Equals(ColumnDefinitions[i].Name, columnName, StringComparison.OrdinalIgnoreCase))
-        //             return i;
-        //     }
-
-        //     return -1;
-        // }
         public int ColumnIndexByName(string name)
         {
             //TODO DEADLINE 1.A: Return the zero-based index of the column named columnName
@@ -105,13 +76,6 @@ namespace DbManager
                     return i;
             }
             return -1;
-        }
-
-        public ColumnDefinition ColumnByName(string name)
-        {
-            int index = ColumnIndexByName(name);
-            if (index == -1) return null;
-            return ColumnDefinitions[index];
         }
 
         public override string ToString()
@@ -208,23 +172,10 @@ namespace DbManager
 
         public bool Insert(List<string> values)
         {
-                    case ColumnDefinition.DataType.Int:
-                        if (!int.TryParse(value, out _))
-                            return false;
-                        break;
-                    case ColumnDefinition.DataType.Double:
-                        if (!double.TryParse(value, 
-                            System.Globalization.NumberStyles.Any,
-                            System.Globalization.CultureI
-                            nfo.InvariantCulture, out _))
-                            return false;
-                        break;
-                    default:
-                        return false;
-                }*/
-            }
-            Row row = new Row(ColumnDefinitions, values);
-            AddRow(row);
+            //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
+            if (values == null) return false;
+            if (values.Count != ColumnDefinitions.Count)
+                return false;
             for (int i = 0; i < values.Count; i++)
             {
                 var columnDef = ColumnDefinitions[i];
@@ -234,10 +185,22 @@ namespace DbManager
                     case ColumnDefinition.DataType.String:
                     // Always valid as string
                         break;
-
-            Row newRow = new Row(ColumnDefinitions, values);
-            Rows.Add(newRow);
-
+                    case ColumnDefinition.DataType.Int:
+                        if (!int.TryParse(value, out _))
+                            return false;
+                        break;
+                    case ColumnDefinition.DataType.Double:
+                        if (!double.TryParse(value, 
+                            System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture, out _))
+                            return false;
+                        break;
+                    default:
+                        return false;
+                }*/
+            }
+            Row row = new Row(ColumnDefinitions, values);
+            AddRow(row);
             return true;
         }
 
