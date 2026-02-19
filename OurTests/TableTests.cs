@@ -452,44 +452,5 @@ namespace OurTests
             Assert.Equal("Rodolfo", result.GetRow(0).Values[0]);
             Assert.Equal("25", result.GetRow(0).Values[1]);
         }
-
-        /*[Fact]
-        public void Select_WithCondition()
-        {
-            Table table = Table.CreateTestTable();
-
-            // Example: Age > 50
-            Condition condition = new Condition(
-                "Age",
-                Condition.Operator.Greater,
-                "50"
-            );
-
-            Table result = table.Select(new List<string> { "Name" }, condition);
-
-            Assert.Equal(1, result.NumColumns());
-            Assert.Equal(2, result.NumRows()); // Maider (67), Pepe (51)
-
-            Assert.Equal("Maider", result.GetRow(0).Values[0]);
-            Assert.Equal("Pepe", result.GetRow(1).Values[0]);
-        }*/
-
-        /*[Fact]
-        public void Select_NoRowsMatchCondition()
-        {
-            Table table = Table.CreateTestTable();
-
-            Condition condition = new Condition(
-                "Age",
-                Condition.Operator.Less,
-                "10"
-            );
-
-            Table result = table.Select(new List<string> { "Name" }, condition);
-
-            Assert.Equal(1, result.NumColumns());
-            Assert.Equal(0, result.NumRows());
-        }*/
-
     }
 }
