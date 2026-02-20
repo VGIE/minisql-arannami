@@ -134,6 +134,83 @@ namespace OurTests
             Assert.Null(loaded);
         }
 
+        [Fact]
+        public void CreateTable()
+        {
+            Database db = new Database("admin", "123");
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            bool result = db.CreateTable("People", columns);
+
+            Assert.True(result);
+            Assert.NotNull(db.TableByName("People"));
+        }
+
+
+        [Fact]
+        public void CreateTable_SinColumnas()
+        {
+            Database db = new Database("admin", "123");
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>();
+
+            bool result = db.CreateTable("People", columns);
+
+            Assert.False(result);
+        }
+
+
+        [Fact]
+        public void CreateTable_Duplicado()
+        {
+            Database db = new Database("admin", "123");
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
+            };
+
+            db.CreateTable("People", columns);
+
+            bool result = db.CreateTable("People", columns);
+
+            Assert.False(result);
+        }
+
+
+        [Fact]
+        public void DropTable()
+        {
+            Database db = new Database("admin", "123");
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
+            };
+
+            db.CreateTable("People", columns);
+
+            bool result = db.DropTable("People");
+
+            Assert.True(result);
+            Assert.Null(db.TableByName("People"));
+        }
+
+        [Fact]
+        public void DropTable_NoExiste()
+        {
+            Database db = new Database("admin", "123");
+
+            bool result = db.DropTable("Unknown");
+
+            Assert.False(result);
+        }
+
     }
 
 
