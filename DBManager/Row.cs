@@ -10,6 +10,7 @@ namespace DbManager
 {
     public class Row
     {
+        [System.Text.Json.Serialization.JsonInclude]
         private List<ColumnDefinition> ColumnDefinitions = new List<ColumnDefinition>();
         public List<string> Values { get; set; }
 

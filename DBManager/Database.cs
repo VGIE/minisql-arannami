@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DbManager
@@ -18,6 +19,7 @@ namespace DbManager
 
         public Manager SecurityManager { get; private set; }
 
+        
         //This constructor should only be used from Load (without needing to set a password for the user). It cannot be used from any other class
         private Database()
         {
@@ -164,20 +166,26 @@ namespace DbManager
         */
 
 
-
-
-
-
-
-
         public bool Save(string databaseName)
         {
-            //DEADLINE 1.C: Save this database to disk with the given name
-            //If everything goes ok, return true, false otherwise.
-            //DEADLINE 5: Save the SecurityManager so that it can be loaded with the database in Load()
+            try
+            {
+                if (string.IsNullOrEmpty(databaseName))
+                    return false;
 
-            return false;
-
+                string filePath = databaseName + ".db";
+                var options = new JsonSerializerOptions
+                {
+                    IncludeFields = true
+                };
+                string json = JsonSerializer.Serialize(Tables, options);
+                File.WriteAllText(filePath, json);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static Database Load(string databaseName, string username, string password)
@@ -186,9 +194,34 @@ namespace DbManager
             //If everything goes ok, return the loaded database (a new instance), null otherwise.
             //DEADLINE 5: When the Database object is created, set the username (create a new method if you must)
             //After loading the database, load the SecurityManager and check the password is correct. If it's not, return null. If it is return the database
+            try
+            {
+                string filePath = databaseName + ".db";
 
-            return null;
+                if (!File.Exists(filePath))
+                    return null;
+                var options = new JsonSerializerOptions
+                {
+                    IncludeFields = true
+                };
+                string json = File.ReadAllText(filePath);
+                List<Table> tables = JsonSerializer.Deserialize<List<Table>>(json, options);
+
+                if (tables == null)
+                    return null;
+
+                Database db = new Database();
+                db.Tables = tables;
+                db.m_username = username;
+                db.SecurityManager = new Manager(username);
+                return db;
+            }
+            catch
+            {
+              return null;
+            }
         }
+
 
         public string ExecuteMiniSQLQuery(string query)
         {

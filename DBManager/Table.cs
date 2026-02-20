@@ -8,9 +8,11 @@ namespace DbManager
 {
     public class Table
     {
-        private List<ColumnDefinition> ColumnDefinitions = new
-        List<ColumnDefinition>();
+        [System.Text.Json.Serialization.JsonInclude]
+        private List<ColumnDefinition> ColumnDefinitions = new List<ColumnDefinition>();
+        [System.Text.Json.Serialization.JsonInclude]
         private List<Row> Rows = new List<Row>();
+        [System.Text.Json.Serialization.JsonInclude]
         public string Name { get; private set; } = null;
 
         public Table(string name, List<ColumnDefinition> columns)
