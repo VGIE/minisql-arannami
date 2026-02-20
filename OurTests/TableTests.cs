@@ -284,6 +284,37 @@ namespace OurTests
             Assert.Equal(r1, table.GetRow(0));
             Assert.Equal(r3, table.GetRow(1));
         }
+        
+        [Fact]
+        public void ChecksRowIndicesWhereConditionIsTrue()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+            Table table = new Table();
+
+            Row r1 = new Row(columns, new List<string> { "Ane", "30" });   // index 0 -> coincide
+            Row r2 = new Row(columns, new List<string> { "Jon", "25" });   // index 1 -> no coincide
+            Row r3 = new Row(columns, new List<string> { "Mikel", "30" }); // index 2 -> coincide
+            Row r4 = new Row(columns, new List<string> { "June", "40" });  // index 3 -> no coincide
+            Row r5 = new Row(columns, new List<string> { "Iker", "30" });  // index 4 -> coincide
+            table.AddRow(r1);
+            table.AddRow(r2);
+            table.AddRow(r3);
+            table.AddRow(r4);
+            table.AddRow(r5);
+            Condition condition = new Condition("Age", "=", "30");
+            table.DeleteWhere(condition);
+
+
+            Assert.Equal(2, table.NumRows());
+            Assert.Equal("Jon", table.GetRow(0).Values[0]);
+            Assert.Equal("25", table.GetRow(0).Values[1]);
+            Assert.Equal("June", table.GetRow(1).Values[0]);
+            Assert.Equal("40", table.GetRow(1).Values[1]);
+        }
 
         /*[Fact]
         public void DeleteWhere()
