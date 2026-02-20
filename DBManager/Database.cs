@@ -68,7 +68,23 @@ namespace DbManager
             //Do the same if no column is provided
             //If everything goes ok, set LastErrorMessage with the appropriate success message (Check Constants.cs)
 
-            return false;
+            if (ColumnDefinition == null || ColumnDefinition.Count == 0)
+            {
+                LastErrorMessage = Constants.DatabaseCreatedWithoutColumnsError;
+                return false;
+            }
+
+            if (TableByName(tableName) != null)
+            {
+                LastErrorMessage = Constants.TableAlreadyExistsError;
+                return false;
+            }
+
+            Table table = new Table(tableName, ColumnDefinition);
+            Tables.Add(table);
+
+            LastErrorMessage = Constants.CreateTableSuccess;
+            return true;
 
         }
 
@@ -77,7 +93,18 @@ namespace DbManager
             //DEADLINE 1.B: Delete the table with the given name. If the table doesn't exist, return false and set LastErrorMessage
             //If everything goes ok, return true and set LastErrorMessage with the appropriate success message (Check Constants.cs)
 
-            return false;
+            Table table = TableByName(tableName);
+
+            if (table == null)
+            {
+                LastErrorMessage = Constants.TableDoesNotExistError;
+                return false;
+            }
+
+            Tables.Remove(table);
+
+            LastErrorMessage = Constants.DropTableSuccess;
+            return true;
         }
 
         public bool Insert(string tableName, List<string> values)
