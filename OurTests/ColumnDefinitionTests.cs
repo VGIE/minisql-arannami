@@ -24,6 +24,27 @@ namespace OurTests
                 .Invoke(null, new object[] { encoded });
             Assert.Equal("Name->String", decoded);
         }
+
+
+        [Fact]
+        public void AsText()
+        {
+            ColumnDefinition column =
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name");
+
+            string result = column.AsText();
+
+            Assert.Equal("Name->String", result);
+        }
+
+        [Fact]
+        public void Parse()
+        {
+            ColumnDefinition column = ColumnDefinition.Parse("Name->String");
+
+            Assert.Equal("Name", column.Name);
+            Assert.Equal(ColumnDefinition.DataType.String, column.Type);
+        }
     }
 }
 
