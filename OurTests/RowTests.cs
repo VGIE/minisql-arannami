@@ -133,6 +133,38 @@ namespace OurTests
         }
 
 
+        [Fact]
+        public void AsText()
+        {
+            var columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            var row = new Row(columns, new List<string> { "Ana", "20" });
+
+            Assert.Equal("Ana:20", row.AsText());
+        }
+
+
+        [Fact]
+        public void Parse()
+        {
+            var columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            var row = Row.Parse(columns, "Ana:20");
+
+            Assert.Equal("Ana", row.Values[0]);
+            Assert.Equal("20", row.Values[1]);
+        }
+
+
+
     }
 }
 
