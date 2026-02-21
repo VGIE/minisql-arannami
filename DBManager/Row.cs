@@ -99,7 +99,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.C: Return the row as string with all values separated by the delimiter
 
-            return null;
+            return string.Join(":", Values);
 
         }
 
@@ -107,7 +107,10 @@ namespace DbManager
         {
             //TODO DEADLINE 1.C: Parse a rowReturn the row as string with all values separated by the delimiter
 
-            return null;
+            string[] parts = value.Split(':');
+            List<string> values = new List<string>(parts);
+
+            return new Row(columns, values);
 
         }
     }
