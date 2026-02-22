@@ -19,7 +19,7 @@ namespace OurTests
             Assert.Equal("Person", table.Name);
         }
 
-        /*[Fact]
+        [Fact]
         public void TableConstructorWhenNameNull()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition> 
@@ -30,7 +30,7 @@ namespace OurTests
             Table table = new Table(null, columns); 
             Assert.Null(table.Name); 
             Assert.Equal(1, table.NumColumns());
-        }*/
+        }
 
         [Fact]
         public void TableConstructorWhenEmpty()
@@ -68,23 +68,23 @@ namespace OurTests
             Assert.NotEqual(result1, result2);
         }
 
-        /*[Fact]
+        [Fact]
         public void GetRowWhenTableEmpty()
         {
             Table table = new Table();
 
-            var result1 = table.GetRow(0);
-            Assert.Null(result1);
-        }*/
+            var result = table.GetRow(0);
+            Assert.Null(result);
+        }
 
-        /*[Fact]
+        [Fact]
         public void GetRowWhenIndexNegative()
         {
             Table table = new Table();
 
-            var result1 = table.GetRow(-1);
-            Assert.Null(result1);
-        }*/
+            var result = table.GetRow(-1);
+            Assert.Null(result);
+        }
 
         [Fact]
         public void AddRow_Works()
@@ -103,22 +103,25 @@ namespace OurTests
             Assert.Equal(row, table.GetRow(0));
         }
 
-        /*[Fact]
+        [Fact]
         public void AddRowWhenRowNull()
         {
             Table table = new Table();
             table.AddRow(null);
-            Assert.Equal(0, table.NumRows());
-        }*/
+
+            Assert.Equal(1, table.NumRows());
+            Assert.Null(table.GetRow(0));
+        }
 
         [Fact]
         public void AddRowWhenAreNotColumns()
         {
             Table table = new Table();
-
+            //empty row
             Row row = new Row(new List<ColumnDefinition>(), new List<string>());
             table.AddRow(row);
             Assert.Equal(1, table.NumRows());
+            Assert.NotNull(table.GetRow(0));
         }
 
         [Fact]
@@ -514,10 +517,10 @@ namespace OurTests
         public void ToString_test()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
-    {
-        new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
-        new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
-    };
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
 
             Table table = new Table("People", columns);
 
@@ -529,7 +532,48 @@ namespace OurTests
             Assert.Equal(expected, table.ToString());
         }
         */
-    }
 
+        [Fact]
+        public void InsertValues_ReturnsTrueAndIncrease()
+        {
+            Table table = Table.CreateTestTable();
+            int initialCont = table.NumRows();
+            var newRow = new List<string> {"Ane", "1.65", "22"};
+
+            bool done = table.Insert(newRow);
+
+            Assert.True(done);
+            Assert.Equal(initialCont+1, table.NumRows());
+
+            Assert.Equal("Ane", table.GetRow(initialCont).Values[0]);
+            Assert.Equal("1.65", table.GetRow(initialCont).Values[1]);
+            Assert.Equal("22", table.GetRow(initialCont).Values[2]);
+        }
+
+        [Fact]
+        public void Insert_NullValues_ReturnsFalse()
+        {
+            Table table = Table.CreateTestTable();
+            int initialCont = table.NumRows();
+
+            bool notDone = table.Insert(null);
+
+            Assert.False(notDone);
+            Assert.Equal(initialCont, table.NumRows());
+        }
+        
+        [Fact]        
+        public void InsertNotAllValues_ReturnsFalse()
+        {
+            Table table = Table.CreateTestTable();
+            int initialCont = table.NumRows();
+            var newRow = new List<string> {"Ane", "1.65"};
+
+            bool notDone = table.Insert(newRow);
+
+            Assert.False(notDone);
+            Assert.Equal(initialCont, table.NumRows());
+        }
+    }
 }
 

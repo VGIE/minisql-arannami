@@ -46,7 +46,7 @@ namespace OurTests
         [Fact]
         public void AddTable()
         {
-            Database db = new Database("admin","123");
+            Database db = new Database("admin", "123");
             Table t = Table.CreateTestTable("People");
             bool result = db.AddTable(t);
             Assert.True(result);
@@ -55,7 +55,7 @@ namespace OurTests
         [Fact]
         public void AddTable_Duplicado()
         {
-            Database db = new Database("admin","123");
+            Database db = new Database("admin", "123");
             Table t = Table.CreateTestTable("People");
             db.AddTable(t);
             bool result = db.AddTable(t);
@@ -211,7 +211,46 @@ namespace OurTests
             Assert.False(result);
         }
 
+        [Fact]
+        public void InsertValidData_ReturnsTrueAndMessage()
+        {
+            Database database = Database.CreateTestDatabase();
+            string tableName = Table.TestTableName;
+            var newValues = new List<string> { "Ane", "1.65", "22" };
+            int initialRow = database.TableByName(tableName).NumRows();
+
+            bool done = database.Insert(tableName, newValues);
+
+            Assert.True(done);
+            Assert.Equal(Constants.InsertSuccess, database.LastErrorMessage);
+            Assert.Equal(initialRow + 1, database.TableByName(tableName).NumRows());
+        }
+
+        [Fact]
+        public void InsertNullTable_ReturnsFalseAndError()
+        {
+            Database database = Database.CreateTestDatabase();
+            string NullTable = "NotRealTable";
+            var newValues = new List<string> { "Data" };
+
+            bool notDone = database.Insert(NullTable, newValues); 
+            
+            Assert.False(notDone);
+            Assert.Equal(Constants.TableDoesNotExistError, database.LastErrorMessage);
+        }
+
+        [Fact]
+        public void Insert_WrongColumnCountReturnsFalse()
+        {
+            Database database = Database.CreateTestDatabase();
+            string tableName = Table.TestTableName;
+            var newValues = new List<string> { "Ane", "1.65" };
+            
+            bool notDone= database.Insert(tableName, newValues);
+            Assert.False(notDone);
+            Assert.Equal(Constants.ColumnCountsDontMatch, database.LastErrorMessage);
+        }
+
+
     }
-
-
 }

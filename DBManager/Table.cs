@@ -166,9 +166,6 @@ namespace DbManager
             {
                 DeleteIthRow(index);
             }
-
-
-
         }
 
         public Table Select(List<string> columnNames, Condition condition)
@@ -176,12 +173,12 @@ namespace DbManager
             //TODO DEADLINE 1.A: Return a new table (with name 'Result') that contains the result of the select.The condition
             //may be null (if no condition, all rows should be returned). This is the most difficult method in this class
             List<ColumnDefinition> selectedColumns = new List<ColumnDefinition>();
-            List<int> selected = new List<int>();
+            List<int> selectedIndex = new List<int>();
             if (columnNames == null || columnNames.Count == 0)
             {
                 for (int i = 0; i < ColumnDefinitions.Count; i++)
                 {
-                    selected.Add(i);
+                    selectedIndex.Add(i);
                     selectedColumns.Add(ColumnDefinitions[i]);
                 }
             }
@@ -194,7 +191,7 @@ namespace DbManager
 
                     if (index >= 0)
                     {
-                        selected.Add(index);
+                        selectedIndex.Add(index);
                         selectedColumns.Add(ColumnDefinitions[index]);
                     }
                 }
@@ -208,9 +205,9 @@ namespace DbManager
                 {
                     //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
                     List<string> newValues = new List<string>();
-                    for (int k = 0; k < selected.Count; k++)
+                    for (int k = 0; k < selectedIndex.Count; k++)
                     {
-                        newValues.Add(row.Values[selected[k]]);
+                        newValues.Add(row.Values[selectedIndex[k]]);
                     }
                     table.AddRow(new Row(selectedColumns, newValues));
                 }
@@ -224,29 +221,7 @@ namespace DbManager
             if (values == null) return false;
             if (values.Count != ColumnDefinitions.Count)
                 return false;
-            for (int i = 0; i < values.Count; i++)
-            {
-                var columnDef = ColumnDefinitions[i];
-                string value = values[i];
-                /*switch (columnDef.Type)
-                {
-                    case ColumnDefinition.DataType.String:
-                    // Always valid as string
-                        break;
-                    case ColumnDefinition.DataType.Int:
-                        if (!int.TryParse(value, out _))
-                            return false;
-                        break;
-                    case ColumnDefinition.DataType.Double:
-                        if (!double.TryParse(value, 
-                            System.Globalization.NumberStyles.Any,
-                            System.Globalization.CultureInfo.InvariantCulture, out _))
-                            return false;
-                        break;
-                    default:
-                        return false;
-                }*/
-            }
+            
             Row row = new Row(ColumnDefinitions, values);
             AddRow(row);
             return true;
