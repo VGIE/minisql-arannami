@@ -163,8 +163,17 @@ namespace OurTests
             Assert.Equal("20", row.Values[1]);
         }
 
+        [Fact]
+        public void Encode_Works()
+        {
+            string raw = "Value1:Value2";
 
+            var method = typeof(Row).GetMethod("Encode", System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Static);
 
+            string encoded = (string)method.Invoke(null, new object[] { raw });
+            Assert.Equal("Value1[SEPARATOR]Value2", encoded);
+        }
     }
 }
 

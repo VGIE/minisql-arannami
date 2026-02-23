@@ -13,6 +13,16 @@ namespace OurTests
             Assert.Equal(ColumnDefinition.DataType.String, column.Type);
         }
 
+        [Fact]
+        public void Encode()
+        {
+            string raw = "Name->String";
+
+            var encoded = (string)typeof(ColumnDefinition).GetMethod("Encode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+                .Invoke(null, new object[] { raw });
+
+            Assert.Equal("Name[ARROW]String", encoded);
+        }
 
         [Fact]
         public void Decode()
