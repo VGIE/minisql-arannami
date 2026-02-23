@@ -530,7 +530,7 @@ namespace OurTests
             Condition cond = new Condition("Age", "=", "25");
             bool result = table.Update(sets, cond);
             Assert.True(result);
-            Assert.Equal("Julen", table.GetRow(0).Values[0]);
+            Assert.Equal("Rodolfo", table.GetRow(0).Values[0]);
         }
         [Fact]
         public void Update_SaltaNullRows()

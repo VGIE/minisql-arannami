@@ -21,7 +21,7 @@ namespace OurTests
             });
 
         }
-        
+
         [Fact]
         public void Update()
         {
@@ -41,7 +41,7 @@ namespace OurTests
                 new List<string> { Table.TestColumn1Row3, Table.TestColumn2Row3, Table.TestColumn3Row3 }
             });
         }
-        
+
         [Fact]
         public void AddTable()
         {
@@ -226,14 +226,14 @@ namespace OurTests
         }
 
         [Fact]
-        public void InsertNullTable_ReturnsFalseAndError()
+        public void InsertNonExistantlTable_ReturnsFalseAndError()
         {
             Database database = Database.CreateTestDatabase();
             string NullTable = "NotRealTable";
             var newValues = new List<string> { "Data" };
 
-            bool notDone = database.Insert(NullTable, newValues); 
-            
+            bool notDone = database.Insert(NullTable, newValues);
+
             Assert.False(notDone);
             Assert.Equal(Constants.TableDoesNotExistError, database.LastErrorMessage);
         }
@@ -244,12 +244,52 @@ namespace OurTests
             Database database = Database.CreateTestDatabase();
             string tableName = Table.TestTableName;
             var newValues = new List<string> { "Ane", "1.65" };
-            
-            bool notDone= database.Insert(tableName, newValues);
+
+            bool notDone = database.Insert(tableName, newValues);
             Assert.False(notDone);
             Assert.Equal(Constants.ColumnCountsDontMatch, database.LastErrorMessage);
         }
 
+        [Fact]
+        public void SelectAll_ReturnsAllTable()
+        {
+            Database database = Database.CreateTestDatabase();
+            string tableName = Table.TestTableName;
+            int initialRow = database.TableByName(tableName).NumRows();
+            int initialCol = database.TableByName(tableName).NumColumns();
 
+            Table result = database.Select(tableName, null, null);
+
+            Assert.NotNull(result);
+            Assert.Equal("Result", result.Name);
+            Assert.Equal(initialRow, result.NumRows());
+            Assert.Equal(initialCol, result.NumColumns());
+            //Assert.Equal(Constants.)
+        }
+
+        [Fact]
+        public void SelectNonExistantTable_ReturnsNullAndError()
+        {
+            Database database = Database.CreateTestDatabase();
+            string tableName = Table.TestTableName;
+
+            Table result = database.Select("NonExistant", null, null);
+
+            Assert.Null(result);
+            Assert.Equal(Constants.TableDoesNotExistError, database.LastErrorMessage);
+        }
+
+        [Fact]
+        public void Select_WrongColumn_ReturnsNullAndError()
+        {
+            Database database = Database.CreateTestDatabase();
+            string tableName = Table.TestTableName;
+            List<string> column = new List<string> {"Name", "Year"};
+
+            Table result = database.Select(tableName, column, null);
+
+            Assert.Null(result);
+            Assert.Equal(Constants.ColumnDoesNotExistError, database.LastErrorMessage);
+        }
     }
 }
