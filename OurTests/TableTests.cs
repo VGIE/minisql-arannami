@@ -319,75 +319,8 @@ namespace OurTests
             Assert.Equal("40", table.GetRow(1).Values[1]);
         }
 
-        /*[Fact]
-        public void DeleteWhere()
-        {
-          List<ColumnDefinition> columns = new List<ColumnDefinition>
-            {
-                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
-                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
-            };
-
-            Table table = new Table();
-            Row r1 = new Row(columns, new List<string> { "Ane", "20" });
-            Row r2 = new Row(columns, new List<string> { "Jon", "30" });
-            Row r3 = new Row(columns, new List<string> { "Mikel", "40" });
-            Row r4 = new Row(columns, new List<string> { "Arene", "30" });
-
-            table.AddRow(r1);
-            table.AddRow(r2);
-            table.AddRow(r3);
-            table.AddRow(r4);
-            Condition condition = new Condition("Age", "=", "30");
-            table.DeleteWhere(condition);
-            Assert.Equal(2, table.NumRows());
-            Assert.Equal(r1, table.GetRow(0));  
-            Assert.Equal(r3, table.GetRow(1));  
-        }
-        */
-
-        /*[Fact]
-        public bool Update(List<SetValue> setValues, Condition condition)
-        { 
-            if (condition == null)
-                return false;
-                var indices = RowIndicesWhereConditionIsTrue(condition);
-
-            if (indices.Count == 0)
-                return false;
-
-            foreach (var idx in indices)
-            {
-                Row row = GetRow(idx);
-                foreach (var sv in setValues)
-                {
-                    row.SetValue(sv.ColumnName, sv.Value);
-                }
-            }
-
-            return true;
-        }
-        */
-
-        /*[Fact]
-        public void ToString_Works()
-        {
-            List<ColumnDefinition> columns = new List<ColumnDefinition>
-            {
-                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
-                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
-            };
-
-            Table table = new Table("People", columns);
-
-            table.AddRow(new Row(columns, new List<string> { "Adolfo", "23" }));
-            table.AddRow(new Row(columns, new List<string> { "Jacinto", "24" }));
-
-            string expected = "['Name','Age']{'Adolfo','23'}{'Jacinto','24'}";
-
-            Assert.Equal(expected, table.ToString());
-        }
-        */
+       
+        
 
         /*[Fact]
         public void Select_WithCondition()
@@ -512,7 +445,6 @@ namespace OurTests
             Assert.Equal(r1, table.GetRow(0));
             Assert.Equal(r3, table.GetRow(1));
         }
-        /*
         [Fact]
         public void ToString_test()
         {
@@ -526,12 +458,9 @@ namespace OurTests
 
             table.AddRow(new Row(columns, new List<string> { "Adolfo", "23" }));
             table.AddRow(new Row(columns, new List<string> { "Jacinto", "24" }));
-
             string expected = "['Name','Age']{'Adolfo','23'}{'Jacinto','24'}";
-
             Assert.Equal(expected, table.ToString());
         }
-        */
 
         [Fact]
         public void InsertValues_ReturnsTrueAndIncrease()
@@ -539,12 +468,9 @@ namespace OurTests
             Table table = Table.CreateTestTable();
             int initialCont = table.NumRows();
             var newRow = new List<string> {"Ane", "1.65", "22"};
-
             bool done = table.Insert(newRow);
-
             Assert.True(done);
             Assert.Equal(initialCont+1, table.NumRows());
-
             Assert.Equal("Ane", table.GetRow(initialCont).Values[0]);
             Assert.Equal("1.65", table.GetRow(initialCont).Values[1]);
             Assert.Equal("22", table.GetRow(initialCont).Values[2]);
@@ -555,9 +481,7 @@ namespace OurTests
         {
             Table table = Table.CreateTestTable();
             int initialCont = table.NumRows();
-
             bool notDone = table.Insert(null);
-
             Assert.False(notDone);
             Assert.Equal(initialCont, table.NumRows());
         }
@@ -568,12 +492,60 @@ namespace OurTests
             Table table = Table.CreateTestTable();
             int initialCont = table.NumRows();
             var newRow = new List<string> {"Ane", "1.65"};
-
             bool notDone = table.Insert(newRow);
-
             Assert.False(notDone);
             Assert.Equal(initialCont, table.NumRows());
         }
+
+        [Fact]
+        public void Update_NullCondition_Returnsfalse()
+        {
+            Table table = Table.CreateTestTable();
+            var sets = new List<SetValue>()
+            {
+                new SetValue("Name", "FAIL")
+            };
+            bool result = table.Update(sets, null);
+            Assert.False(result);
+        }
+        [Fact]
+        public void Update_NoMatches_ReturnsFalse()
+        {
+            Table table = Table.CreateTestTable();
+            var sets = new List<SetValue>()
+            {
+                new SetValue("Name", "FAIL")
+            };
+
+            Condition cond = new Condition("Age", "=", "999");
+            bool result = table.Update(sets, cond);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void Update_EmptySetValues_NoChangesButTrue()
+        {
+            Table table = Table.CreateTestTable();
+            var sets = new List<SetValue>();
+            Condition cond = new Condition("Age", "=", "25");
+            bool result = table.Update(sets, cond);
+            Assert.True(result);
+            Assert.Equal("Julen", table.GetRow(0).Values[0]);
+        }
+        [Fact]
+        public void Update_SaltaNullRows()
+        {
+            Table table = Table.CreateTestTable();
+            table.AddRow(null);
+            var sets = new List<SetValue>()
+            {
+                new SetValue("Name", "Changed")
+            };
+            Condition cond = new Condition("Age", "=", "25");
+            bool result = table.Update(sets, cond);
+            Assert.True(result);
+        }
+
     }
 }
 

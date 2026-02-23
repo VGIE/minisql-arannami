@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Xml.Linq;
@@ -108,27 +108,7 @@ namespace DbManager
             if (ColumnDefinitions.Count == 0)
                 return "";
 
-            string result = "[";
-            for (int i = 0; i < ColumnDefinitions.Count; i++)
-            {
-                result += $"'{ColumnDefinitions[i].Name}'";
-                if (i < ColumnDefinitions.Count - 1)
-                    result += ",";
-            }
-            result += "]";
-
-            foreach (var row in Rows)
-            {
-                result += "{";
-                for (int i = 0; i < row.Values.Count; i++)
-                {
-                    result += $"'{row.Values[i]}'";
-                    if (i < row.Values.Count - 1)
-                        result += ",";
-                }
-                result += "}";
-            }
-
+          
             return result;
         }
         */
@@ -221,7 +201,7 @@ namespace DbManager
             if (values == null) return false;
             if (values.Count != ColumnDefinitions.Count)
                 return false;
-            
+
             Row row = new Row(ColumnDefinitions, values);
             AddRow(row);
             return true;
@@ -288,6 +268,67 @@ namespace DbManager
                 rowIndex++;
             }
         }
+
+        public bool Update(List<SetValue> setValues, Condition condition)
+        {
+            if (condition == null)
+                return false;
+            var indices = RowIndicesWhereConditionIsTrue(condition);
+            if (indices.Count == 0)
+                return false;
+            foreach (var idx in indices)
+            {
+                Row row = GetRow(idx);
+
+                if (row == null) continue;
+
+                foreach (var sv in setValues)
+                {
+                    row.SetValue(sv.ColumnName, sv.Value);
+                }
+            }
+
+            return true;
+        }
+    
+    public override string ToString()
+        {
+            /*TODO DEADLINE 1.A: Return the table as a string. The format 
+            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
+            is specified in the documentation
+            Valid examples:
+            "['Name']{'Adolfo'}{'Jacinto'}" <- one column, two rows
+            "['Name','Age']{'Adolfo','23'}{'Jacinto','24'}" <- two 
+            columns, two rows
+            "" <- no columns, no rows
+            "['Name']" <- one column, no rows
+            */
+            if (ColumnDefinitions.Count == 0)
+                return "";
+
+            string result = "[";
+            for (int i = 0; i < ColumnDefinitions.Count; i++)
+            {
+                result += $"'{ColumnDefinitions[i].Name}'";
+                if (i < ColumnDefinitions.Count - 1)
+                    result += ",";
+            }
+            result += "]";
+            foreach (var row in Rows)
+            {
+                result += "{";
+                for (int i = 0; i < row.Values.Count; i++)
+                {
+                    result += $"'{row.Values[i]}'";
+                    if (i < row.Values.Count - 1)
+                        result += ",";
+                }
+                result += "}";
+            }
+
+            return result;
+        }
+
     }
 }
 

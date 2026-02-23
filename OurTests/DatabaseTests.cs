@@ -21,7 +21,7 @@ namespace OurTests
             });
 
         }
-        /*
+        
         [Fact]
         public void Update()
         {
@@ -32,7 +32,6 @@ namespace OurTests
                 new SetValue("Name", "NuevaMaider")
             };
             bool result = db.Update(Table.TestTableName, updates, condition);
-
             Assert.True(result);
             Assert.Equal(Constants.UpdateSuccess, db.LastErrorMessage);
             db.CheckForTesting(Table.TestTableName, new List<List<string>>
@@ -42,7 +41,7 @@ namespace OurTests
                 new List<string> { Table.TestColumn1Row3, Table.TestColumn2Row3, Table.TestColumn3Row3 }
             });
         }
-        */
+        
         [Fact]
         public void AddTable()
         {

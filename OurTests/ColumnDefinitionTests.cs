@@ -19,9 +19,8 @@ namespace OurTests
         {
             string encoded = "Name[ARROW]String";
 
-            var decoded = (string)typeof(ColumnDefinition)
-                .GetMethod("Decode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-                .Invoke(null, new object[] { encoded });
+            var decoded = (string)typeof(ColumnDefinition).GetMethod("Decode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+             .Invoke(null, new object[] { encoded });
             Assert.Equal("Name->String", decoded);
         }
 

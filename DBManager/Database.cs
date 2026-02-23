@@ -175,8 +175,7 @@ namespace DbManager
                 LastErrorMessage = Constants.TableDoesNotExistError;
                 return false;
             }
-            if (columnCondition != null &&
-                table.ColumnIndexByName(columnCondition.ColumnName) == -1)
+            if (columnCondition != null && table.ColumnIndexByName(columnCondition.ColumnName) == -1)
             {
                 LastErrorMessage = Constants.ColumnDoesNotExistError;
                 return false;
@@ -185,7 +184,7 @@ namespace DbManager
             LastErrorMessage = Constants.DeleteSuccess;
             return true;
         }
-        /*
+        
         public bool Update(string tableName, List<SetValue> columnNames, Condition columnCondition)
         {
             //DEADLINE 1.B: Update in the given table all the rows where the condition is true using the SetValues
@@ -227,7 +226,7 @@ namespace DbManager
             LastErrorMessage = Constants.UpdateSuccess;
             return true;
         }
-        */
+        
 
 
         public bool Save(string databaseName)
