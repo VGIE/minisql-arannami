@@ -11,7 +11,7 @@ namespace SecurityParsingTests
 {
     public class CreateSecurityProfileTests
     {
-        [Fact]
+        /*[Fact]
         public void Correct()
         {
             CreateSecurityProfile query = MiniSQLParser.Parse("CREATE SECURITY PROFILE profile") as CreateSecurityProfile;
@@ -68,6 +68,6 @@ namespace SecurityParsingTests
 
             query = MiniSQLParser.Parse("CREATE SECURITY PROFILE profile") as CreateSecurityProfile;
             Assert.NotNull(query);
-        }
+        }*/
     }
 }

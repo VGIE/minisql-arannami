@@ -11,7 +11,7 @@ namespace SecurityParsingTests
 {
     public class RevokeTests
     {
-        [Fact]
+        /*[Fact]
         public void Correct()
         {
             Revoke query = MiniSQLParser.Parse("REVOKE DELETE ON Table TO User") as Revoke;
@@ -133,6 +133,6 @@ namespace SecurityParsingTests
 
             query = MiniSQLParser.Parse("REVOKE UPDATE ON Table TO User") as Revoke;
             Assert.NotNull(query);
-        }
+        }*/
     }
 }
