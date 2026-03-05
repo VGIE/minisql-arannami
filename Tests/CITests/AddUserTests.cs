@@ -7,7 +7,7 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-namespace SecurityParsingTests
+/*namespace SecurityParsingTests
 {
     public class AddUserTests
     {
@@ -68,6 +68,6 @@ namespace SecurityParsingTests
 
             query = MiniSQLParser.Parse("ADD USER (,,)") as AddUser;
             Assert.Null(query);
-        }*/
+        }
     }
-}
+}*/

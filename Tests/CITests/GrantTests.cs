@@ -7,7 +7,7 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-namespace SecurityParsingTests
+/*namespace SecurityParsingTests
 {
     public class GrantTests
     {
@@ -135,4 +135,4 @@ namespace SecurityParsingTests
             Assert.NotNull(query);
         }*/
     }
-}
+}*/

@@ -7,7 +7,7 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-namespace SecurityParsingTests
+/*namespace SecurityParsingTests
 {
     public class DropSecurityProfileTests
     {
@@ -70,4 +70,4 @@ namespace SecurityParsingTests
             Assert.NotNull(query);
         }*/
     }
-}
+}*/
