@@ -20,7 +20,7 @@ namespace DbManager
 
         public Insert()
         {
-
+            Values = new List<string>();
         }
 
         public string Execute(Database database)
