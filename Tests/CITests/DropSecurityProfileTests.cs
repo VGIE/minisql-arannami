@@ -68,6 +68,7 @@ using DbManager;
 
             query = MiniSQLParser.Parse("DROP SECURITY PROFILE profile") as DropSecurityProfile;
             Assert.NotNull(query);
-        }*/
+        }
     }
 }*/
+

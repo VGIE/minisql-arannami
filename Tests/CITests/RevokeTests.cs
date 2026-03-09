@@ -133,6 +133,6 @@ using DbManager;
 
             query = MiniSQLParser.Parse("REVOKE UPDATE ON Table TO User") as Revoke;
             Assert.NotNull(query);
-        }*/
+        }
     }
 }*/

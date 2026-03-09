@@ -133,6 +133,6 @@ using DbManager;
 
             query = MiniSQLParser.Parse("GRANT DELETE ON Table TO User") as Grant;
             Assert.NotNull(query);
-        }*/
+        }
     }
 }*/
