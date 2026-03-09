@@ -68,6 +68,6 @@ using DbManager;
 
             query = MiniSQLParser.Parse("DELETE USER User") as DeleteUser;
             Assert.NotNull(query);
-        }
+        }*/
     }
 }*/
