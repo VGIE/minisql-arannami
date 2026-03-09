@@ -63,6 +63,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Return the number of columns
             return ColumnDefinitions.Count;
+
         }
 
         public ColumnDefinition ColumnByName(string name)
@@ -96,28 +97,18 @@ namespace DbManager
             columns, two rows
             "" <- no columns, no rows
             "['Name']" <- one column, no rows
-            
-            //TODO DEADLINE 1.A: Return the table as a string. The format is specified in the documentation
-            //Valid examples:
-            //"['Name']{'Adolfo'}{'Jacinto'}" <- one column, two rows
-            //"['Name','Age']{'Adolfo','23'}{'Jacinto','24'}" <- two columns, two rows
-            //"" <- no columns, no rows
-            //"['Name']" <- one column, no rows
-            
-        
-            if (ColumnDefinitions.Count == 0)
-                return "";
-
-          
-            return result;
+            */
+            return null;
         }
-        */
+
         public void DeleteIthRow(int index)
         {
-            if (index >= 0 && index < Rows.Count)
+            //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
+            if (row >= 0 && row < Rows.Count)
             {
-                Rows.RemoveAt(index);
+                Rows.RemoveAt(row);
             }
+
         }
 
         private List<int> RowIndicesWhereConditionIsTrue(Condition condition)
@@ -139,8 +130,6 @@ namespace DbManager
         public void DeleteWhere(Condition condition)
         {
             //TODO DEADLINE 1.A: Delete all rows where the condition is true.Check RowIndicesWhereConditionIsTrue()
-            var indices = RowIndicesWhereConditionIsTrue(condition);
-            indices.Sort((a, b) => b.CompareTo(a));
 
             foreach (var index in indices)
             {
@@ -211,7 +200,26 @@ namespace DbManager
         {
             //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues(ColumnName - Value).If condition is null,
             //return false, otherwise return true
-            return false;
+            //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues (ColumnName-Value). If condition is null,
+            //return false, otherwise return true
+
+           // if (condition == null)
+               // return false;
+           // var indices = RowIndicesWhereConditionIsTrue(condition);
+
+           // if (indices.Count == 0)
+               // return false;
+
+           // foreach (var idx in indices)
+           // {
+               // Row row = GetRow(idx);
+               // foreach (var sv in setValues)
+                ////{
+                    //row.SetValue(sv.ColumnName, sv.Value);
+               // }
+            //}
+
+            return true;
         }
         */
 

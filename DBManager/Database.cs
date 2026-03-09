@@ -49,16 +49,9 @@ namespace DbManager
         public Table TableByName(string tableName)
         {
             //DEADLINE 1.B: Find and return the table with the given name
-            if (tableName == null)
-                return null;
-
-            foreach (var table in Tables)
-            {
-                if (table.Name != null &&
-                    table.Name.Equals(tableName, StringComparison.OrdinalIgnoreCase))
-                    return table;
-            }
+            
             return null;
+            
         }
 
         public bool CreateTable(string tableName, List<ColumnDefinition> ColumnDefinition)
@@ -168,21 +161,9 @@ namespace DbManager
             //DEADLINE 1.B: Delete all the rows where the condition is true. 
             //If the table or the column in the condition don't exist, return null and set LastErrorMessage (Check Constants.cs)
             //If everything goes ok, return true
-
-            Table table = TableByName(tableName);
-            if (table == null)
-            {
-                LastErrorMessage = Constants.TableDoesNotExistError;
-                return false;
-            }
-            if (columnCondition != null && table.ColumnIndexByName(columnCondition.ColumnName) == -1)
-            {
-                LastErrorMessage = Constants.ColumnDoesNotExistError;
-                return false;
-            }
-            table.DeleteWhere(columnCondition);
-            LastErrorMessage = Constants.DeleteSuccess;
-            return true;
+            
+            return false;
+            
         }
         
         public bool Update(string tableName, List<SetValue> columnNames, Condition columnCondition)
@@ -190,45 +171,15 @@ namespace DbManager
             //DEADLINE 1.B: Update in the given table all the rows where the condition is true using the SetValues
             //If the table or the column in the condition don't exist, return null and set LastErrorMessage (Check Constants.cs)
             //If everything goes ok, return true
-
-
-            Table table = TableByName(tableName);
-            if (table == null)
-            {
-                LastErrorMessage = Constants.TableDoesNotExistError;
-                return false;
-            }
-
-            if (columnCondition != null &&
-                table.ColumnIndexByName(columnCondition.ColumnName) == -1)
-            {
-                LastErrorMessage = Constants.ColumnDoesNotExistError;
-                return false;
-            }
-            foreach (var sv in columnNames)
-            {
-                if (table.ColumnIndexByName(sv.ColumnName) == -1)
-                {
-                    LastErrorMessage = Constants.ColumnDoesNotExistError;
-                    return false;
-                }
-            }
-            bool updated = table.Update(columnNames, columnCondition);
-
-            if (!updated)
-            {
-
-                LastErrorMessage = Constants.ColumnDoesNotExistError;
-                return false;
-            }
-
-
-            LastErrorMessage = Constants.UpdateSuccess;
-            return true;
+            
+            return false;
+            
         }
+
+        
         
 
-
+        
         public bool Save(string databaseName)
         {
             try

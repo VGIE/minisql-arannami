@@ -48,7 +48,7 @@ namespace DbManager
 
             return null;
 
-        }
+        } 
 
         public bool IsTrue(Condition condition)
         {
@@ -92,8 +92,6 @@ namespace DbManager
 
             return value.Replace(DelimiterEncoded, Delimiter);
         }
-
-
 
         public string AsText()
         {
