@@ -68,6 +68,6 @@ using DbManager;
 
             query = MiniSQLParser.Parse("CREATE SECURITY PROFILE profile") as CreateSecurityProfile;
             Assert.NotNull(query);
-        }*/
+        }
     }
 }*/
