@@ -22,10 +22,41 @@ namespace DbManager
             const string updateTablePattern = null;
             
             const string deletePattern = null;
-            
+ 
+            Match match = Regex.Match(miniSQLQuery, updateTablePattern, RegexOptions.IgnoreCase);
 
-            //TODO DEADLINE 4
-            const string createSecurityProfilePattern = null;
+            if (match.Success)
+            {
+                string table = match.Groups[1].Value;
+                string setText = match.Groups[2].Value;
+
+                List<SetValue> values = new List<SetValue>();
+                string[] assignments = setText.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string assignment in assignments)
+                {
+                    string[] parts = assignment.Split("=");
+                    string column = parts[0].Trim();
+                    string value = parts[1].Trim();
+                    values.Add(new SetValue(column, value));
+                }
+
+                Condition condition = null;
+
+                if (match.Groups[3].Success)
+                {
+                    string column = match.Groups[3].Value;
+                    string op = match.Groups[4].Value;
+                    string value = match.Groups[5].Value;
+                    condition = new Condition(column, op, value);
+                }
+
+                return new Update(table, values, condition);
+            }
+
+
+           //TODO DEADLINE 4
+                const string createSecurityProfilePattern = null;
             
             const string dropSecurityProfilePattern = null;
             
