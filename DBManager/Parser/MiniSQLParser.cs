@@ -9,9 +9,9 @@ namespace DbManager
         public static MiniSqlQuery Parse(string miniSQLQuery)
         {
             //TODO DEADLINE 2
-            const string selectPattern = null;
-            
-            const string insertPattern = null;
+            const string selectPattern = @"SELECT\s\FROM\s(\s\WHERE\s)?";
+
+            const string insertPattern = @"INSERT\s+INTO\s+VALUES\s";
             
             const string dropTablePattern = null;
             
@@ -22,7 +22,11 @@ namespace DbManager
             const string updateTablePattern = null;
             
             const string deletePattern = null;
-            
+
+            //select
+
+            //insert
+
 
             //TODO DEADLINE 4
             const string createSecurityProfilePattern = null;
