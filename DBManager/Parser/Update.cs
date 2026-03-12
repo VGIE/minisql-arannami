@@ -12,6 +12,9 @@ namespace DbManager
         public Update(string table, List<SetValue> columnNames, Condition where)
         {
             //TODO DEADLINE 2: Initialize member variables
+            this.Table = table;
+            this.Columns = columnNames;
+            this.Where = where;
             
         }
 
@@ -19,8 +22,12 @@ namespace DbManager
         {
             //TODO DEADLINE 3: Run the query and return the appropriate message
             //UpdateSuccess or the last error in the database
-            
-            return null;
+            bool result = database.Update(Table, Columns, Where);
+
+            if (result)
+                return Constants.UpdateSuccess;
+            else
+                return database.LastErrorMessage;
             
         }
 
