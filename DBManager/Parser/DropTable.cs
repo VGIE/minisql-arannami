@@ -12,7 +12,7 @@ namespace DbManager
         public DropTable(string table)
         {
             //TODO DEADLINE 2: Initialize member variables
-            
+            Table = table;
         }
 
         public string Execute(Database database)

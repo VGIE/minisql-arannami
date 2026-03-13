@@ -14,7 +14,9 @@ namespace DbManager
         public CreateTable(string table, List<ColumnDefinition> columns)
         {
             //TODO DEADLINE 2: Initialize member variables
-            
+            Table = table;
+            ColumnsParameters = columns;
+
         }
         public string Execute(Database database)
         {
