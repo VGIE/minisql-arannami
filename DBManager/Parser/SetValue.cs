@@ -15,7 +15,7 @@ namespace DbManager.Parser
         {
             //TODO DEADLINE 1A: Initialize member variables
             this.ColumnName = column;
-            this.Value = Value;
+            this.Value = value;
         }
     }
 }

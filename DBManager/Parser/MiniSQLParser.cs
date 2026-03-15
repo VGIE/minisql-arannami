@@ -19,8 +19,8 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+(\w+)\s*\((.*)\)\s*$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*(.+))?$"; 
-            
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*(.+))?\s*$";
+
             const string deletePattern = null;
 
            //TODO DEADLINE 4
