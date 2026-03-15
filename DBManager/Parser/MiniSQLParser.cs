@@ -68,13 +68,11 @@ namespace DbManager
                 string setText = match.Groups[2].Value;
 
                 List<SetValue> values = new List<SetValue>();
-                string[] assignments = setText.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string assignment in assignments)
+                var assignmentMatches = Regex.Matches(setText, @"(\w+)\s*=\s*('[^']*'|[^,]+)");
+                foreach (Match am in assignmentMatches)
                 {
-                    string[] parts = assignment.Split("=");
-                    string column = parts[0].Trim();
-                    string value = parts[1].Trim();
+                    string column = am.Groups[1].Value.Trim();
+                    string value = am.Groups[2].Value.Trim().Trim('\'');
                     values.Add(new SetValue(column, value));
                 }
 
