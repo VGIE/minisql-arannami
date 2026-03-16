@@ -19,9 +19,10 @@ namespace DbManager
         {
             //TODO DEADLINE 3: Run the query and return the appropriate message
             //DropTableSuccess or the last error in the database
-            
-            return null;
-            
+
+            database.DropTable(Table);
+            return database.LastErrorMessage;
+
         }
     }
 }
