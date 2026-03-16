@@ -64,5 +64,16 @@ namespace OurTests
 
             Assert.Null(result);
         }
+
+        [Fact]
+        public void AddUser_Parse_CorrectSyntaxis()
+        {
+            string query = "ADD USER (AdminUser,Pass123,AdminProfile)";
+            var result = MiniSQLParser.Parse(query) as AddUser;
+            Assert.NotNull(result);
+            Assert.Equal("AdminUser", result.Username);
+            Assert.Equal("Pass123", result.Password);
+            Assert.Equal("AdminProfile", result.ProfileName);
+        }
     }
 }
