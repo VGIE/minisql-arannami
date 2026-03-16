@@ -1,7 +1,8 @@
+using DbManager.Parser;
+using DbManager.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DbManager.Parser;
 
 namespace DbManager
 {
@@ -16,15 +17,30 @@ namespace DbManager
         public AddUser(string username, string password, string profileName)
         {
             //TODO DEADLINE 4: Initialize member variables
-            
+            this.Username = username;
+            this.Password = password;
+            this.ProfileName = profileName;
+           
         }
         public string Execute(Database database)
         {
             //TODO DEADLINE 5: Run the query and return the appropriate message
             //UsersProfileIsNotGrantedRequiredPrivilege, SecurityProfileDoesNotExistError, AddUserSuccess
-            
-            return null;
-            
+            var profile = database.SecurityManager.ProfileByName(ProfileName);
+
+            if (profile == null)
+            {
+                return Constants.SecurityProfileDoesNotExistError;
+            }
+            var existingUser = database.SecurityManager.UserByName(Username);
+            if (existingUser != null)
+            {
+                return Constants.Error + "User already exists";
+            }
+            User user = new User(Username, Password);
+            profile.Users.Add(user);
+
+            return Constants.AddUserSuccess;
         }
 
     }

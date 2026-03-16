@@ -32,7 +32,7 @@ namespace DbManager
             
             const string revokePattern = null;
             
-            const string addUserPattern = null;
+            const string addUserPattern = @"^ADD\s+USER\s*\(([a-zA-Z]+),([^,]+),([a-zA-Z]+)\)\s*$";
             
             const string deleteUserPattern = null;
 
@@ -92,9 +92,26 @@ namespace DbManager
             //TODO DEADLINE 4
             //Do the same for the security queries (CREATE SECURITY PROFILE, ...)
 
+            //ADDUSER
+            match = Regex.Match(miniSQLQuery, addUserPattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string user = match.Groups[1].Value;
+                string pass = match.Groups[2].Value;
+                string profile = match.Groups[3].Value;
+                return new AddUser(user, pass, profile);
+            }
 
+            //CREATESECURITYPROFILE
+
+            //DELETEUSER
+
+            //DROPSECURITYPROFILE
+
+            //GRANT
+
+            //REVOKE
             return null;
-           
         }
 
         static List<string> CommaSeparatedNames(string text)
@@ -110,3 +127,4 @@ namespace DbManager
         
     }
 }
+
