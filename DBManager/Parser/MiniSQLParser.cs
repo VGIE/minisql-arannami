@@ -21,7 +21,6 @@ namespace DbManager
 
             const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*(.+))?\s*$";
 
-
             const string deletePattern = null;
 
             //TODO DEADLINE 4
