@@ -7,7 +7,7 @@ namespace OurTests
     public class MiniSQL_Parser_Tests
     {
         [Fact]
-        public void Parse_DropTable_CorrectSyntax()
+        public void Update_Parse_DropTable_CorrectSyntax()
         {
             string query = "DROP TABLE MyTable";
 
@@ -18,7 +18,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_Update_WithWhere()
+        public void Update_Parse_WithWhere()
         {
             string query = "UPDATE Users SET Name='Juan Perez', Age=30 WHERE ID=1";
 
@@ -39,7 +39,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_Update_WithoutWhere()
+        public void Update_Parse_WithoutWhere()
         {
             string query = "UPDATE Inventory SET Stock=10";
 
@@ -56,7 +56,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_InvalidQuery_ReturnsNull()
+        public void Update_Parse_InvalidQuery_ReturnsNull()
         {
             string query = "INVALID COMMAND";
 
