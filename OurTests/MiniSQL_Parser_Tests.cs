@@ -2,6 +2,7 @@
 using DbManager.Parser;
 using Xunit;
 
+
 namespace OurTests
 {
     public class MiniSQL_Parser_Tests
@@ -74,6 +75,44 @@ namespace OurTests
             Assert.Equal("AdminUser", result.Username);
             Assert.Equal("Pass123", result.Password);
             Assert.Equal("AdminProfile", result.ProfileName);
+        }
+
+        [Fact]
+        public void DeleteParse_String()
+        {
+            MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
+
+            Assert.NotNull(query);
+            Assert.IsType<Delete>(query);
+
+            Delete delete = (Delete)query;
+            Assert.Equal("People", delete.Table);
+            Assert.Equal("Name", delete.Where.ColumnName);
+            Assert.Equal("=", delete.Where.Operator);
+            Assert.Equal("Juan", delete.Where.LiteralValue);
+        }
+
+        [Fact]
+        public void DeleteParse_Numeric()
+        {
+            MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Age > 25");
+
+            Assert.NotNull(query);
+            Assert.IsType<Delete>(query);
+
+            Delete delete = (Delete)query;
+            Assert.Equal("People", delete.Table);
+            Assert.Equal("Age", delete.Where.ColumnName);
+            Assert.Equal(">", delete.Where.Operator);
+            Assert.Equal("25", delete.Where.LiteralValue);
+        }
+
+        [Fact]
+        public void DeleteSyntaxError()
+        {
+            // Falta FROM, debe devolver null
+            MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
+            Assert.Null(query);
         }
     }
 }
