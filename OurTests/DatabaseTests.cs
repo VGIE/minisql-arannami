@@ -62,6 +62,14 @@ namespace OurTests
         }
 
         [Fact]
+        public void AddTable_Null()
+        {
+            Database db = new Database("admin", "123");
+            bool result = db.AddTable(null);
+            Assert.False(result);
+        }
+
+        [Fact]
         public void TableByName()
         {
             Database db = Database.CreateTestDatabase();
@@ -88,6 +96,14 @@ namespace OurTests
             Assert.True(File.Exists(filePath));
 
         }
+        [Fact]
+        public void Save_NombreNull()
+        {
+            Database db = Database.CreateTestDatabase();
+            bool result = db.Save(null);
+            Assert.False(result);
+        }
+        
         [Fact]
         public void Load()
         {
@@ -130,6 +146,15 @@ namespace OurTests
         public void Load_NoExiste()
         {
             Database loaded = Database.Load("NonExistingFile", "user", "pass");
+            Assert.Null(loaded);
+        }
+
+        [Fact]
+        public void Load_Archivocorrupto_ReturnsNull()
+        {
+            string dbName = "TestDB_Corrupto";
+            File.WriteAllText(dbName + ".db", "esto no es json valido {{{");
+            Database loaded = Database.Load(dbName, "user", "pass");
             Assert.Null(loaded);
         }
 
