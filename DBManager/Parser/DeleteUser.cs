@@ -13,6 +13,8 @@ namespace DbManager
         public DeleteUser(string username)
         {
             //TODO DEADLINE 4: Initialize member variables
+            this.Username = username;
+
             
         }
         public string Execute(Database database)
