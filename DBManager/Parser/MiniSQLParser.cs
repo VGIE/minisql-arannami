@@ -1,4 +1,5 @@
 using DbManager.Parser;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -57,7 +58,28 @@ namespace DbManager
             match = Regex.Match(miniSQLQuery, createTablePattern, RegexOptions.IgnoreCase);
             if (match.Success)
             {
-                
+                string table = match.Groups[1].Value;
+                string columnsText = match.Groups[2].Value;
+
+                List<ColumnDefinition> columns = new List<ColumnDefinition>();
+
+                if (columnsText.Trim() != "")
+                {
+                    string[] parts = columnsText.Split(',');
+
+                    foreach (string part in parts)
+                    {
+                        string[] columnParts = part.Split(':');
+                        string columnName = columnParts[0].Trim();
+                        string columnType = columnParts[1].Trim();
+
+                        ColumnDefinition.DataType type = (ColumnDefinition.DataType)Enum.Parse(typeof(ColumnDefinition.DataType), columnType, true);
+
+                        columns.Add(new ColumnDefinition(type, columnName));
+                    }
+                }
+
+                return new CreateTable(table, columns);
             }
 
             // UPDATETABLE

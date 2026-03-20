@@ -114,5 +114,57 @@ namespace OurTests
             MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
             Assert.Null(query);
         }
+
+        [Fact]
+        public void Parse_DropTable_CorrectSyntax()
+        {
+            string query = "DROP TABLE MyTable";
+
+            var result = MiniSQLParser.Parse(query) as DropTable;
+
+            Assert.NotNull(result);
+            Assert.Equal("MyTable", result.Table);
+        }
+
+        [Fact]
+        public void Parse_DropTable_InvalidSyntax_ReturnsNull()
+        {
+            string query = "DROP MyTable";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_CorrectSyntax()
+        {
+            string query = "CREATE TABLE People(Name:String, Age:Int)";
+
+            var result = MiniSQLParser.Parse(query) as CreateTable;
+
+            Assert.NotNull(result);
+            Assert.Equal("People", result.Table);
+
+            Assert.Equal(2, result.ColumnsParameters.Count);
+
+            Assert.Equal("Name", result.ColumnsParameters[0].Name);
+            Assert.Equal(ColumnDefinition.DataType.String, result.ColumnsParameters[0].Type);
+
+            Assert.Equal("Age", result.ColumnsParameters[1].Name);
+            Assert.Equal(ColumnDefinition.DataType.Int, result.ColumnsParameters[1].Type);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_EmptyColumns()
+        {
+            string query = "CREATE TABLE EmptyTable()";
+
+            var result = MiniSQLParser.Parse(query) as CreateTable;
+
+            Assert.NotNull(result);
+            Assert.Equal("EmptyTable", result.Table);
+            Assert.Empty(result.ColumnsParameters);
+        }
     }
 }
