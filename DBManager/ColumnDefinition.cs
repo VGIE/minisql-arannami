@@ -48,7 +48,7 @@ namespace DbManager
         {
             //TODO DEADLINE 1.C: Return the column as a string with the name and the type separated by the delimiter
 
-            return Name + "->" + Type;
+            return Encode(Name) + "->" + Type;
 
         }
 
@@ -58,9 +58,12 @@ namespace DbManager
 
             string[] parts = value.Split("->");
 
+            if (parts.Length != 2)
+                return null;
+
             string name = Decode(parts[0]);
 
-            DataType type = (DataType)Enum.Parse(typeof(DataType), parts[1]);
+            DataType type = (DataType)Enum.Parse(typeof(DataType), parts[1], true);
 
             return new ColumnDefinition(type, name);
 
