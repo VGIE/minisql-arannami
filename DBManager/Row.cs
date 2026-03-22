@@ -99,7 +99,14 @@ namespace DbManager
         {
             //TODO DEADLINE 1.C: Return the row as string with all values separated by the delimiter
 
-            return string.Join(":", Values);
+            List<string> result = new List<string>();
+
+            foreach (string v in Values)
+            {
+                result.Add(Encode(v));
+            }
+
+            return string.Join(":", result);
 
         }
 
@@ -108,7 +115,12 @@ namespace DbManager
             //TODO DEADLINE 1.C: Parse a rowReturn the row as string with all values separated by the delimiter
 
             string[] parts = value.Split(':');
-            List<string> values = new List<string>(parts);
+            List<string> values = new List<string>();
+
+            foreach (string p in parts)
+            {
+                values.Add(Decode(p));
+            }
 
             return new Row(columns, values);
 
