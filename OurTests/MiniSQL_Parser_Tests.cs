@@ -139,7 +139,7 @@ namespace OurTests
         [Fact]
         public void Parse_CreateTable_CorrectSyntax()
         {
-            string query = "CREATE TABLE People(Name:String, Age:Int)";
+            string query = "CREATE TABLE People(Name TEXT, Age INT)";
 
             var result = MiniSQLParser.Parse(query) as CreateTable;
 

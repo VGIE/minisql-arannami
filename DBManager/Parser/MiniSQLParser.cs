@@ -69,11 +69,24 @@ namespace DbManager
 
                     foreach (string part in parts)
                     {
-                        string[] columnParts = part.Split(':');
+                        string[] columnParts = Regex.Split(part.Trim(), @"\s+");
+
+                        if (columnParts.Length != 2)
+                            return null;
+
                         string columnName = columnParts[0].Trim();
                         string columnType = columnParts[1].Trim();
 
-                        ColumnDefinition.DataType type = (ColumnDefinition.DataType)Enum.Parse(typeof(ColumnDefinition.DataType), columnType, true);
+                        ColumnDefinition.DataType type;
+
+                        if (columnType.Equals("TEXT", StringComparison.OrdinalIgnoreCase))
+                            type = ColumnDefinition.DataType.String;
+                        else if (columnType.Equals("INT", StringComparison.OrdinalIgnoreCase))
+                            type = ColumnDefinition.DataType.Int;
+                        else if (columnType.Equals("DOUBLE", StringComparison.OrdinalIgnoreCase))
+                            type = ColumnDefinition.DataType.Double;
+                        else
+                            return null;
 
                         columns.Add(new ColumnDefinition(type, columnName));
                     }
