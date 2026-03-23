@@ -1,6 +1,7 @@
 using DbManager.Parser;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DbManager
@@ -10,9 +11,9 @@ namespace DbManager
         public static MiniSqlQuery Parse(string miniSQLQuery)
         {
             //TODO DEADLINE 2
-            const string selectPattern = @"SELECT\s\FROM\s(\s\WHERE\s)?";
+            const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
 
-            const string insertPattern = @"INSERT\s+INTO\s+VALUES\s";
+            const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s?('[^']*'(?:\s+,\s+'[^']*')*)\s+\)\s?$";
             
             const string dropTablePattern = @"^DROP\s+TABLE\s+(\w+)\s*$";
 
@@ -45,6 +46,42 @@ namespace DbManager
             //If there is no match, it means there is a syntax error. We will return null.
 
             Match match;
+
+            //SELECT
+            match = Regex.Match(miniSQLQuery, selectPattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string columnNames = match.Groups[1].Value;
+                string[] columns = columnNames.Split(',').Select(c => c.Trim()).ToArray();
+                
+                string table = match.Groups[2].Value;
+
+                if (match.Groups[3].Success && match.Groups[3].Value!=null) 
+                {
+                    string conditions = match.Groups[3].Value;
+                    string[] eachCondition = conditions.Split(",");
+                    foreach(var condition in eachCondition)
+                    {
+                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(=|<|>|<=|>=)\s*['""]?(.*?)['""]?$");
+                        if (conditionMatch.Success)
+                        {
+                            string col = match.Groups[1].Value;
+                            string op = match.Groups[2].Value;
+                            string val = match.Groups[3].Value;
+                        }
+                    }
+                }
+            }
+
+            //INSERT
+            match = Regex.Match(miniSQLQuery, insertPattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string tableName = match.Groups[1].Value;
+
+                string literalValues = match.Groups[2].Value;
+                string[] values = literalValues.Split(",").Select(v => v.Trim().Trim('\'')).ToArray();
+            }
 
             //DROPTABLE
             match = Regex.Match(miniSQLQuery, dropTablePattern, RegexOptions.IgnoreCase);
