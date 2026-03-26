@@ -219,5 +219,17 @@ namespace OurTests
             Assert.Equal(Constants.DeleteSuccess, result);
             Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
         }
+
+        [Fact]
+        public void Select()
+        {
+            Database db = Database.CreateTestDatabase();
+        }
+
+        [Fact]
+        public void Insert()
+        {
+            Database db = Database.CreateTestDatabase();
+        }
     }
 }
