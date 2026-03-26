@@ -220,16 +220,141 @@ namespace OurTests
             Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
         }
 
-        [Fact]
-        public void Select()
+        /*[Fact]
+        public void Select_WithoutWhere()
         {
-            Database db = Database.CreateTestDatabase();
+            string query = "SELECT Name FROM Users";
+            var result = MiniSQLParser.Parse(query) as Select;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+            Assert.Equal(1, result.Columns.Count);
+            Assert.Equal("Name", result.Columns[0]);
+            Assert.Null(result.Where);
+        }*/
+
+        /*[Fact]
+        public void Select_WithoutWhere_MultipleColumns()
+        {
+            string query = "SELECT Name,Age FROM Users";
+            var result = MiniSQLParser.Parse(query) as Select;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+            Assert.Equal(2, result.Columns.Count);
+            Assert.Equal("Name", result.Columns[0]);
+            Assert.Equal("Age", result.Columns[1]);
+            Assert.Null(result.Where);
+        }*/
+
+        /*[Fact]
+        public void Select_WithWhere_NumericCondition()
+        {
+            string query = "SELECT Name,Age FROM Users WHERE Age>=18";
+            var result = MiniSQLParser.Parse(query) as Select;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+
+            Assert.Equal(2, result.Columns.Count);
+            Assert.Equal("Name", result.Columns[0]);
+            Assert.Equal("Age", result.Columns[1]);
+
+            Assert.NotNull(result.Where);
+            Assert.Equal("Age", result.Where.ColumnName);
+            Assert.Equal(">=", result.Where.Operator);
+            Assert.Equal("18", result.Where.LiteralValue);
+        }*/
+
+        /*[Fact]
+        public void Select_AllColumns_WithWhere()
+        {
+            string query = "SELECT * FROM Users WHERE Age>=18";
+            var result = MiniSQLParser.Parse(query) as Select;
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Columns.Count);
+            Assert.Equal("*", result.Columns[0]);
+        }*/
+
+        /*[Fact]
+        public void Select_WithWhere_StringCondition()
+        {
+            string query = "SELECT * FROM Users WHERE City='Madrid'";
+            var result = MiniSQLParser.Parse(query) as Select;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+            Assert.NotNull(result.Where);
+            Assert.Equal("City", result.Where.ColumnName);
+            Assert.Equal("=", result.Where.Operator);
+            Assert.Equal("Madrid", result.Where.LiteralValue);
+        }*/
+
+        [Fact]
+        public void Select_InvalidQuery()
+        {
+            string query = "SELECT Name,Age WHERE 'Age'>'18'";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
+
+        /*[Fact]
+        public void Insert_Parse_CorrectQuery()
+        {
+            string query = "INSERT INTO Users VALUES ('Juan','25')";
+            var result = MiniSQLParser.Parse(query) as Insert;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+
+            Assert.Equal(2, result.Values.Count);
+            Assert.Equal("Juan", result.Values[0]);
+            Assert.Equal("25", result.Values[1]);
+        }*/
+
+        /*[Fact]
+        public void Insert_Parse_SingleColumn()
+        {
+            string query = "INSERT INTO Users VALUES ('Maria')";
+            var result = MiniSQLParser.Parse(query) as Insert;
+
+            Assert.NotNull(result);
+            Assert.Equal("Users", result.Table);
+
+            Assert.Single(result.Values);
+            Assert.Equal("Maria", result.Values[0]);
+        }*/
+
+        /*[Fact]
+        public void Insert_Parse_NumericValues()
+        {
+            string query = "INSERT INTO Numbers VALUES ('10','20')";
+            var result = MiniSQLParser.Parse(query) as Insert;
+
+            Assert.NotNull(result);
+            Assert.Equal("Numbers", result.Table);
+
+            Assert.Equal("10", result.Values[0]);
+            Assert.Equal("20", result.Values[1]);
+        }*/
+
+        [Fact]
+        public void Insert_Parse_MissingValues_ReturnsNull()
+        {
+            string query = "INSERT INTO Users ('Juan','25')";
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
         }
 
         [Fact]
-        public void Insert()
+        public void Insert_Parse_InvalidQuery_ReturnsNull()
         {
-            Database db = Database.CreateTestDatabase();
+            string query = "INSERT Users VALUES 'Juan'";
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
         }
     }
 }

@@ -56,18 +56,18 @@ namespace DbManager
                 
                 string table = match.Groups[2].Value;
 
-                if (match.Groups[3].Success && match.Groups[3].Value!=null) 
+                if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value)) 
                 {
                     string conditions = match.Groups[3].Value;
                     string[] eachCondition = conditions.Split(",");
                     foreach(var condition in eachCondition)
                     {
-                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(=|<|>|<=|>=)\s*['""]?(.*?)['""]?$");
+                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(<=|>=|=|<|>)\s*['""]?([^'""]+)['""]?$");
                         if (conditionMatch.Success)
                         {
-                            string col = match.Groups[1].Value;
-                            string op = match.Groups[2].Value;
-                            string val = match.Groups[3].Value;
+                            string col = conditionMatch.Groups[1].Value;
+                            string op = conditionMatch.Groups[2].Value;
+                            string val = conditionMatch.Groups[3].Value;
                         }
                     }
                 }
