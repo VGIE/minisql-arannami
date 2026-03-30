@@ -48,7 +48,8 @@ namespace DbManager
             Match match;
 
             //SELECT
-            match = Regex.Match(miniSQLQuery, selectPattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, selectPattern);
+            var newSelect = new Select();
             if (match.Success)
             {
                 string columnNames = match.Groups[1].Value;
@@ -56,11 +57,14 @@ namespace DbManager
                 
                 string table = match.Groups[2].Value;
 
+                Condition conditionsParse = null;
+
                 if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value)) 
                 {
                     string conditions = match.Groups[3].Value;
                     string[] eachCondition = conditions.Split(",");
-                    foreach(var condition in eachCondition)
+
+                    foreach (var condition in eachCondition)
                     {
                         var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(<=|>=|=|<|>)\s*['""]?([^'""]+)['""]?$");
                         if (conditionMatch.Success)
@@ -68,13 +72,17 @@ namespace DbManager
                             string col = conditionMatch.Groups[1].Value;
                             string op = conditionMatch.Groups[2].Value;
                             string val = conditionMatch.Groups[3].Value;
+
+                            conditionsParse = new Condition(col, op, val);
                         }
                     }
                 }
+                return new Select(table, columns.ToList(), conditionsParse);
             }
+            return null;
 
             //INSERT
-            match = Regex.Match(miniSQLQuery, insertPattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, insertPattern);
             if (match.Success)
             {
                 string tableName = match.Groups[1].Value;

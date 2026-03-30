@@ -220,7 +220,7 @@ namespace OurTests
             Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
         }
 
-        /*[Fact]
+        [Fact]
         public void Select_WithoutWhere()
         {
             string query = "SELECT Name FROM Users";
@@ -231,9 +231,9 @@ namespace OurTests
             Assert.Equal(1, result.Columns.Count);
             Assert.Equal("Name", result.Columns[0]);
             Assert.Null(result.Where);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public void Select_WithoutWhere_MultipleColumns()
         {
             string query = "SELECT Name,Age FROM Users";
@@ -245,12 +245,12 @@ namespace OurTests
             Assert.Equal("Name", result.Columns[0]);
             Assert.Equal("Age", result.Columns[1]);
             Assert.Null(result.Where);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public void Select_WithWhere_NumericCondition()
         {
-            string query = "SELECT Name,Age FROM Users WHERE Age>=18";
+            string query = "SELECT Name,Age FROM Users WHERE Age>='18'";
             var result = MiniSQLParser.Parse(query) as Select;
 
             Assert.NotNull(result);
@@ -264,12 +264,12 @@ namespace OurTests
             Assert.Equal("Age", result.Where.ColumnName);
             Assert.Equal(">=", result.Where.Operator);
             Assert.Equal("18", result.Where.LiteralValue);
-        }*/
+        }
 
         /*[Fact]
         public void Select_AllColumns_WithWhere()
         {
-            string query = "SELECT * FROM Users WHERE Age>=18";
+            string query = "SELECT * FROM Users WHERE Age>='18'";
             var result = MiniSQLParser.Parse(query) as Select;
 
             Assert.NotNull(result);
@@ -277,7 +277,7 @@ namespace OurTests
             Assert.Equal("*", result.Columns[0]);
         }*/
 
-        /*[Fact]
+        [Fact]
         public void Select_WithWhere_StringCondition()
         {
             string query = "SELECT * FROM Users WHERE City='Madrid'";
@@ -289,7 +289,7 @@ namespace OurTests
             Assert.Equal("City", result.Where.ColumnName);
             Assert.Equal("=", result.Where.Operator);
             Assert.Equal("Madrid", result.Where.LiteralValue);
-        }*/
+        }
 
         [Fact]
         public void Select_InvalidQuery()
