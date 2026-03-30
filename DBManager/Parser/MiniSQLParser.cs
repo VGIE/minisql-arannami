@@ -53,9 +53,9 @@ namespace DbManager
             if (match.Success)
             {
                 string columnNames = match.Groups[1].Value;
-                string[] columns = columnNames.Split(',').Select(c => c.Trim()).ToArray();
+                string[] columnsSelect = columnNames.Split(',').Select(c => c.Trim()).ToArray();
                 
-                string table = match.Groups[2].Value;
+                string tableSelect = match.Groups[2].Value;
 
                 Condition conditionsParse = null;
 
@@ -77,9 +77,8 @@ namespace DbManager
                         }
                     }
                 }
-                return new Select(table, columns.ToList(), conditionsParse);
+                return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
-            return null;
 
             //INSERT
             match = Regex.Match(miniSQLQuery, insertPattern);
