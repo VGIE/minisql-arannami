@@ -187,7 +187,10 @@ namespace DbManager
                     List<string> newValues = new List<string>();
                     for (int k = 0; k < selectedIndex.Count; k++)
                     {
-                        newValues.Add(row.Values[selectedIndex[k]]);
+                        if (selectedIndex[k] < row.Values.Count)
+                            newValues.Add(row.Values[selectedIndex[k]]);
+                        else
+                            newValues.Add(null);
                     }
                     table.AddRow(new Row(selectedColumns, newValues));
                 }
