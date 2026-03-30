@@ -299,7 +299,7 @@ namespace OurTests
             Assert.Null(result);
         }
 
-        /*[Fact]
+        [Fact]
         public void Insert_Parse_CorrectQuery()
         {
             string query = "INSERT INTO Users VALUES ('Juan','25')";
@@ -311,9 +311,9 @@ namespace OurTests
             Assert.Equal(2, result.Values.Count);
             Assert.Equal("Juan", result.Values[0]);
             Assert.Equal("25", result.Values[1]);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public void Insert_Parse_SingleColumn()
         {
             string query = "INSERT INTO Users VALUES ('Maria')";
@@ -324,9 +324,9 @@ namespace OurTests
 
             Assert.Single(result.Values);
             Assert.Equal("Maria", result.Values[0]);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public void Insert_Parse_NumericValues()
         {
             string query = "INSERT INTO Numbers VALUES ('10','20')";
@@ -337,7 +337,7 @@ namespace OurTests
 
             Assert.Equal("10", result.Values[0]);
             Assert.Equal("20", result.Values[1]);
-        }*/
+        }
 
         [Fact]
         public void Insert_Parse_MissingValues_ReturnsNull()

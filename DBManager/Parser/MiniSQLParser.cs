@@ -13,7 +13,7 @@ namespace DbManager
             //TODO DEADLINE 2
             const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
 
-            const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s?('[^']*'(?:\s+,\s+'[^']*')*)\s+\)\s?$";
+            const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s*('[^']*'(?:\s*,\s*'[^']*')*)\s*\)\s?$";
             
             const string dropTablePattern = @"^DROP\s+TABLE\s+(\w+)\s*$";
 
@@ -88,6 +88,8 @@ namespace DbManager
 
                 string literalValues = match.Groups[2].Value;
                 string[] values = literalValues.Split(",").Select(v => v.Trim().Trim('\'')).ToArray();
+
+                return new Insert(tableName, values.ToList());
             }
 
             //DROPTABLE
