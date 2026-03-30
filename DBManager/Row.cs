@@ -28,7 +28,10 @@ namespace DbManager
             {
                 if (ColumnDefinitions[i].Name == columnName)
                 {
-                    Values[i] = value;
+                    if (i < Values.Count)
+                    {
+                        Values[i] = value;
+                    }
                     return;
                 }
             }
@@ -42,7 +45,10 @@ namespace DbManager
             {
                 if (ColumnDefinitions[i].Name == columnName)
                 {
-                    return Values[i];
+                    if (i < Values.Count)
+                        return Values[i];
+                    else
+                        return null;
                 }
             }
 
@@ -61,6 +67,9 @@ namespace DbManager
             {
                 if (ColumnDefinitions[i].Name == condition.ColumnName)
                 {
+                    if (i >= Values.Count)
+                        return false;
+
                     string value = Values[i];
                     ColumnDefinition.DataType type = ColumnDefinitions[i].Type;
 
