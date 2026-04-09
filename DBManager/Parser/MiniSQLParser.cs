@@ -30,7 +30,7 @@ namespace DbManager
             
             const string dropSecurityProfilePattern = null;
             
-            const string grantPattern = null;
+            const string grantPattern = @"^GRANT\s+(\w+)\s+ON\s+(\w+)\s+TO\s+(\w+)\s*$";
             
             const string revokePattern = null;
             
@@ -207,6 +207,15 @@ namespace DbManager
             //DROPSECURITYPROFILE
 
             //GRANT
+            match = Regex.Match(miniSQLQuery, grantPattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string privilege = match.Groups[1].Value;
+                string table = match.Groups[2].Value;
+                string profile = match.Groups[3].Value;
+
+                return new Grant(privilege, table, profile);
+            }
 
             //REVOKE
             return null;
