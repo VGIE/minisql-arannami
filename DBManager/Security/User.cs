@@ -13,9 +13,14 @@ namespace DbManager.Security
         public User(string username, string password)
         {
             //TODO DEADLINE 5: Initialize the member variables. We must encrypt the password
-            
+            this.Username = username;
+            this.EncryptedPassword = password;
+
         }
 
-        public User() { }
-    }
-}
+        public User() {
+           
+            }
+        }
+  } 
+
