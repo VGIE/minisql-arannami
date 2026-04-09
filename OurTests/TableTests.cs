@@ -487,8 +487,8 @@ namespace OurTests
         }
         
         [Fact]        
-        public void InsertNotAllValues_ReturnsFalse()
-        {
+        public void InsertNotAllValues()
+        { //devuelve falso
             Table table = Table.CreateTestTable();
             int initialCont = table.NumRows();
             var newRow = new List<string> {"Ane", "1.65"};
@@ -498,8 +498,8 @@ namespace OurTests
         }
 
         [Fact]
-        public void Update_NullCondition_Returnsfalse()
-        {
+        public void Update_NullCondition()
+        { //devuelve falso
             Table table = Table.CreateTestTable();
             var sets = new List<SetValue>()
             {
@@ -523,7 +523,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Update_EmptySetValues_NoChangesButTrue()
+        public void Update_EmptySetValues()
         {
             Table table = Table.CreateTestTable();
             var sets = new List<SetValue>();
@@ -545,7 +545,75 @@ namespace OurTests
             bool result = table.Update(sets, cond);
             Assert.True(result);
         }
+        [Fact]
+        public void Update_MultipleRows_Baabil()
+        {
+          
+            Table table = Table.CreateTestTable();
+
+            var sets = new List<SetValue>() { new SetValue("Name", "Veteran") };
+            Condition cond = new Condition("Age", ">", "30");
+
+            bool result = table.Update(sets, cond);
+
+            Assert.True(result);
+            Assert.Equal("Rodolfo", table.GetRow(0).Values[0]); 
+            Assert.Equal("Veteran", table.GetRow(1).Values[0]); 
+            Assert.Equal("Veteran", table.GetRow(2).Values[0]); 
+        }
+
+        [Fact]
+        public void Update_MultipleColumns_DeUna()
+        {
+            //hirurak
+            Table table = Table.CreateTestTable();
+
+            var sets = new List<SetValue>()
+            {
+                new SetValue("Name", "Rodolfo Editado"),
+                new SetValue("Height", "1.90"),
+                new SetValue("Age", "30")
+            };
+            Condition cond = new Condition("Name", "=", "Rodolfo");
+
+            bool result = table.Update(sets, cond);
+
+            Assert.True(result);
+            Row updatedRow = table.GetRow(0);
+            Assert.Equal("Rodolfo Editado", updatedRow.Values[0]);
+            Assert.Equal("1.90", updatedRow.Values[1]);
+            Assert.Equal("30", updatedRow.Values[2]);
+        }
+
+        [Fact]
+        public void Update_AllRows_WithAlwaysTrueCondition()
+        {
+            //edad>0 bara ze
+            Table table = Table.CreateTestTable();
+            var sets = new List<SetValue>() { new SetValue("Name", "Generic") };
+            Condition cond = new Condition("Age", ">", "0");
+
+            bool result = table.Update(sets, cond);
+
+            Assert.True(result);
+            for (int i = 0; i < table.NumRows(); i++)
+            {
+                Assert.Equal("Generic", table.GetRow(i).Values[0]);
+            }
+        }
+
+        [Fact]
+        public void Update_ColumnDoesNotExist_()
+        { 
+            Table table = Table.CreateTestTable();
+            var sets = new List<SetValue>() { new SetValue("NonExistentColumn", "Value") };
+            Condition cond = new Condition("Name", "=", "Rodolfo");
+            bool result = table.Update(sets, cond);
+            Assert.True(result);
+            Assert.Equal("Rodolfo", table.GetRow(0).Values[0]); //galdetu berai derrigorra bara honek danak
+        }
 
     }
+
 }
 
