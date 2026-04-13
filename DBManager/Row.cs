@@ -28,10 +28,11 @@ namespace DbManager
             {
                 if (ColumnDefinitions[i].Name == columnName)
                 {
-                    if (i < Values.Count)
+                    while (Values.Count <= i)
                     {
-                        Values[i] = value;
+                        Values.Add(null);
                     }
+                    Values[i] = value;
                     return;
                 }
             }
