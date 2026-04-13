@@ -32,17 +32,17 @@ namespace DbManager
             switch (type)
             {
                 case ColumnDefinition.DataType.String:
-                    return ComparaStrings(value, LiteralValue);
+                    return ComparaString(value, LiteralValue);
 
                 case ColumnDefinition.DataType.Int:
                     int intValue = int.Parse(value, CultureInfo.InvariantCulture);
                     int intLiteral = int.Parse(LiteralValue, CultureInfo.InvariantCulture);
-                    return ComparaNumeros(intValue, intLiteral);
+                    return ComparaNumero(intValue, intLiteral);
 
                 case ColumnDefinition.DataType.Double:
                     double doubleValue = double.Parse(value, CultureInfo.InvariantCulture);
                     double doubleLiteral = double.Parse(LiteralValue, CultureInfo.InvariantCulture);
-                    return ComparaNumeros(doubleValue, doubleLiteral);
+                    return ComparaNumero(doubleValue, doubleLiteral);
 
                 default:
                     return false;
@@ -50,7 +50,7 @@ namespace DbManager
             
         }
 
-        private bool ComparaStrings(string a, string b)
+        private bool ComparaString(string a, string b)
         {
             int cmp = string.Compare(a, b, StringComparison.Ordinal);
 
@@ -66,7 +66,7 @@ namespace DbManager
             };
         }
 
-        private bool ComparaNumeros<T>(T a, T b) where T : IComparable<T>
+        private bool ComparaNumero<T>(T a, T b) where T : IComparable<T>
         {
             int cmp = a.CompareTo(b);
 

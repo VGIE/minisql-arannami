@@ -18,9 +18,7 @@ namespace DbManager.Security
 
         }
 
-        public User() {
-           
-            }
+        public User() {}
         }
   } 
 

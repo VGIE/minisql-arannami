@@ -115,7 +115,19 @@ namespace DbManager
                 result.Add(Encode(v));
             }
 
-            return string.Join(":", result);
+            string text = "";
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                text += result[i];
+
+                if (i < result.Count - 1)
+                {
+                    text += ":";
+                }
+            }
+
+            return text;
 
         }
 
