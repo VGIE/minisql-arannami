@@ -38,6 +38,24 @@ namespace OurTests
 
 
         [Fact]
+        public void GetValueWithoutValue()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            List<string> values = new List<string> { "Ana" };
+
+            Row row = new Row(columns, values);
+
+            Assert.Equal("Ana", row.GetValue("Name"));
+            Assert.Null(row.GetValue("Age"));
+        }
+
+
+        [Fact]
         public void SetValue()
         {
             List<ColumnDefinition> columns = new List<ColumnDefinition>
@@ -52,6 +70,25 @@ namespace OurTests
 
             var result = row.GetValue("Age");
             Assert.Equal("25", result);
+        }
+
+        [Fact]
+        public void SetValueAndGetValueWithMissingValues()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {   
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            List<string> values = new List<string> { "Ana" };
+
+            Row row = new Row(columns, values);
+
+            row.SetValue("Age", "20");
+
+            Assert.Equal("Ana", row.GetValue("Name"));
+            Assert.Equal("20", row.GetValue("Age"));
         }
 
 
