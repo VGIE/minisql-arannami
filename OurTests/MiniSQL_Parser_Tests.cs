@@ -221,7 +221,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Select_WithoutWhere()
+        public void Select_Parse_WithoutWhere()
         {
             string query = "SELECT Name FROM Users";
             var result = MiniSQLParser.Parse(query) as Select;
@@ -234,7 +234,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Select_WithoutWhere_MultipleColumns()
+        public void Select_Parse_WithoutWhere_MultipleColumns()
         {
             string query = "SELECT Name,Age FROM Users";
             var result = MiniSQLParser.Parse(query) as Select;
@@ -248,7 +248,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Select_WithWhere_NumericCondition()
+        public void Select_Parse_WithWhere_NumericCondition()
         {
             string query = "SELECT Name,Age FROM Users WHERE Age>='18'";
             var result = MiniSQLParser.Parse(query) as Select;
@@ -266,19 +266,8 @@ namespace OurTests
             Assert.Equal("18", result.Where.LiteralValue);
         }
 
-        /*[Fact]
-        public void Select_AllColumns_WithWhere()
-        {
-            string query = "SELECT * FROM Users WHERE Age>='18'";
-            var result = MiniSQLParser.Parse(query) as Select;
-
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Columns.Count);
-            Assert.Equal("*", result.Columns[0]);
-        }*/
-
         [Fact]
-        public void Select_WithWhere_StringCondition()
+        public void Select_Parse_WithWhere_StringCondition()
         {
             string query = "SELECT * FROM Users WHERE City='Madrid'";
             var result = MiniSQLParser.Parse(query) as Select;
@@ -292,11 +281,30 @@ namespace OurTests
         }
 
         [Fact]
-        public void Select_InvalidQuery()
+        public void Select_Parse_InvalidQuery()
         {
             string query = "SELECT Name,Age WHERE 'Age'>'18'";
             var result = MiniSQLParser.Parse(query);
             Assert.Null(result);
+        }
+
+        [Fact]
+        public void Select_Parse_IncorrectSelectWithMultipleColumnsAndSpacesBetweenColumns()
+        {
+            string query1 = "SELECT  Name,Age";
+            string query2 = "SELECT Name Age WHERE 'Age'>'18'";
+            string query3 = "SELECT Name,Age  WHERE 'Age'>'18'";
+            string query4 = "SELECT Name,Age WHERE  'Age'>'18'";
+
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+            var result3 = MiniSQLParser.Parse(query3);
+            var result4 = MiniSQLParser.Parse(query4);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
+            Assert.Null(result3);
+            Assert.Null(result4);
         }
 
         [Fact]
@@ -356,5 +364,25 @@ namespace OurTests
 
             Assert.Null(result);
         }
+
+
+        [Fact]
+        public void Insert_Parse_IncorrectSpacesOrMissingCommas()
+        {
+            string query1 = "INSERT  INTO Users VALUES ('Juan')";
+            string query2 = "INSERT INTO  Users VALUES ('Juan')";
+            string query3 = "INSERT INTO Users VALUES  ('Juan')";
+            string query4 = "INSERT INTO Users VALUES (Juan)";
+
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+            var result3 = MiniSQLParser.Parse(query3);
+            var result4 = MiniSQLParser.Parse(query4);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
+            Assert.Null(result3);
+            Assert.Null(result4);
+        }         
     }
 }

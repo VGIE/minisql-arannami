@@ -154,7 +154,7 @@ namespace DbManager
             //may be null (if no condition, all rows should be returned). This is the most difficult method in this class
             List<ColumnDefinition> selectedColumns = new List<ColumnDefinition>();
             List<int> selectedIndex = new List<int>();
-            if (columnNames == null || columnNames.Count == 0)
+            if (columnNames == null)
             {
                 for (int i = 0; i < ColumnDefinitions.Count; i++)
                 {
@@ -181,14 +181,16 @@ namespace DbManager
             for (int z = 0; z < Rows.Count; z++)
             {
                 Row row = Rows[z];
+                if (row == null) continue;
                 if (condition == null || row.IsTrue(condition))
                 {
                     //TODO DEADLINE 1.A: Insert a new row with the values given. If the number of values is not correct, return false.True otherwise
                     List<string> newValues = new List<string>();
                     for (int k = 0; k < selectedIndex.Count; k++)
                     {
-                        if (selectedIndex[k] < row.Values.Count)
-                            newValues.Add(row.Values[selectedIndex[k]]);
+                        int colIndx = selectedIndex[k];
+                        if (colIndx < row.Values.Count)
+                            newValues.Add(row.Values[colIndx]);
                         else
                             newValues.Add(null);
                     }

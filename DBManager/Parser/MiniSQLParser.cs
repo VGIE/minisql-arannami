@@ -77,6 +77,12 @@ namespace DbManager
                         }
                     }
                 }
+
+                if (miniSQLQuery.Contains("  "))
+                {
+                    return null;
+                }
+
                 return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
 
@@ -87,9 +93,18 @@ namespace DbManager
                 string tableName = match.Groups[1].Value;
 
                 string literalValues = match.Groups[2].Value;
-                string[] values = literalValues.Split(",").Select(v => v.Trim().Trim('\'')).ToArray();
+                List<string> values = literalValues.Split(',').Select(v => v.Trim().Trim('\'')).ToList();
+                if(!literalValues.Contains("'"))
+                {
+                    return null;
+                }
 
-                return new Insert(tableName, values.ToList());
+                if (miniSQLQuery.Contains("  "))
+                {
+                    return null;
+                }
+
+                return new Insert(tableName, values);
             }
 
             //DROPTABLE
