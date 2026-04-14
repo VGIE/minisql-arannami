@@ -25,7 +25,7 @@ namespace DbManager
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*'?([^']+)'?\s*$";
 
-            //TODO DEADLINE 4
+            //TODO DEADLINE 4 
             const string createSecurityProfilePattern = null;
             
             const string dropSecurityProfilePattern = null;
@@ -164,13 +164,23 @@ namespace DbManager
                 string setText = match.Groups[2].Value;
 
                 List<SetValue> values = new List<SetValue>();
-                var assignmentMatches = Regex.Matches(setText, @"(\w+)\s*=\s*('[^']*'|[^,]+)");
+
+                var assignmentMatches = Regex.Matches(setText, @"(\w+)=('[^']*'|\d+(\.\d+)?)");
+
                 foreach (Match am in assignmentMatches)
                 {
                     string column = am.Groups[1].Value.Trim();
                     string value = am.Groups[2].Value.Trim().Trim('\'');
                     values.Add(new SetValue(column, value));
                 }
+                if (miniSQLQuery.Contains("  "))
+                    return null;
+
+                if (values.Count == 0)
+                    return null;
+
+                if (assignmentMatches.Count != setText.Split(',').Length)
+                    return null;
 
                 Condition condition = null;
 
@@ -178,12 +188,16 @@ namespace DbManager
                 {
                     string column = match.Groups[3].Value;
                     string op = match.Groups[4].Value;
-                    string value = match.Groups[5].Value;
+
+                    string rawValue = match.Groups[5].Value.Trim();
+                    string value = rawValue.Trim('\''); //garbitzeko
+
                     condition = new Condition(column, op, value);
                 }
 
                 return new Update(table, values, condition);
             }
+
 
             //DELETE
             match = Regex.Match(miniSQLQuery, deletePattern, RegexOptions.IgnoreCase);
