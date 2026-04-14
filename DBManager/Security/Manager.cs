@@ -21,15 +21,21 @@ namespace DbManager.Security
         public bool IsUserAdmin()
         {
             //TODO DEADLINE 5: Return true if the user logged-in (m_username) is the admin, false otherwise
-            
-            return false;
+
+            return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
         }
+        
 
         public bool IsPasswordCorrect(string username, string password)
         {
             //TODO DEADLINE 5: Return true if the user's password is correct. The given password should be encrypted before comparing with the saved one
-            
-            return false;
+            User user = UserByName(username);
+
+            if (user == null)
+                return false;
+
+            string encryptedPassword = Encryption.Encrypt(password);
+            return user.EncryptedPassword.Equals(encryptedPassword);
             
         }
 
