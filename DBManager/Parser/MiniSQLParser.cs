@@ -94,11 +94,6 @@ namespace DbManager
                     return null;
                 }
 
-                if (miniSQLQuery.Contains("  "))
-                {
-                    return null;
-                }
-
                 return new Insert(tableName, values);
             }
 
