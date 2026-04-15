@@ -21,7 +21,7 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+(\w+)\s*\((.*)\)\s*$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*(.+))?\s*$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?))?\s*$";
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*'?([^']+)'?\s*$";
 
@@ -76,11 +76,6 @@ namespace DbManager
                             conditionsParse = new Condition(col, op, val);
                         }
                     }
-                }
-
-                if (miniSQLQuery.Contains("  "))
-                {
-                    return null;
                 }
 
                 return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
@@ -156,7 +151,8 @@ namespace DbManager
                 return new CreateTable(table, columns);
             }
 
-            // UPDATETABLE
+            
+            //UPDATE
             match = Regex.Match(miniSQLQuery, updateTablePattern, RegexOptions.IgnoreCase);
             if (match.Success)
             {
@@ -164,40 +160,40 @@ namespace DbManager
                 string setText = match.Groups[2].Value;
 
                 List<SetValue> values = new List<SetValue>();
+                string[] assignments = setText.Split(',');
 
-                var assignmentMatches = Regex.Matches(setText, @"(\w+)=('[^']*'|\d+(\.\d+)?)");
-
-                foreach (Match am in assignmentMatches)
+                foreach (string assignment in assignments)
                 {
-                    string column = am.Groups[1].Value.Trim();
-                    string value = am.Groups[2].Value.Trim().Trim('\'');
+                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$");
+
+                    if (!setMatch.Success) return null;
+
+                    string column = setMatch.Groups[1].Value;
+                    string value = setMatch.Groups[2].Value.Trim('\'');
                     values.Add(new SetValue(column, value));
                 }
-                if (miniSQLQuery.Contains("  "))
-                    return null;
-
-                if (values.Count == 0)
-                    return null;
-
-                if (assignmentMatches.Count != setText.Split(',').Length)
-                    return null;
 
                 Condition condition = null;
-
-                if (match.Groups[3].Success)
+                if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value))
                 {
-                    string column = match.Groups[3].Value;
-                    string op = match.Groups[4].Value;
+                    string whereContent = match.Groups[3].Value.Trim();
+                    var condMatch = Regex.Match(whereContent, @"^(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?)$");
 
-                    string rawValue = match.Groups[5].Value.Trim();
-                    string value = rawValue.Trim('\''); //garbitzeko
-
-                    condition = new Condition(column, op, value);
+                    if (condMatch.Success)
+                    {
+                        string col = condMatch.Groups[1].Value;
+                        string op = condMatch.Groups[2].Value.Replace("!=", "<>");
+                        string val = condMatch.Groups[3].Value.Trim('\'');
+                        condition = new Condition(col, op, val);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
 
                 return new Update(table, values, condition);
             }
-
 
             //DELETE
             match = Regex.Match(miniSQLQuery, deletePattern, RegexOptions.IgnoreCase);

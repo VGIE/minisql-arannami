@@ -110,7 +110,7 @@ namespace OurTests
         [Fact]
         public void DeleteSyntaxError()
         {
-            // Falta FROM, debe devolver null
+            // Falta FROM debe devolver null
             MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
             Assert.Null(query);
         }
