@@ -8,5 +8,10 @@ namespace OurTests
 {
     public class MiniSQL_Query_Tests
     {
+        [Fact]
+        public void Insert_Query()
+        {
+
+        }
     }
 }

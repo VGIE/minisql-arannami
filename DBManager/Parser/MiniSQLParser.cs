@@ -14,7 +14,7 @@ namespace DbManager
             const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
 
             const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s*('[^']*'(?:\s*,\s*'[^']*')*)\s*\)\s?$";
-            
+
             const string dropTablePattern = @"^DROP\s+TABLE\s+(\w+)\s*$";
 
             //Note: The parsing of CREATE TABLE should accept empty columns "()"
