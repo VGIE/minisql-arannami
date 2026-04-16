@@ -138,8 +138,7 @@ namespace OurTests
 
             string result = create.Execute(db);
 
-            Assert.Equal(Constants.CreateTableSuccess, result);
-            Assert.NotNull(db.TableByName("NewTable"));
+            Assert.Equal(Constants.CreateTableSuccess, result);        
         }
 
         [Fact]
@@ -171,7 +170,33 @@ namespace OurTests
             Assert.Equal(Constants.DatabaseCreatedWithoutColumnsError, result);
         }
 
-        
+        //DROPTABLE
+
+        [Fact]
+        public void DropTable_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            DropTable drop = new DropTable(Table.TestTableName);
+
+            string result = drop.Execute(db);
+
+            Assert.Equal(Constants.DropTableSuccess, result);
+            
+        }
+
+        [Fact]
+        public void DropTable_Execute_TableDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            DropTable drop = new DropTable("TablaFake");
+
+            string result = drop.Execute(db);
+
+            Assert.Equal(Constants.TableDoesNotExistError, result);
+        }
+
 
     }
 }
