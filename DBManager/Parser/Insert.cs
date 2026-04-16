@@ -27,8 +27,8 @@ namespace DbManager
         {
             //TODO DEADLINE 3: Run the query and return the appropriate message
             //InsertSuccess or the last error in the database
-            
-            return null;
+            database.Insert(this.Table, this.Values);
+            return database.LastErrorMessage;
             
         }
     }

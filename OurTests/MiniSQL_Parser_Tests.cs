@@ -283,9 +283,17 @@ namespace OurTests
         [Fact]
         public void Select_Parse_InvalidQuery()
         {
-            string query = "SELECT Name,Age WHERE 'Age'>'18'";
-            var result = MiniSQLParser.Parse(query);
-            Assert.Null(result);
+            string query1 = "SELECT Name,Age WHERE 'Age'>'18'";
+            string query2 = "SELECT  Name WHERE 'Age'>'18'";
+            string query3 = "SELECT Name  WHERE 'Age'>'18'";
+
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+            var result3 = MiniSQLParser.Parse(query3);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
+            Assert.Null(result3);
         }
 
         [Fact]
@@ -306,6 +314,15 @@ namespace OurTests
             Assert.Null(result3);
             Assert.Null(result4);
         }
+
+        /*[Fact]
+        public void Select_Parse_ColumnNotFound()
+        {
+            var db = new Database();
+            var table = new Table("Users", this.olumns);
+            table.ColumnByName("Name");
+            
+        }*/
 
         [Fact]
         public void Insert_Parse_CorrectQuery()
