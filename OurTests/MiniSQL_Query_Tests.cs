@@ -122,6 +122,56 @@ namespace OurTests
             Assert.Equal(Constants.InsertSuccess, result);
         }*/
 
+        //CREATETABLE
+
+        [Fact]
+        public void CreateTable_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name"),
+                new ColumnDefinition(ColumnDefinition.DataType.Int, "Age")
+            };
+
+            CreateTable create = new CreateTable("NewTable", columns);
+
+            string result = create.Execute(db);
+
+            Assert.Equal(Constants.CreateTableSuccess, result);
+            Assert.NotNull(db.TableByName("NewTable"));
+        }
+
+        [Fact]
+        public void CreateTable_Execute_TableAlreadyExists()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
+            };
+
+            CreateTable create = new CreateTable(Table.TestTableName, columns);
+
+            string result = create.Execute(db);
+
+            Assert.Equal(Constants.TableAlreadyExistsError, result);
+        }
+
+        [Fact]
+        public void CreateTable_Execute_WithoutColumns_ReturnsError()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<ColumnDefinition> columns = new List<ColumnDefinition>();
+
+            CreateTable create = new CreateTable("EmptyTable", columns);
+
+            string result = create.Execute(db);
+
+            Assert.Equal(Constants.DatabaseCreatedWithoutColumnsError, result);
+        }
+
+        
 
     }
 }
