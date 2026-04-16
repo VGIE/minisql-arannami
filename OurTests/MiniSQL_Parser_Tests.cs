@@ -137,6 +137,17 @@ namespace OurTests
         }
 
         [Fact]
+        public void Parse_DropTable_IncorrectCapitalization_ReturnsNull()
+        {
+            string query = "drop table MyTable";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+
+        [Fact]
         public void Parse_CreateTable_CorrectSyntax()
         {
             string query = "CREATE TABLE People(Name TEXT, Age INT)";
@@ -166,6 +177,57 @@ namespace OurTests
             Assert.Equal("EmptyTable", result.Table);
             Assert.Empty(result.ColumnsParameters);
         }
+
+        [Fact]
+        public void Parse_CreateTable_IncorrectCapitalization_ReturnsNull()
+        {
+            string query = "create table People(Name TEXT)";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_WithoutTableKeyword_ReturnsNull()
+        {
+            string query = "CREATE People(Name TEXT)";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_InvalidType_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(Name BADTYPE)";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_LowercaseType_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(Name text)";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Parse_CreateTable_ColumnWithoutType_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(Name)";
+
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
 
         [Fact]
         public void Delete_Execute_Success()
