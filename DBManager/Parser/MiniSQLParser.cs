@@ -109,6 +109,10 @@ namespace DbManager
             match = Regex.Match(miniSQLQuery, createTablePattern);
             if (match.Success)
             {
+                const string textType = "TEXT";
+                const string intType = "INT";
+                const string doubleType = "DOUBLE";
+
                 string table = match.Groups[1].Value;
                 string columnsText = match.Groups[2].Value;
 
@@ -120,21 +124,26 @@ namespace DbManager
 
                     foreach (string part in parts)
                     {
-                        string[] columnParts = Regex.Split(part.Trim(), @"\s+");
+                        string trimmedPart = part.Trim();
 
-                        if (columnParts.Length != 2)
+                        if (trimmedPart == "")
                             return null;
 
-                        string columnName = columnParts[0].Trim();
-                        string columnType = columnParts[1].Trim();
+                        Match columnMatch = Regex.Match(trimmedPart, @"^(\w+)\s+(TEXT|INT|DOUBLE)$");
+
+                        if (!columnMatch.Success)
+                            return null;
+
+                        string columnName = columnMatch.Groups[1].Value;
+                        string columnType = columnMatch.Groups[2].Value;
 
                         ColumnDefinition.DataType type;
 
-                        if (columnType == "TEXT")
+                        if (columnType == textType)
                             type = ColumnDefinition.DataType.String;
-                        else if (columnType == "INT")
+                        else if (columnType == intType)
                             type = ColumnDefinition.DataType.Int;
-                        else if (columnType == "DOUBLE")
+                        else if (columnType == doubleType)
                             type = ColumnDefinition.DataType.Double;
                         else
                             return null;
@@ -145,7 +154,6 @@ namespace DbManager
 
                 return new CreateTable(table, columns);
             }
-
 
 
             //UPDATE
