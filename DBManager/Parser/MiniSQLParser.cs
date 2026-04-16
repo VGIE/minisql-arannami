@@ -98,7 +98,7 @@ namespace DbManager
             }
 
             //DROPTABLE
-            match = Regex.Match(miniSQLQuery, dropTablePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, dropTablePattern);
             if (match.Success)
             {
                 string table = match.Groups[1].Value;
@@ -106,7 +106,7 @@ namespace DbManager
             }
 
             //CREATETABLE
-            match = Regex.Match(miniSQLQuery, createTablePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, createTablePattern);
             if (match.Success)
             {
                 string table = match.Groups[1].Value;
@@ -130,11 +130,11 @@ namespace DbManager
 
                         ColumnDefinition.DataType type;
 
-                        if (columnType.Equals("TEXT", StringComparison.OrdinalIgnoreCase))
+                        if (columnType == "TEXT")
                             type = ColumnDefinition.DataType.String;
-                        else if (columnType.Equals("INT", StringComparison.OrdinalIgnoreCase))
+                        else if (columnType == "INT")
                             type = ColumnDefinition.DataType.Int;
-                        else if (columnType.Equals("DOUBLE", StringComparison.OrdinalIgnoreCase))
+                        else if (columnType == "DOUBLE")
                             type = ColumnDefinition.DataType.Double;
                         else
                             return null;
@@ -146,7 +146,8 @@ namespace DbManager
                 return new CreateTable(table, columns);
             }
 
-            
+
+
             //UPDATE
             match = Regex.Match(miniSQLQuery, updateTablePattern, RegexOptions.IgnoreCase);
             if (match.Success)
