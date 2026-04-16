@@ -21,7 +21,7 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+(\w+)\s*\((.*)\)\s*$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?))?\s*$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+(?:\.\d+)?))?\s*$";
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*'?([^']+)'?\s*$";
 
@@ -149,9 +149,12 @@ namespace DbManager
 
 
             //UPDATE
-            match = Regex.Match(miniSQLQuery, updateTablePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, updateTablePattern);
             if (match.Success)
             {
+                if (miniSQLQuery.Contains("  "))
+                    return null;
+
                 string table = match.Groups[1].Value;
                 string setText = match.Groups[2].Value;
 
@@ -160,21 +163,24 @@ namespace DbManager
 
                 foreach (string assignment in assignments)
                 {
-                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$");
+                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)=('[^']*'|\d+(?:\.\d+)?)$");
 
                     if (!setMatch.Success) return null;
 
                     string column = setMatch.Groups[1].Value;
                     string value = setMatch.Groups[2].Value.Trim('\'');
+
                     values.Add(new SetValue(column, value));
                 }
 
                 Condition condition = null;
+
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
-                    string op = match.Groups[4].Value.Replace("!=", "<>");
+                    string op = match.Groups[4].Value;
                     string val = match.Groups[5].Value.Trim('\'');
+
                     condition = new Condition(col, op, val);
                 }
 
