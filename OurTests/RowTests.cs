@@ -91,6 +91,22 @@ namespace OurTests
             Assert.Equal("20", row.GetValue("Age"));
         }
 
+        [Fact]
+        public void SetValue_ColumnDoesNotExist_DoesNothing()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
+            };
+
+            Row row = new Row(columns, new List<string> { "Ana" });
+
+            row.SetValue("Age", "20");
+
+            Assert.Equal("Ana", row.GetValue("Name"));
+            Assert.Null(row.GetValue("Age"));
+        }
+
 
         [Fact]
         public void IsTrue()
@@ -143,6 +159,21 @@ namespace OurTests
             Condition condition = new Condition("Age", "=", "37");
 
             bool result = row.IsTrue(condition);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsTrue_NullCondition_ReturnsFalse()
+        {
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+            {
+                new ColumnDefinition(ColumnDefinition.DataType.String, "Name")
+            };
+
+            Row row = new Row(columns, new List<string> { "Jacinto" });
+
+            bool result = row.IsTrue(null);
 
             Assert.False(result);
         }
