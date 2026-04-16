@@ -120,7 +120,7 @@ namespace DbManager
 
                 if (columnsText.Trim() != "")
                 {
-                    string[] parts = columnsText.Split(',');
+                    string[] parts = Regex.Split(columnsText, @"\s*,\s*");
 
                     foreach (string part in parts)
                     {

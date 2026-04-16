@@ -228,6 +228,18 @@ namespace OurTests
             Assert.Null(result);
         }
 
+        [Fact]
+        public void Parse_CreateTable_IncorrectWithMultipleColumnsAndSpaces()
+        {
+            string query = "CREATE TABLE People(Name  TEXT,   Age  INT)";
+
+            var result = MiniSQLParser.Parse(query) as CreateTable;
+
+            Assert.NotNull(result);
+            Assert.Equal("People", result.Table);
+            Assert.Equal(2, result.ColumnsParameters.Count);
+        }
+
 
         [Fact]
         public void Delete_Execute_Success()
