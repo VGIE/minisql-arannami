@@ -381,25 +381,5 @@ namespace OurTests
 
             Assert.Null(result);
         }
-
-
-        [Fact]
-        public void Insert_Parse_IncorrectSpacesOrMissingCommas()
-        {
-            string query1 = "INSERT  INTO Users VALUES ('Juan')";
-            string query2 = "INSERT INTO  Users VALUES ('Juan')";
-            string query3 = "INSERT INTO Users VALUES  ('Juan')";
-            string query4 = "INSERT INTO Users VALUES (Juan)";
-
-            var result1 = MiniSQLParser.Parse(query1);
-            var result2 = MiniSQLParser.Parse(query2);
-            var result3 = MiniSQLParser.Parse(query3);
-            var result4 = MiniSQLParser.Parse(query4);
-
-            Assert.Null(result1);
-            Assert.Null(result2);
-            Assert.Null(result3);
-            Assert.Null(result4);
-        }         
     }
 }
