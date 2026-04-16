@@ -33,6 +33,8 @@ namespace DbManager
         public const string ProfileAlreadyHasPrivilege = Error + "Profile already has privilege";
         public const string UsersProfileIsNotGrantedRequiredPrivilege = Error + "The security profile of the user does not have the required privilege to perform the operation";
 
-        
+        public const string IncorrectLogin = Error + "Incorrect login or non-existing database";
+        public const string CouldNotCreateDatabase = Error + "Could not create database";
+        public const string NoDatabaseOpen = Error + "This operation cannot be done because there is no open database";
     }
 }
