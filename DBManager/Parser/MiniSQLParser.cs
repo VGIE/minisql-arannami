@@ -169,22 +169,12 @@ namespace DbManager
                 }
 
                 Condition condition = null;
-                if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value))
+                if (match.Groups[3].Success)
                 {
-                    string whereContent = match.Groups[3].Value.Trim();
-                    var condMatch = Regex.Match(whereContent, @"^(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?)$");
-
-                    if (condMatch.Success)
-                    {
-                        string col = condMatch.Groups[1].Value;
-                        string op = condMatch.Groups[2].Value.Replace("!=", "<>");
-                        string val = condMatch.Groups[3].Value.Trim('\'');
-                        condition = new Condition(col, op, val);
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    string col = match.Groups[3].Value;
+                    string op = match.Groups[4].Value.Replace("!=", "<>");
+                    string val = match.Groups[5].Value.Trim('\'');
+                    condition = new Condition(col, op, val);
                 }
 
                 return new Update(table, values, condition);
