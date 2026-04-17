@@ -118,24 +118,19 @@ namespace DbManager
 
                 List<ColumnDefinition> columns = new List<ColumnDefinition>();
 
-                if (columnsText.Trim() != "")
+                if (columnsText.Trim().Length != 0)
                 {
-                    string[] parts = Regex.Split(columnsText, @"\s*,\s*");
+                    string[] parts = columnsText.Split(',');
 
                     foreach (string part in parts)
                     {
-                        string trimmedPart = part.Trim();
+                        string[] columnParts = Regex.Split(part.Trim(), @"\s+");
 
-                        if (trimmedPart == "")
+                        if (columnParts.Length != 2)
                             return null;
 
-                        Match columnMatch = Regex.Match(trimmedPart, @"^(\w+)\s+(TEXT|INT|DOUBLE)$");
-
-                        if (!columnMatch.Success)
-                            return null;
-
-                        string columnName = columnMatch.Groups[1].Value;
-                        string columnType = columnMatch.Groups[2].Value;
+                        string columnName = columnParts[0].Trim();
+                        string columnType = columnParts[1].Trim();
 
                         ColumnDefinition.DataType type;
 
