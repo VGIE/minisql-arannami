@@ -196,7 +196,60 @@ namespace OurTests
 
             Assert.Equal(Constants.TableDoesNotExistError, result);
         }
+        
+        //DELETE
+        [Fact]
+        public void Delete_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+            Condition where = new Condition("Age", "=", "67");
+            Delete delete = new Delete(Table.TestTableName, where);
 
+            string result = delete.Execute(db);
+
+            Assert.Equal(Constants.DeleteSuccess, result);
+            db.CheckForTesting(Table.TestTableName, new List<List<string>>
+            {
+                new List<string> { Table.TestColumn1Row1, Table.TestColumn2Row1, Table.TestColumn3Row1 },
+                new List<string> { Table.TestColumn1Row3, Table.TestColumn2Row3, Table.TestColumn3Row3 }
+            });
+        }
+
+        [Fact]
+        public void Delete_Execute_TableDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+            Condition where = new Condition("Age", "=", "67");
+            Delete delete = new Delete("TablaQueNoExiste", where);
+
+            string result = delete.Execute(db);
+
+            Assert.Equal(Constants.TableDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Delete_Execute_ColumnDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+            Condition where = new Condition("ColumnaQueNoExiste", "=", "67");
+            Delete delete = new Delete(Table.TestTableName, where);
+
+            string result = delete.Execute(db);
+
+            Assert.Equal(Constants.ColumnDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Delete_Execute_NullWhere_DeletesAll()
+        {
+            Database db = Database.CreateTestDatabase();
+            Delete delete = new Delete(Table.TestTableName, null);
+
+            string result = delete.Execute(db);
+
+            Assert.Equal(Constants.DeleteSuccess, result);
+            Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
+        }
 
     }
 }
