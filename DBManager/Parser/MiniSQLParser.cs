@@ -32,11 +32,11 @@ namespace DbManager
             
             const string grantPattern = @"^GRANT\s+(\w+)\s+ON\s+(\w+)\s+TO\s+(\w+)\s*$";
             
-            const string revokePattern = null;
+            const string revokePattern = @"^REVOKE\s+([A-Z]+)\s+ON\s+(\w+)\s+TO\s+([a-zA-Z]+)\s*$";
             
             const string addUserPattern = @"^ADD\s+USER\s*\(([a-zA-Z]+),([^,]+),([a-zA-Z]+)\)\s*$";
             
-            const string deleteUserPattern = null;
+            const string deleteUserPattern = @"^DELETE\s+USER\s+([a-zA-Z]+)\s*$";
 
 
             //TODO DEADLINE 2
@@ -224,6 +224,13 @@ namespace DbManager
 
             //DELETEUSER
 
+            match = Regex.Match(miniSQLQuery, deleteUserPattern);
+            if (match.Success)
+            {
+                string username = match.Groups[1].Value;
+                return new DeleteUser(username);
+            }
+
             //DROPSECURITYPROFILE
 
             //GRANT
@@ -238,6 +245,16 @@ namespace DbManager
             }
 
             //REVOKE
+            match = Regex.Match(miniSQLQuery, revokePattern);
+            if (match.Success)
+            {
+                string privilege = match.Groups[1].Value;
+                string table = match.Groups[2].Value;
+                string profile = match.Groups[3].Value;
+
+                return new Revoke(privilege, table, profile);
+            }
+
             return null;
         }
 

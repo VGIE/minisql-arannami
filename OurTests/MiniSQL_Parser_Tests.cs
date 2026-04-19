@@ -7,6 +7,8 @@ namespace OurTests
 {
     public class MiniSQL_Parser_Tests
     {
+        //UPDATE
+        
         [Fact]
         public void Update_Parse_DropTable_CorrectSyntax()
         {
@@ -66,6 +68,8 @@ namespace OurTests
             Assert.Null(result);
         }
 
+        //ADDUSER
+
         [Fact]
         public void AddUser_Parse_CorrectSyntaxis()
         {
@@ -76,6 +80,8 @@ namespace OurTests
             Assert.Equal("Pass123", result.Password);
             Assert.Equal("AdminProfile", result.ProfileName);
         }
+
+        //DELETE
 
         [Fact]
         public void DeleteParse_String()
@@ -115,6 +121,8 @@ namespace OurTests
             Assert.Null(query);
         }
 
+        //DROPTABLE
+
         [Fact]
         public void Parse_DropTable_CorrectSyntax()
         {
@@ -146,6 +154,7 @@ namespace OurTests
             Assert.Null(result);
         }
 
+        //CREATETABLE
 
         [Fact]
         public void Parse_CreateTable_CorrectSyntax()
@@ -240,6 +249,7 @@ namespace OurTests
             Assert.Equal(2, result.ColumnsParameters.Count);
         }
 
+        //DELETE??
 
         [Fact]
         public void Delete_Execute_Success()
@@ -294,6 +304,7 @@ namespace OurTests
             Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
         }
 
+        //SELECT
         [Fact]
         public void Select_Parse_WithoutWhere()
         {
@@ -398,6 +409,8 @@ namespace OurTests
             
         }*/
 
+        //INSERT
+
         [Fact]
         public void Insert_Parse_CorrectQuery()
         {
@@ -451,6 +464,50 @@ namespace OurTests
         public void Insert_Parse_InvalidQuery_ReturnsNull()
         {
             string query = "INSERT Users VALUES 'Juan'";
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        //DELETEUSER
+
+        [Fact]
+        public void DeleteUser_Parse_CorrectSyntax()
+        {
+            string query = "DELETE USER Mikel";
+            var result = MiniSQLParser.Parse(query) as DeleteUser;
+
+            Assert.NotNull(result);
+            Assert.Equal("Mikel", result.Username);
+        }
+
+        [Fact]
+        public void DeleteUser_Parse_InvalidSyntax_ReturnsNull()
+        {
+            string query = "DELETEUSER Mikel";
+            var result = MiniSQLParser.Parse(query);
+
+            Assert.Null(result);
+        }
+
+        //REVOKE
+
+        [Fact]
+        public void Revoke_Parse_CorrectSyntax()
+        {
+            string query = "REVOKE SELECT ON People TO Admin";
+            var result = MiniSQLParser.Parse(query) as Revoke;
+
+            Assert.NotNull(result);
+            Assert.Equal("SELECT", result.PrivilegeName);
+            Assert.Equal("People", result.TableName);
+            Assert.Equal("Admin", result.ProfileName);
+        }
+
+        [Fact]
+        public void Revoke_Parse_InvalidSyntax_ReturnsNull()
+        {
+            string query = "REVOKE SELECT People TO Admin";
             var result = MiniSQLParser.Parse(query);
 
             Assert.Null(result);
