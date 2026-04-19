@@ -23,10 +23,9 @@ namespace DbManager
 
             const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+(?:\.\d+)?))?\s*$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*(=|<>|!=|<=|>=|<|>)\s*'?([^']+)'?\s*$";
-
-            //TODO DEADLINE 4 
-            const string createSecurityProfilePattern = null;
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)\s*(=|<>|<=|>=|<|>)\s*('.*?'|\d+))?\s*$";  //TODO DEADLINE 4 
+            
+            const string createSecurityProfilePattern = @"^CREATE SECURITY PROFILE (\w+)$";
             
             const string dropSecurityProfilePattern = null;
             
@@ -196,12 +195,12 @@ namespace DbManager
             {
                 string table = match.Groups[1].Value;
                 Condition where = null;
-                if (match.Groups[2].Success)
+                if (match.Groups[2].Success && match.Groups[3].Success && match.Groups[4].Success)
                 {
                     where = new Condition(
                         match.Groups[2].Value,
                         match.Groups[3].Value,
-                        match.Groups[4].Value
+                        match.Groups[4].Value.Trim('\'')
                     );
                 }
                 return new Delete(table, where);
@@ -221,7 +220,13 @@ namespace DbManager
             }
 
             //CREATESECURITYPROFILE
-
+            match = Regex.Match(miniSQLQuery, createSecurityProfilePattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string profileName = match.Groups[1].Value;
+                return new CreateSecurityProfile(profileName);
+            }
+            
             //DELETEUSER
 
             match = Regex.Match(miniSQLQuery, deleteUserPattern);
@@ -232,7 +237,13 @@ namespace DbManager
             }
 
             //DROPSECURITYPROFILE
-
+             match = Regex.Match(miniSQLQuery, createSecurityProfilePattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string profileName = match.Groups[1].Value;
+                return new CreateSecurityProfile(profileName);
+            }
+            
             //GRANT
             match = Regex.Match(miniSQLQuery, grantPattern, RegexOptions.IgnoreCase);
             if (match.Success)

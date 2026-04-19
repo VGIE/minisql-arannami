@@ -13,7 +13,7 @@ namespace DbManager
         public CreateSecurityProfile(string profileName)
         {
             //TODO DEADLINE 4: Initialize member variables
-            
+            ProfileName = profileName;
         }
         public string Execute(Database database)
         {

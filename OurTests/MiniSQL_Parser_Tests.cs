@@ -86,12 +86,12 @@ namespace OurTests
         [Fact]
         public void DeleteParse_String()
         {
-            MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
+            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
 
-            Assert.NotNull(query);
-            Assert.IsType<Delete>(query);
+            Assert.NotNull(result);
+            Assert.IsType<Delete>(result);
 
-            Delete delete = (Delete)query;
+            Delete delete = (Delete)result;
             Assert.Equal("People", delete.Table);
             Assert.Equal("Name", delete.Where.ColumnName);
             Assert.Equal("=", delete.Where.Operator);
@@ -99,14 +99,29 @@ namespace OurTests
         }
 
         [Fact]
+        public void Delete_WithWhere()
+        {
+            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id = 5");
+
+            Assert.IsType<Delete>(result);
+            var delete = (Delete)result;
+
+            Assert.Equal("users", delete.Table);
+            Assert.NotNull(delete.Where);
+            Assert.Equal("id", delete.Where.ColumnName);
+            Assert.Equal("=", delete.Where.Operator);
+            Assert.Equal("5", delete.Where.LiteralValue);
+        }
+
+        [Fact]
         public void DeleteParse_Numeric()
         {
-            MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Age > 25");
+            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Age > 25");
 
-            Assert.NotNull(query);
-            Assert.IsType<Delete>(query);
+            Assert.NotNull(result);
+            Assert.IsType<Delete>(result);
 
-            Delete delete = (Delete)query;
+            Delete delete = (Delete)result;
             Assert.Equal("People", delete.Table);
             Assert.Equal("Age", delete.Where.ColumnName);
             Assert.Equal(">", delete.Where.Operator);
@@ -119,6 +134,16 @@ namespace OurTests
             // Falta FROM debe devolver null
             MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
             Assert.Null(query);
+        }
+
+        [Fact]
+        public void DeleteParse_WithoutWhere()
+        {
+            var result = MiniSQLParser.Parse("DELETE FROM users");
+            Assert.IsType<Delete>(result);
+            var delete = (Delete)result;
+            Assert.Equal("users", delete.Table);
+            Assert.Null(delete.Where);
         }
 
         //DROPTABLE
@@ -468,6 +493,32 @@ namespace OurTests
 
             Assert.Null(result);
         }
+
+        //CREATESECURITYPROFILE
+        [Fact]
+        public void CreateSecurityProfile_Correcto()
+        {
+            var result = MiniSQLParser.Parse("CREATE SECURITY PROFILE admin");
+            Assert.IsType<CreateSecurityProfile>(result);
+
+            var query = (CreateSecurityProfile)result;
+            Assert.Equal("admin", query.ProfileName);
+        }
+
+        [Fact]
+        public void CreateSecurityProfile_CaseInsensitive()
+        {
+            var result = MiniSQLParser.Parse("create security profile test");
+            Assert.IsType<CreateSecurityProfile>(result);
+        }
+
+        [Fact]
+        public void CreateSecurityProfile_InvalidSpaces()
+        {
+            var result = MiniSQLParser.Parse("CREATE  SECURITY PROFILE   admin");
+            Assert.Null(result);
+        }
+
 
         //DELETEUSER
 
