@@ -23,6 +23,7 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Return true if the user logged-in (m_username) is the admin, false otherwise
 
             return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
+
         }
         
 
