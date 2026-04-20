@@ -64,32 +64,40 @@ namespace DbManager.Security
         public void AddProfile(Profile profile)
         {
             //TODO DEADLINE 5: Add this profile
-            
+            Profiles.Add(profile);
+
         }
 
         public User UserByName(string username)
         {
             //TODO DEADLINE 5: Return the user by name. If it doesn't exist, return null
-            
+
+            foreach (var profile in Profiles)
+            {
+                var user = profile.Users.FirstOrDefault(u => u.Username == username);
+                if (user != null)
+                    return user;
+            }
+
             return null;
-            
+
         }
 
         public Profile ProfileByName(string profileName)
         {
             //TODO DEADLINE 5: Return the profile by name. If it doesn't exist, return null
-            
-            return null;
-            
+
+            return Profiles.FirstOrDefault(p => p.Name == profileName);
+
         }
 
         public Profile ProfileByUser(string username)
         {
             //TODO DEADLINE 5: Return the profile by user. If the user doesn't exist, return null
-            
-            return null;
-            
+
+            return Profiles.FirstOrDefault(p => p.Users.Any(u => u.Username == username));
         }
+            
 
         public bool RemoveProfile(string profileName)
         {

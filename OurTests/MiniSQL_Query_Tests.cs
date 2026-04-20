@@ -1,5 +1,6 @@
 ﻿using DbManager;
 using DbManager.Parser;
+using DbManager.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,51 @@ namespace OurTests
 
             Assert.Equal(Constants.ColumnDoesNotExistError, result);
         }
+
+        //ADDUSER
+
+        [Fact]
+        public void AddUser_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+            db.SecurityManager.AddProfile(new Profile { Name = "AdminProfile" });
+
+            AddUser addUser = new AddUser("Juan", "1234", "AdminProfile");
+
+            string result = addUser.Execute(db);
+
+            Assert.Equal(Constants.AddUserSuccess, result);
+
+            var user = db.SecurityManager.UserByName("Juan");
+            Assert.NotNull(user);
+        }
+
+        [Fact]
+        public void AddUser_Execute_ProfileDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            AddUser addUser = new AddUser("Juan", "1234", "PerfilFake");
+
+            string result = addUser.Execute(db);
+
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void AddUser_Execute_UserAlreadyExists()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            db.SecurityManager.AddProfile(new Profile { Name = "AdminProfile" });
+            AddUser addUser1 = new AddUser("Juan", "1234", "AdminProfile");
+            addUser1.Execute(db);
+            AddUser addUser2 = new AddUser("Juan", "1234", "AdminProfile");
+            string result = addUser2.Execute(db);
+
+            Assert.Equal(Constants.Error + "User already exists", result);
+        }
+
 
         //SELECT
         [Fact]
