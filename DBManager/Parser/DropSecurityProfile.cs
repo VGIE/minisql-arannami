@@ -13,7 +13,7 @@ namespace DbManager
         public DropSecurityProfile(string profileName)
         {
             //TODO DEADLINE 4: Initialize member variables
-            
+            this.ProfileName = profileName;
         }
         public string Execute(Database database)
         {

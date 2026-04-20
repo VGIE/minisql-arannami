@@ -7,11 +7,11 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-/*namespace SecurityParsingTests
+namespace SecurityParsingTests
 {
     public class DropSecurityProfileTests
     {
-        /*[Fact]
+        [Fact]
         public void Correct()
         {
             DropSecurityProfile query = MiniSQLParser.Parse("DROP SECURITY PROFILE profile") as DropSecurityProfile;
@@ -70,5 +70,5 @@ using DbManager;
             Assert.NotNull(query);
         }
     }
-}*/
+}
 

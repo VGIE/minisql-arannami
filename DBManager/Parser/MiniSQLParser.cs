@@ -27,7 +27,7 @@ namespace DbManager
             
             const string createSecurityProfilePattern = @"^CREATE SECURITY PROFILE (\w+)$";
             
-            const string dropSecurityProfilePattern = null;
+            const string dropSecurityProfilePattern = @"^DROP\s+SECURITY\s+PROFILE\s+(\w+)\s*$";
             
             const string grantPattern = @"^GRANT\s+(\w+)\s+ON\s+(\w+)\s+TO\s+(\w+)\s*$";
             
@@ -210,7 +210,7 @@ namespace DbManager
             //Do the same for the security queries (CREATE SECURITY PROFILE, ...)
 
             //ADDUSER
-            match = Regex.Match(miniSQLQuery, addUserPattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, addUserPattern);
             if (match.Success)
             {
                 string user = match.Groups[1].Value;
@@ -220,7 +220,7 @@ namespace DbManager
             }
 
             //CREATESECURITYPROFILE
-            match = Regex.Match(miniSQLQuery, createSecurityProfilePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, createSecurityProfilePattern);
             if (match.Success)
             {
                 string profileName = match.Groups[1].Value;
@@ -237,15 +237,15 @@ namespace DbManager
             }
 
             //DROPSECURITYPROFILE
-             match = Regex.Match(miniSQLQuery, createSecurityProfilePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, dropSecurityProfilePattern);
             if (match.Success)
             {
                 string profileName = match.Groups[1].Value;
-                return new CreateSecurityProfile(profileName);
-            }
+                return new DropSecurityProfile(profileName);
+            }   
             
             //GRANT
-            match = Regex.Match(miniSQLQuery, grantPattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, grantPattern);
             if (match.Success)
             {
                 string privilege = match.Groups[1].Value;
@@ -267,6 +267,8 @@ namespace DbManager
             }
 
             return null;
+
+
         }
 
         static List<string> CommaSeparatedNames(string text)
