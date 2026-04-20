@@ -38,18 +38,18 @@ namespace OurTests
         }
 
         [Fact]
-        public void IsTrue_MenorOIgualDoule()
+        public void IsTrue_StringMayor()
         {
-            var condition = new Condition("Height", "<=", "1.70");
-            bool result = condition.IsTrue("1.67", ColumnDefinition.DataType.Double);
+            var condition = new Condition("Name", ">", "aaa");
+            bool result = condition.IsTrue("bb", ColumnDefinition.DataType.String);
             Assert.True(result);
         }
 
         [Fact]
-        public void IsTrue_NotEqualString()
+        public void IsTrue_StringMenor()
         {
-            var condition = new Condition("Name", "!=", "Pepe");
-            bool result = condition.IsTrue("Juan", ColumnDefinition.DataType.String);
+            var condition = new Condition("Name", "<", "b");
+            bool result = condition.IsTrue("a", ColumnDefinition.DataType.String);
             Assert.True(result);
         }
 
