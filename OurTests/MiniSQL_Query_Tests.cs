@@ -79,16 +79,30 @@ namespace OurTests
             Assert.NotEqual(Constants.ColumnDoesNotExistError, result);
         }
 
-        [Fact]
-        public void Select_Execute_SynctaticalError()
+        /*[Fact]
+        public void Select_Execute_SynctaticalErrorCondition()
         {
+            Database db = Database.CreateTestDatabase();
+            List<string> columns = new List<string> { "Name" };
 
-        }
+            Condition wrongCond = new Condition("Age", "!!", "67");
+
+            Select select = new Select(Table.TestTableName, columns, wrongCond);
+            string result = select.Execute(db);
+
+            Assert.Equal(Constants.SyntaxError, result);
+        }*/
 
         [Fact]
         public void Select_Execute_NonExistentTable()
         {
-            
+            Database db = Database.CreateTestDatabase();
+            List<string> columns = new List<string> { "Name", "Age" };
+
+            Select select = new Select("Table doesn't exist", columns);
+            string result = select.Execute(db);
+
+            Assert.Equal(Constants.TableDoesNotExistError, result);
         }
 
         [Fact]
@@ -106,7 +120,14 @@ namespace OurTests
         [Fact]
         public void Select_Execute_NonExistentColumn()
         {
+            Database db = Database.CreateTestDatabase();
 
+            List<string> columns = new List<string> { "Name", "NotCOlumn" };
+
+            Select select = new Select(Table.TestTableName, columns);
+            string result = select.Execute(db);
+
+            Assert.Equal(Constants.ColumnDoesNotExistError, result);
         }
 
         //INSERT
