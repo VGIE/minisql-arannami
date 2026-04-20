@@ -31,8 +31,8 @@ namespace DbManager
             
             const string grantPattern = @"^GRANT\s+(\w+)\s+ON\s+(\w+)\s+TO\s+(\w+)\s*$";
             
-            const string revokePattern = @"^REVOKE\s+([A-Z]+)\s+ON\s+(\w+)\s+TO\s+([a-zA-Z]+)\s*$";
-            
+            const string revokePattern = @"^REVOKE\s+(DELETE|INSERT|SELECT|UPDATE)\s+ON\s+(\w+)\s+TO\s+([a-zA-Z]+)\s*$";
+
             const string addUserPattern = @"^ADD\s+USER\s*\(([a-zA-Z]+),([^,]+),([a-zA-Z]+)\)\s*$";
             
             const string deleteUserPattern = @"^DELETE\s+USER\s+([a-zA-Z]+)\s*$";

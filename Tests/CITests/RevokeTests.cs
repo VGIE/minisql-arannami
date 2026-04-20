@@ -7,11 +7,11 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-/*namespace SecurityParsingTests
+namespace SecurityParsingTests
 {
     public class RevokeTests
     {
-        /*[Fact]
+        [Fact]
         public void Correct()
         {
             Revoke query = MiniSQLParser.Parse("REVOKE DELETE ON Table TO User") as Revoke;
@@ -135,4 +135,4 @@ using DbManager;
             Assert.NotNull(query);
         }
     }
-}*/
+}

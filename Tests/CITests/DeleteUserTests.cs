@@ -7,11 +7,11 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-/*namespace SecurityParsingTests
+namespace SecurityParsingTests
 {
     public class DeleteUserTests
     {
-        /*[Fact]
+        [Fact]
         public void Correct()
         {
             DeleteUser query = MiniSQLParser.Parse("DELETE USER user") as DeleteUser;
@@ -70,4 +70,4 @@ using DbManager;
             Assert.NotNull(query);
         }
     }
-}*/
+}
