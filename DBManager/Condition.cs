@@ -83,36 +83,5 @@ namespace DbManager
             
         }
 
-        private bool ComparaString(string a, string b)
-        {
-            int cmp = string.Compare(a, b, StringComparison.Ordinal);
-
-            return Operator switch
-            {
-                "="  => cmp == 0,
-                "!=" => cmp != 0,
-                "<"  => cmp < 0,
-                "<=" => cmp <= 0,
-                ">"  => cmp > 0,
-                ">=" => cmp >= 0,
-                _ => false
-            };
-        }
-
-        private bool ComparaNumero<T>(T a, T b) where T : IComparable<T>
-        {
-            int cmp = a.CompareTo(b);
-
-            return Operator switch
-            {
-                "="  => cmp == 0,
-                "!=" => cmp != 0,
-                "<"  => cmp < 0,
-                "<=" => cmp <= 0,
-                ">"  => cmp > 0,
-                ">=" => cmp >= 0,
-                _ => false
-            };
-        }
     }
 }
