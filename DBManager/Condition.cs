@@ -31,36 +31,53 @@ namespace DbManager
             //Convert first the strings to the appropriate type and then compare (depending on the operator of the condition)
             if (type == ColumnDefinition.DataType.String)
             {
-                if (Operator == "=") 
-                    return value == LiteralValue;
-                if (Operator == ">") 
-                    return value.CompareTo(LiteralValue) > 0;
-                if (Operator == "<") 
-                    return value.CompareTo(LiteralValue) < 0;
+                switch (Operator)
+                {
+                    case "=":
+                        return value == LiteralValue;
+                    case ">":
+                        return value.CompareTo(LiteralValue) > 0;
+                    case "<":
+                        return value.CompareTo(LiteralValue) < 0;
+                    default:
+                        return false;
+                }
+
             }
             if (type == ColumnDefinition.DataType.Int)
             {
                 int a = int.Parse(value);
                 int b = int.Parse(LiteralValue);
 
-                if (Operator == "=") 
-                    return a == b;
-                if (Operator == ">") 
-                    return a > b;
-                if (Operator == "<") 
-                    return a < b;
+                switch (Operator)
+                {
+                    case "=":
+                        return a == b;
+                    case ">":
+                        return a > b;
+                    case "<":
+                        return a < b;
+                    default:
+                        return false;
+
+                }
             }
             if (type == ColumnDefinition.DataType.Double)
             {
                 double a = double.Parse(value);
                 double b = double.Parse(LiteralValue);
 
-                if (Operator == "=") 
-                    return a == b;
-                if (Operator == ">") 
-                    return a > b;
-                if (Operator == "<") 
-                    return a < b;
+                switch (Operator)
+                {
+                    case "=":
+                        return a == b;
+                    case ">":
+                        return a > b;
+                    case "<":
+                        return a < b;
+                    default:
+                        return false;
+                }
             }
             return false;
             
