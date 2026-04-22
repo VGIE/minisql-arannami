@@ -119,11 +119,21 @@ namespace DbManager
 
                 if (columnsText.Trim().Length != 0)
                 {
-                    string[] parts = columnsText.Split(',');
+                    string trimmedColumnsText = columnsText.Trim();
+
+                    if (trimmedColumnsText.StartsWith(",") ||
+                        trimmedColumnsText.EndsWith(",") ||
+                        trimmedColumnsText.Contains(",,"))
+                    {
+                        return null;
+                    }
+
+                    List<string> parts = CommaSeparatedNames(columnsText);
 
                     foreach (string part in parts)
                     {
-                        string[] columnParts = Regex.Split(part.Trim(), @"\s+");
+                        string trimmedPart = part.Trim();
+                        string[] columnParts = Regex.Split(trimmedPart, @"\s+");
 
                         if (columnParts.Length != 2)
                             return null;
@@ -147,6 +157,7 @@ namespace DbManager
                 }
 
                 return new CreateTable(table, columns);
+
             }
 
 

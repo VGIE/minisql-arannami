@@ -149,7 +149,7 @@ namespace OurTests
         //DROPTABLE
 
         [Fact]
-        public void Parse_DropTable_CorrectSyntax()
+        public void DropTable_Parse_CorrectSyntax()
         {
             string query = "DROP TABLE MyTable";
 
@@ -160,7 +160,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_DropTable_InvalidSyntax_ReturnsNull()
+        public void DropTable_Parse_InvalidSyntax_ReturnsNull()
         {
             string query = "DROP MyTable";
 
@@ -170,7 +170,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_DropTable_IncorrectCapitalization_ReturnsNull()
+        public void DropTable_Parse_IncorrectCapitalization_ReturnsNull()
         {
             string query = "drop table MyTable";
 
@@ -182,7 +182,7 @@ namespace OurTests
         //CREATETABLE
 
         [Fact]
-        public void Parse_CreateTable_CorrectSyntax()
+        public void CreateTable_Parse_CorrectSyntax()
         {
             string query = "CREATE TABLE People(Name TEXT, Age INT)";
 
@@ -201,7 +201,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_EmptyColumns()
+        public void CreateTable_Parse_EmptyColumns()
         {
             string query = "CREATE TABLE EmptyTable()";
 
@@ -213,7 +213,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_IncorrectCapitalization_ReturnsNull()
+        public void CreateTable_Parse_IncorrectCapitalization_ReturnsNull()
         {
             string query = "create table People(Name TEXT)";
 
@@ -223,7 +223,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_WithoutTableKeyword_ReturnsNull()
+        public void CreateTable_Parse_WithoutTableKeyword_ReturnsNull()
         {
             string query = "CREATE People(Name TEXT)";
 
@@ -233,7 +233,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_InvalidType_ReturnsNull()
+        public void CreateTable_Parse_InvalidType_ReturnsNull()
         {
             string query = "CREATE TABLE People(Name BADTYPE)";
 
@@ -243,7 +243,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_LowercaseType_ReturnsNull()
+        public void CreateTable_Parse_LowercaseType_ReturnsNull()
         {
             string query = "CREATE TABLE People(Name text)";
 
@@ -253,7 +253,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_ColumnWithoutType_ReturnsNull()
+        public void CreateTable_Parse_ColumnWithoutType_ReturnsNull()
         {
             string query = "CREATE TABLE People(Name)";
 
@@ -263,7 +263,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void Parse_CreateTable_IncorrectWithMultipleColumnsAndSpaces()
+        public void CreateTable_Parse_IncorrectWithMultipleColumnsAndSpaces()
         {
             string query = "CREATE TABLE People(Name  TEXT,   Age  INT)";
 
@@ -274,7 +274,31 @@ namespace OurTests
             Assert.Equal(2, result.ColumnsParameters.Count);
         }
 
-        
+        [Fact]
+        public void CreateTable_Parse_DoubleComma_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(Name TEXT,, Age INT)";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CreateTable_Parse_TrailingComma_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(Name TEXT, Age INT,)";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CreateTable_Parse_LeadingComma_ReturnsNull()
+        {
+            string query = "CREATE TABLE People(,Name TEXT, Age INT)";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
+
+      
 
         //SELECT
         [Fact]
