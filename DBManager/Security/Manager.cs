@@ -97,6 +97,7 @@ namespace DbManager.Security
 
             return null;
 
+
         }
 
         public Profile ProfileByName(string profileName)
@@ -112,6 +113,8 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Return the profile by user. If the user doesn't exist, return null
 
             return Profiles.FirstOrDefault(p => p.Users.Any(u => u.Username == username));
+
+
         }
             
 
@@ -120,6 +123,8 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Remove this profile
             
             return false;
+
+
         }
 
         public static Manager Load(string databaseName, string username)
