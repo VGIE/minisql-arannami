@@ -21,10 +21,10 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+(\w+)\s*\((.*)\)\s*$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+(?:\.\d+)?))?\s*$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)\s*(=|<>|<=|>=|<|>)\s*('.*?'|\d+))?\s*$";  //TODO DEADLINE 4 
-            
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)\s*(=|<>|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
+
             const string createSecurityProfilePattern = @"^CREATE SECURITY PROFILE (\w+)$";
             
             const string dropSecurityProfilePattern = @"^DROP\s+SECURITY\s+PROFILE\s+(\w+)\s*$";
@@ -165,10 +165,9 @@ namespace DbManager
 
                 foreach (string assignment in assignments)
                 {
-                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)=('[^']*'|\d+(?:\.\d+)?)$");
+                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$");
 
                     if (!setMatch.Success) return null;
-
                     string column = setMatch.Groups[1].Value;
                     string value = setMatch.Groups[2].Value.Trim('\'');
 
@@ -195,7 +194,7 @@ namespace DbManager
             {
                 string table = match.Groups[1].Value;
                 Condition where = null;
-                if (match.Groups[2].Success && match.Groups[3].Success && match.Groups[4].Success)
+                if (match.Groups[2].Success && !string.IsNullOrWhiteSpace(match.Groups[2].Value))
                 {
                     where = new Condition(
                         match.Groups[2].Value,
