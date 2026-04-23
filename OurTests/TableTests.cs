@@ -159,15 +159,7 @@ namespace OurTests
             Assert.Equal("Name", column.Name);
         }
 
-        /*[Fact]
-        public void ColumnByName()
-        {
-            var table = Table.CreateTestTable();
-            var column = table.ColumnByName(Table.TestColumn1Name);
-            Assert.NotNull(column);
-            Assert.Equal(Table.TestColumn1Name, column.Name);
-        }
-        */
+      
 
         [Fact]
         public void ColumnByName_NoHayColumnas()
@@ -177,15 +169,8 @@ namespace OurTests
             Assert.Null(column);
         }
 
-        /*
-        [Fact]
-        public void ColumnByName_NoHayColumnas()
-        {
-            var table = Table.CreateTestTable();
-            var column = table.ColumnByName("DoesNotExist");
-            Assert.Null(column);
-        }
-        */
+        
+        
 
         [Fact]
         public void ColumnIndexByName()
@@ -195,15 +180,7 @@ namespace OurTests
             Assert.Equal(1, index); // segunda columna -> índice 1
         }
 
-        /*
-        [Fact]
-        public void ColumnIndexByName()
-        {
-            var table = Table.CreateTestTable();
-            int index = table.ColumnIndexByName(Table.TestColumn2Name);
-            Assert.Equal(1, index);
-        }
-        */
+       
 
         [Fact]
         public void ColumnIndexByName_NoHayColumnas()
@@ -213,15 +190,7 @@ namespace OurTests
             Assert.Equal(-1, index);
         }
 
-        /*
-        [Fact]
-        public void ColumnIndexByName_NoHayColumnas()
-        {
-            var table = Table.CreateTestTable();
-            int index = table.ColumnIndexByName("Unknown");
-            Assert.Equal(-1, index);
-        }
-       */
+        
         [Fact]
         public void GetColumn()
         {
@@ -322,50 +291,11 @@ namespace OurTests
        
         
 
-        /*[Fact]
-        public void Select_WithCondition()
-        {
-            Table table = Table.CreateTestTable();
-
-            // Example: Age > 50
-            Condition condition = new Condition(
-            "Age",
-            Condition.Operator.Greater,
-            "50"
-            );
-
-            Table result = table.Select(new List<string> { "Name" }, 
-            condition);
-
-            Assert.Equal(1, result.NumColumns());
-            Assert.Equal(2, result.NumRows()); // Maider (67), Pepe (51)
-
-            Assert.Equal("Maider", result.GetRow(0).Values[0]);
-            Assert.Equal("Pepe", result.GetRow(1).Values[0]);
-        }*/
-
-        /*[Fact]
-        public void Select_NoRowsMatchCondition()
-        {
-            Table table = Table.CreateTestTable();
-            Condition condition = new Condition(
-            "Age",
-            Condition.Operator.Less,
-            "10"
-            );
-
-            Table result = table.Select(new List<string> { "Name" },condition);
-
-            Assert.Equal(1, result.NumColumns());
-            Assert.Equal(0, result.NumRows());
-        }*/
-
+       
 
         [Fact]
         public void Select_AllColumns_NoCondition_CheckAll()
         {
-            //Checks if when we don't have any condition all columns that are
-            //selected are right added into the new table = "Result"
 
             Table table = Table.CreateTestTable();
             Table result = table.Select(null, null);

@@ -211,14 +211,7 @@ namespace DbManager
             AddRow(row);
             return true;
         }
-        /*
-        public bool Update(List<SetValue> setValues, Condition condition)
-        {
-            //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues(ColumnName - Value).If condition is null,
-            //return false, otherwise return true
-            return false;
-        }
-        */
+       
 
         //Only for testing purposes
         public const string TestTableName = "TestTable";
@@ -276,7 +269,10 @@ namespace DbManager
 
         public bool Update(List<SetValue> setValues, Condition condition)
         {
-            if (condition == null)
+            //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues(ColumnName - Value).If condition is null,
+            //return false, otherwise return true
+
+            return false; if (condition == null)
                 return false;
             var indices = RowIndicesWhereConditionIsTrue(condition);
             if (indices.Count == 0)

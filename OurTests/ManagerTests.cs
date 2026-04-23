@@ -10,5 +10,19 @@ namespace OurTests
 {
     public class ManagerTests
     {
+        [Fact]
+        public void IsUserAdmin_ReturnsTrue()
+        {
+            var manager = new Manager("admin");
+            Assert.True(manager.IsUserAdmin());
+        }
+
+        [Fact]
+        public void IsUserAdmin_ReturnsFalse()
+        {
+            var manager = new Manager("user1");
+            Assert.False(manager.IsUserAdmin());
+        }
+
     }
 }
