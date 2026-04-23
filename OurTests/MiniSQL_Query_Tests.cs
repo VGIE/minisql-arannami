@@ -187,7 +187,23 @@ namespace OurTests
             string result = insert.Execute(db);
 
             Assert.Equal(Constants.InsertSuccess, result);
-        }*/
+        }
+        
+        [Fact]
+        public void Insert_Execute_MultipleColumns()
+        {
+        }
+
+        [Fact]
+        public void Insert_Execute_IncorrectColumns()
+        {
+        }
+
+        [Fact]
+        public void Insert_Execute_EmptyTableColumns()
+        {
+        }
+        */
 
         //CREATETABLE
 
