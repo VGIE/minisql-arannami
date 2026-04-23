@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DbManager.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +8,7 @@ using Xunit;
 
 namespace OurTests
 {
-    internal class ManagerTests
+    public class ManagerTests
     {
-
     }
 }

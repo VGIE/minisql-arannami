@@ -175,6 +175,70 @@ namespace OurTests
 
             Assert.Equal(Constants.ColumnDoesNotExistError, result);
         }
+        //GRANT
+
+        [Fact]
+        public void Grant_Execute_Bien()
+        {
+            Database db = new Database("NormalUser", "pass123");
+            string uniqueProfile = "Profile_" + Guid.NewGuid().ToString().Substring(0, 8);
+            string uniqueTable = "Table_" + Guid.NewGuid().ToString().Substring(0, 8);
+            db.SecurityManager.AddProfile(new Profile { Name = uniqueProfile });
+            db.AddTable(new Table(uniqueTable, new List<ColumnDefinition> {
+        new ColumnDefinition(ColumnDefinition.DataType.String, "TestCol")
+    }));
+            Grant grant = new Grant("Select", uniqueTable, uniqueProfile);
+            string result = grant.Execute(db);
+
+         
+            Assert.Equal(Constants.GrantPrivilegeSuccess, result);
+            var profile = db.SecurityManager.ProfileByName(uniqueProfile);
+            Assert.NotNull(profile);
+            Assert.True(profile.IsGrantedPrivilege(uniqueTable, Privilege.Select));
+        }
+        [Fact]
+        public void Grant_Execute_ProfileInexistente()
+        {
+            Database db = Database.CreateTestDatabase();
+            Grant grant = new Grant("SELECT", Table.TestTableName, "PerfilInexistente");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_TableInexistente()
+        {
+            Database db = Database.CreateTestDatabase();
+            db.SecurityManager.AddProfile(new Profile { Name = "User" });
+            Grant grant = new Grant("SELECT", "TablaInexistente", "User");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.TableDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_PrivilegeInexistente()
+        {
+            Database db = Database.CreateTestDatabase();
+            db.SecurityManager.AddProfile(new Profile { Name = "User" });
+            Grant grant = new Grant("CLEAN", Table.TestTableName, "User");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_ProfileConPrivilegio()
+        {
+            Database db = Database.CreateTestDatabase();
+            string profileName = "DeleteUser";
+            db.SecurityManager.AddProfile(new Profile { Name = profileName });
+            Grant grant1 = new Grant("Delete", Table.TestTableName, profileName);
+            grant1.Execute(db);
+            Grant grant2 = new Grant("Delete", Table.TestTableName, profileName);
+            string result = grant2.Execute(db);
+            Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
+        }
+
+
 
         //INSERT
         /*[Fact]

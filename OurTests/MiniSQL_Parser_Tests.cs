@@ -396,14 +396,6 @@ namespace OurTests
             Assert.Null(result4);
         }
 
-        /*[Fact]
-        public void Select_Parse_ColumnNotFound()
-        {
-            var db = new Database();
-            var table = new Table("Users", this.olumns);
-            table.ColumnByName("Name");
-            
-        }*/
 
         //INSERT
 
@@ -475,13 +467,6 @@ namespace OurTests
             var query = (CreateSecurityProfile)result;
             Assert.Equal("admin", query.ProfileName);
         }
-
-        /*[Fact]
-        public void CreateSecurityProfile_CaseInsensitive()
-        {
-            var result = MiniSQLParser.Parse("create security profile test");
-            Assert.IsType<CreateSecurityProfile>(result);
-        }*/
 
         [Fact]
         public void CreateSecurityProfile_InvalidSpaces()
