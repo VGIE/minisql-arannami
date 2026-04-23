@@ -29,57 +29,59 @@ namespace DbManager
             //"9" > "10"
             //9 < 10
             //Convert first the strings to the appropriate type and then compare (depending on the operator of the condition)
-            switch (type)
+            if (type == ColumnDefinition.DataType.String)
             {
-                case ColumnDefinition.DataType.String:
-                    return ComparaString(value, LiteralValue);
+                switch (Operator)
+                {
+                    case "=":
+                        return value == LiteralValue;
+                    case ">":
+                        return value.CompareTo(LiteralValue) > 0;
+                    case "<":
+                        return value.CompareTo(LiteralValue) < 0;
+                    default:
+                        return false;
+                }
 
-                case ColumnDefinition.DataType.Int:
-                    int intValue = int.Parse(value, CultureInfo.InvariantCulture);
-                    int intLiteral = int.Parse(LiteralValue, CultureInfo.InvariantCulture);
-                    return ComparaNumero(intValue, intLiteral);
-
-                case ColumnDefinition.DataType.Double:
-                    double doubleValue = double.Parse(value, CultureInfo.InvariantCulture);
-                    double doubleLiteral = double.Parse(LiteralValue, CultureInfo.InvariantCulture);
-                    return ComparaNumero(doubleValue, doubleLiteral);
-
-                default:
-                    return false;
             }
+            if (type == ColumnDefinition.DataType.Int)
+            {
+                int a = int.Parse(value);
+                int b = int.Parse(LiteralValue);
+
+                switch (Operator)
+                {
+                    case "=":
+                        return a == b;
+                    case ">":
+                        return a > b;
+                    case "<":
+                        return a < b;
+                    default:
+                        return false;
+
+                }
+            }
+            if (type == ColumnDefinition.DataType.Double)
+            {
+                double a = double.Parse(value);
+                double b = double.Parse(LiteralValue);
+
+                switch (Operator)
+                {
+                    case "=":
+                        return a == b;
+                    case ">":
+                        return a > b;
+                    case "<":
+                        return a < b;
+                    default:
+                        return false;
+                }
+            }
+            return false;
             
         }
 
-        private bool ComparaString(string a, string b)
-        {
-            int cmp = string.Compare(a, b, StringComparison.Ordinal);
-
-            return Operator switch
-            {
-                "="  => cmp == 0,
-                "!=" => cmp != 0,
-                "<"  => cmp < 0,
-                "<=" => cmp <= 0,
-                ">"  => cmp > 0,
-                ">=" => cmp >= 0,
-                _ => false
-            };
-        }
-
-        private bool ComparaNumero<T>(T a, T b) where T : IComparable<T>
-        {
-            int cmp = a.CompareTo(b);
-
-            return Operator switch
-            {
-                "="  => cmp == 0,
-                "!=" => cmp != 0,
-                "<"  => cmp < 0,
-                "<=" => cmp <= 0,
-                ">"  => cmp > 0,
-                ">=" => cmp >= 0,
-                _ => false
-            };
-        }
     }
 }

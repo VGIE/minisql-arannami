@@ -7,11 +7,11 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-/*namespace SecurityParsingTests
+namespace SecurityParsingTests
 {
     public class GrantTests
     {
-        /*[Fact]
+        [Fact]
         public void Correct()
         {
             Grant query = MiniSQLParser.Parse("GRANT DELETE ON Table TO User") as Grant;
@@ -135,4 +135,4 @@ using DbManager;
             Assert.NotNull(query);
         }
     }
-}*/
+}
