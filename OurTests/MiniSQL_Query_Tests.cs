@@ -395,6 +395,34 @@ namespace OurTests
             Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
         }
 
+        // DELETE USER
+        [Fact]
+        public void DeleteUser_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            profile.Users.Add(new User("Juan", "1234"));
+            db.SecurityManager.AddProfile(profile);
+
+            DeleteUser deleteUser = new DeleteUser("Juan");
+
+            string result = deleteUser.Execute(db);
+
+            Assert.Equal(Constants.DeleteUserSuccess, result);
+        }
+
+        [Fact]
+        public void DeleteUser_Execute_UserDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            DeleteUser deleteUser = new DeleteUser("UsuarioFake");
+
+            string result = deleteUser.Execute(db);
+
+            Assert.Equal(Constants.UserDoesNotExistError, result);
+        }
 
     }
 }

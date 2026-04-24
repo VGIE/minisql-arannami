@@ -21,9 +21,19 @@ namespace DbManager
         {
             //TODO DEADLINE 5: Run the query and return the appropriate message
             //UsersProfileIsNotGrantedRequiredPrivilege, UserDoesNotExistError, DeleteUserSuccess
-            
-            return null;
-            
+
+            if (database == null || database.SecurityManager == null)
+                return Constants.UsersProfileIsNotGrantedRequiredPrivilege;
+
+            if (!database.SecurityManager.IsUserAdmin())
+                return Constants.UsersProfileIsNotGrantedRequiredPrivilege;
+
+            var user = database.SecurityManager.UserByName(Username);
+            if (user == null)
+                return Constants.UserDoesNotExistError;
+
+            return Constants.DeleteUserSuccess;
+
         }
 
     }
