@@ -113,6 +113,41 @@ namespace OurTests
             Assert.Equal("5", delete.Where.LiteralValue);
         }
 
+        // [Fact]
+        // public void DeleteSyntaxError()
+        // {
+        //     var query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
+        //     Assert.Null(query);
+        // }
+
+        [Fact]
+        public void DeleteParse_NoSpaceCondition()
+        {
+        MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name= 'Juan'");
+        Assert.Null(query);
+        }
+
+        // [Fact]
+        // public void DeleteParse_MultipleNoSpacesCondition()
+        // {
+        // MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name='Juan'");
+        // Assert.Null(query);
+        // }
+
+        [Fact]
+        public void DeleteParse_MarksCondition()
+        {
+        MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name = Juan'");
+        Assert.Null(query);
+        }
+
+        [Fact]
+        public void DeleteParse_InvalidIdFormat()
+        {
+        var result = MiniSQLParser.Parse("DELETE FROM users WHERE id = 5.5.5");
+        Assert.Null(result);
+        }
+
         [Fact]
         public void DeleteParse_Numeric()
         {
