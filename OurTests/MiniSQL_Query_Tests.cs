@@ -253,6 +253,7 @@ namespace OurTests
             Assert.Equal(Constants.DatabaseCreatedWithoutColumnsError, result);
         }
 
+
         //DROPTABLE
 
         [Fact]
@@ -333,6 +334,67 @@ namespace OurTests
             Assert.Equal(Constants.DeleteSuccess, result);
             Assert.Equal(0, db.TableByName(Table.TestTableName).NumRows());
         }
+
+
+        // REVOKE
+
+        [Fact]
+        public void Revoke_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            db.SecurityManager.AddProfile(profile);
+            db.SecurityManager.GrantPrivilege("TestProfile", Table.TestTableName, Privilege.Select);
+
+            Revoke revoke = new Revoke("Select", Table.TestTableName, "TestProfile");
+
+            string result = revoke.Execute(db);
+
+            Assert.Equal(Constants.RevokePrivilegeSuccess, result);
+        }
+
+        [Fact]
+        public void Revoke_Execute_ProfileDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+            Revoke revoke = new Revoke("Select", Table.TestTableName, "PerfilFake");
+
+            string result = revoke.Execute(db);
+
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Revoke_Execute_TableDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            db.SecurityManager.AddProfile(profile);
+
+            Revoke revoke = new Revoke("Select", "TablaFake", "TestProfile");
+
+            string result = revoke.Execute(db);
+
+            Assert.Equal(Constants.TableDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Revoke_Execute_PrivilegeDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            db.SecurityManager.AddProfile(profile);
+
+            Revoke revoke = new Revoke("PrivilegioFake", Table.TestTableName, "TestProfile");
+
+            string result = revoke.Execute(db);
+
+            Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
+        }
+
 
     }
 }
