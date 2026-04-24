@@ -7,11 +7,12 @@ using Xunit;
 using DbManager.Security;
 using DbManager;
 
-/*namespace SecurityParsingTests
+namespace SecurityParsingTests
 {
+    
     public class CreateSecurityProfileTests
     {
-        /*[Fact]
+        [Fact]
         public void Correct()
         {
             CreateSecurityProfile query = MiniSQLParser.Parse("CREATE SECURITY PROFILE profile") as CreateSecurityProfile;
@@ -70,4 +71,4 @@ using DbManager;
             Assert.NotNull(query);
         }
     }
-}*/
+}

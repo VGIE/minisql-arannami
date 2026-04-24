@@ -25,7 +25,7 @@ namespace DbManager
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)\s*(=|<>|<=|>=|<|>)\s*('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
-            const string createSecurityProfilePattern = @"^CREATE SECURITY PROFILE (\w+)$";
+            const string createSecurityProfilePattern = @"^CREATE\s+SECURITY\s+PROFILE\s+([a-zA-Z0-9]+)\s*$";
             
             const string dropSecurityProfilePattern = @"^DROP\s+SECURITY\s+PROFILE\s+(\w+)\s*$";
 
@@ -200,7 +200,7 @@ namespace DbManager
             }
 
             //DELETE
-            match = Regex.Match(miniSQLQuery, deletePattern, RegexOptions.IgnoreCase);
+            match = Regex.Match(miniSQLQuery, deletePattern);
             if (match.Success)
             {
                 string table = match.Groups[1].Value;

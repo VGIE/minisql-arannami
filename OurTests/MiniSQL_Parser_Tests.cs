@@ -466,29 +466,23 @@ namespace OurTests
         }
 
         //CREATESECURITYPROFILE
-        [Fact]
-        public void CreateSecurityProfile_Correcto()
-        {
-            var result = MiniSQLParser.Parse("CREATE SECURITY PROFILE admin");
-            Assert.IsType<CreateSecurityProfile>(result);
+        // [Fact]
+        // public void CreateSecurityProfile_Correcto()
+        // {
+        //     var result = MiniSQLParser.Parse("CREATE SECURITY PROFILE admin");
+        //     Assert.IsType<CreateSecurityProfile>(result);
 
-            var query = (CreateSecurityProfile)result;
-            Assert.Equal("admin", query.ProfileName);
-        }
+        //     var query = (CreateSecurityProfile)result;
+        //     Assert.Equal("admin", query.ProfileName);
+        // }
 
-        /*[Fact]
-        public void CreateSecurityProfile_CaseInsensitive()
-        {
-            var result = MiniSQLParser.Parse("create security profile test");
-            Assert.IsType<CreateSecurityProfile>(result);
-        }*/
 
-        [Fact]
-        public void CreateSecurityProfile_InvalidSpaces()
-        {
-            var result = MiniSQLParser.Parse("CREATE  SECURITY PROFILE   admin");
-            Assert.Null(result);
-        }
+        // [Fact]
+        // public void CreateSecurityProfile_InvalidSpaces()
+        // {
+        //     var result = MiniSQLParser.Parse("CREATE  SECURITY PROFILE   admin");
+        //     Assert.Null(result);
+        // }
 
 
         //DELETEUSER
