@@ -450,6 +450,37 @@ namespace OurTests
             Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
         }
 
+        // CREATE SECURITY PROFILE
+        [Fact]
+        public void CreateSecurityProfile_Execute_Success()
+        {
+            Database db = new Database("admin", "admin"); 
+            var query = new CreateSecurityProfile("profile");
+            string result = query.Execute(db);
+            Assert.Equal(Constants.CreateSecurityProfileSuccess, result);
+            Assert.NotNull(db.SecurityManager.ProfileByName("profile"));    
+        }
+
+        [Fact]
+        public void CreateSecurityProfile_Execute_NotAdmin()
+        {
+            Database db = new Database("user", "1234"); 
+            var query = new CreateSecurityProfile("testProfile");
+            string result = query.Execute(db);
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+        }
+
+        [Fact]
+        public void CreateSecurityProfile_ProfileStored()
+        {
+            Database db = new Database("admin", "admin");
+            var query = new CreateSecurityProfile("profile");
+            query.Execute(db);
+            var profile = db.SecurityManager.ProfileByName("profile");
+            Assert.NotNull(profile);
+            Assert.Equal("profile", profile.Name);
+        }
+
     }
 
 }
