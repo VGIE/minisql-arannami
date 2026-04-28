@@ -52,13 +52,15 @@ namespace DbManager.Security
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Add this privilege on this table to the profile with this name
-            //If the profile or the table don't exist, do nothing
             var profile = ProfileByName(profileName);
-            if (profile != null)
-            {
-                profile.GrantPrivilege(table, privilege);
-            }
+            if (profile == null) return;
+            if (profile.IsGrantedPrivilege(table, privilege))
+                return;
+
+            profile.GrantPrivilege(table, privilege);
         }
+       
+
 
         public void RevokePrivilege(string profileName, string table, Privilege privilege)
         {

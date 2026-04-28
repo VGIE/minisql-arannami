@@ -73,13 +73,9 @@ namespace OurTests
         {
             Database db = Database.CreateTestDatabase();
             db.SecurityManager.AddProfile(new Profile { Name = "AdminProfile" });
-
             AddUser addUser = new AddUser("Juan", "1234", "AdminProfile");
-
             string result = addUser.Execute(db);
-
             Assert.Equal(Constants.AddUserSuccess, result);
-
             var user = db.SecurityManager.UserByName("Juan");
             Assert.NotNull(user);
         }
@@ -88,11 +84,8 @@ namespace OurTests
         public void AddUser_Execute_ProfileDoesNotExist()
         {
             Database db = Database.CreateTestDatabase();
-
             AddUser addUser = new AddUser("Juan", "1234", "PerfilFake");
-
             string result = addUser.Execute(db);
-
             Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
         }
 
@@ -106,7 +99,6 @@ namespace OurTests
             addUser1.Execute(db);
             AddUser addUser2 = new AddUser("Juan", "1234", "AdminProfile");
             string result = addUser2.Execute(db);
-
             Assert.Equal(Constants.Error + "User already exists", result);
         }
 
@@ -125,19 +117,6 @@ namespace OurTests
             Assert.NotEqual(Constants.ColumnDoesNotExistError, result);
         }
 
-        /*[Fact]
-        public void Select_Execute_SynctaticalErrorCondition()
-        {
-            Database db = Database.CreateTestDatabase();
-            List<string> columns = new List<string> { "Name" };
-
-            Condition wrongCond = new Condition("Age", "!!", "67");
-
-            Select select = new Select(Table.TestTableName, columns, wrongCond);
-            string result = select.Execute(db);
-
-            Assert.Equal(Constants.SyntaxError, result);
-        }*/
 
         [Fact]
         public void Select_Execute_NonExistentTable()
@@ -176,35 +155,7 @@ namespace OurTests
             Assert.Equal(Constants.ColumnDoesNotExistError, result);
         }
 
-        //INSERT
-        /*[Fact]
-        public void Insert_ExecuteOkey()
-        {
-            Database db = Database.CreateTestDatabase();
-            List<string> values = new List<string> { "Juan", "30" }; 
-
-            Insert insert = new Insert(Table.TestTableName, values);
-            string result = insert.Execute(db);
-
-            Assert.Equal(Constants.InsertSuccess, result);
-        }
         
-        [Fact]
-        public void Insert_Execute_MultipleColumns()
-        {
-        }
-
-        [Fact]
-        public void Insert_Execute_IncorrectColumns()
-        {
-        }
-
-        [Fact]
-        public void Insert_Execute_EmptyTableColumns()
-        {
-        }
-        */
-
         //CREATETABLE
 
         [Fact]
@@ -424,5 +375,81 @@ namespace OurTests
             Assert.Equal(Constants.UserDoesNotExistError, result);
         }
 
+        // GRANT
+
+        [Fact]
+        public void Grant_ExecuteBien()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            // Nombres ÚNICOS para este test específico
+            string uniqueTableName = "TablaNuevaGrantOK";
+            string uniqueProfileName = "TestProfileGrantOK";
+
+            List<ColumnDefinition> columns = new List<ColumnDefinition>
+        { new ColumnDefinition(ColumnDefinition.DataType.String, "Name") };
+
+            db.CreateTable(uniqueTableName, columns);
+
+            Profile profile = new Profile { Name = uniqueProfileName };
+            db.SecurityManager.AddProfile(profile);
+
+            // Ahora ejecutamos el Grant sobre algo que sabemos 100% que está vacío
+            Grant grant = new Grant("Select", uniqueTableName, uniqueProfileName);
+            string result = grant.Execute(db);
+
+            Assert.Equal(Constants.GrantPrivilegeSuccess, result);
+        }
+
+        [Fact]
+        public void Grant_ExecuteProfileNoExiste()
+        {
+            Database db = Database.CreateTestDatabase();
+            Grant grant = new Grant("Select", Table.TestTableName, "PerfilFake");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_TableNoExiste()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile profile = new Profile { Name = "TestProfile" };
+           db.SecurityManager.AddProfile(profile);
+            Grant grant = new Grant("Select", "TablaFake", "TestProfile");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.TableDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_PrivilegeNoexiste()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile profile = new Profile { Name = "TestProfile" };
+            db.SecurityManager.AddProfile(profile);
+            Grant grant = new Grant("PrivilegioFake", Table.TestTableName, "TestProfile");
+            string result = grant.Execute(db);
+            Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void Grant_Execute_ProfileConPrivilege()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            // Añade el privilegio directamente al objeto antes de meterlo al manager
+            profile.GrantPrivilege(Table.TestTableName, Privilege.Select);
+
+            db.SecurityManager.AddProfile(profile);
+
+            // Ahora el Execute DEBE encontrarlo
+            Grant grant = new Grant("Select", Table.TestTableName, "TestProfile");
+            string result = grant.Execute(db);
+
+            Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
+        }
+
     }
+
 }

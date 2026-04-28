@@ -27,22 +27,17 @@ namespace DbManager
             //UsersProfileIsNotGrantedRequiredPrivilege, SecurityProfileDoesNotExistError, PrivilegeDoesNotExistError, GrantPrivilegeSuccess, ProfileAlreadyHasPrivilege
             var profile = database.SecurityManager.ProfileByName(ProfileName);
             if (profile == null)
-            {
                 return Constants.SecurityProfileDoesNotExistError;
-            }
             var table = database.TableByName(TableName);
             if (table == null)
-            {
                 return Constants.TableDoesNotExistError;
-            }
-            if (!Enum.TryParse<Privilege>(PrivilegeName, out var privilege))
-            {
+            if (!Enum.TryParse<Privilege>(PrivilegeName, true, out var privilege))
                 return Constants.PrivilegeDoesNotExistError;
-            }
-            if (database.SecurityManager.IsGrantedPrivilege(ProfileName, TableName, privilege))
+            if (profile.IsGrantedPrivilege(TableName, privilege))
             {
                 return Constants.ProfileAlreadyHasPrivilege;
             }
+
             database.SecurityManager.GrantPrivilege(ProfileName, TableName, privilege);
 
             return Constants.GrantPrivilegeSuccess;

@@ -431,15 +431,6 @@ namespace OurTests
             Assert.Null(result4);
         }
 
-        /*[Fact]
-        public void Select_Parse_ColumnNotFound()
-        {
-            var db = new Database();
-            var table = new Table("Users", this.olumns);
-            table.ColumnByName("Name");
-            
-        }*/
-
         //INSERT
 
         [Fact]
@@ -500,26 +491,6 @@ namespace OurTests
             Assert.Null(result);
         }
 
-        //CREATESECURITYPROFILE
-        // [Fact]
-        // public void CreateSecurityProfile_Correcto()
-        // {
-        //     var result = MiniSQLParser.Parse("CREATE SECURITY PROFILE admin");
-        //     Assert.IsType<CreateSecurityProfile>(result);
-
-        //     var query = (CreateSecurityProfile)result;
-        //     Assert.Equal("admin", query.ProfileName);
-        // }
-
-
-        // [Fact]
-        // public void CreateSecurityProfile_InvalidSpaces()
-        // {
-        //     var result = MiniSQLParser.Parse("CREATE  SECURITY PROFILE   admin");
-        //     Assert.Null(result);
-        // }
-
-
         //DELETEUSER
 
         [Fact]
@@ -561,6 +532,34 @@ namespace OurTests
             string query = "REVOKE SELECT People TO Admin";
             var result = MiniSQLParser.Parse(query);
 
+            Assert.Null(result);
+        }
+        
+        // GRANT
+
+        [Fact]
+        public void Grant_Parse_SyntaxOK()
+        {
+            string query = "GRANT SELECT ON People TO Admin";
+            var result = MiniSQLParser.Parse(query) as Grant;
+            Assert.NotNull(result);
+            Assert.Equal("SELECT", result.PrivilegeName);
+            Assert.Equal("People", result.TableName);
+            Assert.Equal("Admin", result.ProfileName);
+        }
+
+        [Fact]
+        public void Grant_Parse_InvalidSyntax_NULL()
+        {
+            string query = "GRANT SELECT People TO Admin"; 
+           var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
+        [Fact]
+        public void Grant_Parse_InvalidPrivilege_NULL()
+        {
+            string query = "GRANT FAKE ON People TO Admin";
+            var result = MiniSQLParser.Parse(query);
             Assert.Null(result);
         }
     }
