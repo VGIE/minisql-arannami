@@ -28,12 +28,12 @@ namespace DbManager
             //TODO DEADLINE 3: Run the query and return the appropriate message
             //InsertSuccess or the last error in the database
 
-            var error = database.Insert(this.Table, this.Values);
-            if (string.IsNullOrEmpty(error.ToString()))
+            database.Insert(this.Table, this.Values);
+            if (string.IsNullOrEmpty(database.LastErrorMessage))
             {
                 return Constants.InsertSuccess;
             }
-            return error.ToString();
+            return database.LastErrorMessage;
             
         }
     }
