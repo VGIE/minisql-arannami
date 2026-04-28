@@ -160,14 +160,10 @@ namespace DbManager
 
             }
 
-
             //UPDATE
             match = Regex.Match(miniSQLQuery, updateTablePattern);
             if (match.Success)
             {
-                if (miniSQLQuery.Contains("  "))
-                    return null;
-
                 string table = match.Groups[1].Value;
                 string setText = match.Groups[2].Value;
 
@@ -176,11 +172,21 @@ namespace DbManager
 
                 foreach (string assignment in assignments)
                 {
-                    var setMatch = Regex.Match(assignment.Trim(), @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$");
+                    var setMatch = Regex.Match(
+                        assignment.Trim(),
+                        @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$"
+                    );
 
-                    if (!setMatch.Success) return null;
+                    if (!setMatch.Success)
+                        return null;
+
                     string column = setMatch.Groups[1].Value;
-                    string value = setMatch.Groups[2].Value.Trim('\'');
+                    string rawValue = setMatch.Groups[2].Value;
+
+                    if (!rawValue.StartsWith("'") && !Regex.IsMatch(rawValue, @"^\d+(\.\d+)?$"))
+                        return null;
+
+                    string value = rawValue.Trim('\'');
 
                     values.Add(new SetValue(column, value));
                 }
