@@ -155,7 +155,56 @@ namespace OurTests
             Assert.Equal(Constants.ColumnDoesNotExistError, result);
         }
 
-        
+        //INSERT
+        [Fact]
+        public void Insert_ExecuteOkey()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<string> values = new List<string> { "Juanjo", "1.67", "45"};
+
+            Insert insert = new Insert(Table.TestTableName, values);
+            string result = insert.Execute(db);
+
+            Assert.Equal(Constants.InsertSuccess, result);
+        }
+
+        [Fact]
+        public void Insert_Execute_MultipleColumns()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<string> values = new List<string> { "Alice", "1.74", "23" };
+
+            Insert insert = new Insert(Table.TestTableName, values);
+            string result = insert.Execute(db);
+
+            Assert.Equal(Constants.InsertSuccess, result);
+        }
+
+        [Fact]
+        public void Insert_Execute_IncorrectColumns()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<string> values = new List<string> { "Federico" };
+
+            Insert insert = new Insert(Table.TestTableName, values);
+            string result = insert.Execute(db);
+
+            Assert.NotEqual(Constants.InsertSuccess, result);
+            Assert.False(string.IsNullOrEmpty(result));
+        }
+
+        [Fact]
+        public void Insert_Execute_EmptyTableColumns()
+        {
+            Database db = Database.CreateTestDatabase();
+            List<string> values = new List<string>();
+
+            Insert insert = new Insert(Table.TestTableName, values);
+            string result = insert.Execute(db);
+
+            Assert.NotEqual(Constants.InsertSuccess, result);
+        }
+
         //CREATETABLE
 
         [Fact]
