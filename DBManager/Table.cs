@@ -154,7 +154,7 @@ namespace DbManager
             //may be null (if no condition, all rows should be returned). This is the most difficult method in this class
             List<ColumnDefinition> selectedColumns = new List<ColumnDefinition>();
             List<int> selectedIndex = new List<int>();
-            if (columnNames == null)
+            if (columnNames == null || columnNames.Count == 0)
             {
                 for (int i = 0; i < ColumnDefinitions.Count; i++)
                 {
@@ -177,6 +177,8 @@ namespace DbManager
                 }
             }
             Table table = new Table("Result", selectedColumns);
+
+            if (selectedColumns.Count == 0) return table;
 
             for (int z = 0; z < Rows.Count; z++)
             {
@@ -211,14 +213,6 @@ namespace DbManager
             AddRow(row);
             return true;
         }
-        /*
-        public bool Update(List<SetValue> setValues, Condition condition)
-        {
-            //TODO DEADLINE 1.A: Update all the rows where the condition is true using all the SetValues(ColumnName - Value).If condition is null,
-            //return false, otherwise return true
-            return false;
-        }
-        */
 
         //Only for testing purposes
         public const string TestTableName = "TestTable";
@@ -292,11 +286,10 @@ namespace DbManager
                     row.SetValue(sv.ColumnName, sv.Value);
                 }
             }
-
             return true;
         }
     
-    public override string ToString()
+        public override string ToString()
         {
             /*TODO DEADLINE 1.A: Return the table as a string. The format 
             //TODO DEADLINE 1.A: Delete the i-th row. If there is no i-th row, do nothing
@@ -330,10 +323,8 @@ namespace DbManager
                 }
                 result += "}";
             }
-
             return result;
         }
-
     }
 }
 
