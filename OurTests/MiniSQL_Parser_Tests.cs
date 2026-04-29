@@ -86,7 +86,7 @@ namespace OurTests
         [Fact]
         public void DeleteParse_String()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
+            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Name='Juan'");
 
             Assert.NotNull(result);
             Assert.IsType<Delete>(result);
@@ -101,7 +101,7 @@ namespace OurTests
         [Fact]
         public void Delete_WithWhere()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id = 5");
+            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id=5");
 
             Assert.IsType<Delete>(result);
             var delete = (Delete)result;
@@ -112,13 +112,22 @@ namespace OurTests
             Assert.Equal("=", delete.Where.Operator);
             Assert.Equal("5", delete.Where.LiteralValue);
         }
+        [Fact]
+        public void DeleteParse_WithoutWhere()
+        {
+            var result = MiniSQLParser.Parse("DELETE FROM users");
+            Assert.IsType<Delete>(result);
+            var delete = (Delete)result;
+            Assert.Equal("users", delete.Table);
+            Assert.Null(delete.Where);
+        }
 
-        // [Fact]
-        // public void DeleteSyntaxError()
-        // {
-        //     var query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
-        //     Assert.Null(query);
-        // }
+        [Fact]
+        public void DeleteSyntaxError()
+        {
+            var query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
+            Assert.Null(query);
+        }
 
         [Fact]
         public void DeleteParse_NoSpaceCondition()
@@ -127,12 +136,12 @@ namespace OurTests
         Assert.Null(query);
         }
 
-        // [Fact]
-        // public void DeleteParse_MultipleNoSpacesCondition()
-        // {
-        // MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name='Juan'");
-        // Assert.Null(query);
-        // }
+        [Fact]
+        public void DeleteParse_MultipleNoSpacesCondition()
+        {
+        MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
+        Assert.Null(query);
+        }
 
         [Fact]
         public void DeleteParse_MarksCondition()
@@ -151,7 +160,7 @@ namespace OurTests
         [Fact]
         public void DeleteParse_Numeric()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Age > 25");
+            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Age>25");
 
             Assert.NotNull(result);
             Assert.IsType<Delete>(result);
@@ -163,23 +172,6 @@ namespace OurTests
             Assert.Equal("25", delete.Where.LiteralValue);
         }
 
-        [Fact]
-        public void DeleteSyntaxError()
-        {
-            // Falta FROM debe devolver null
-            MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
-            Assert.Null(query);
-        }
-
-        [Fact]
-        public void DeleteParse_WithoutWhere()
-        {
-            var result = MiniSQLParser.Parse("DELETE FROM users");
-            Assert.IsType<Delete>(result);
-            var delete = (Delete)result;
-            Assert.Equal("users", delete.Table);
-            Assert.Null(delete.Where);
-        }
 
         //DROPTABLE
 
