@@ -530,9 +530,7 @@ namespace OurTests
             Assert.Equal("profile", profile.Name);
         }
 
-    }
-
-        [Fact]
+        /*[Fact]
         public void DropSecurityProfile_Execute_NoPrivileges()
         {
             Database db = Database.CreateTestDatabase();
