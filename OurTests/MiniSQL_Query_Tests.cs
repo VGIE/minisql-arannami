@@ -499,6 +499,42 @@ namespace OurTests
             Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
         }
 
-    }
+        // DROP SECURITY PROFILE
 
+        /*[Fact]
+        public void DropSecurityProfile_Execute_Success()
+        {
+            Database db = Database.CreateTestDatabase();
+            string name = "ProfileToDrop";
+
+            db.SecurityManager.AddProfile(name);
+
+            DropSecurityProfile drop = new DropSecurityProfile(name);
+            string result = drop.Execute(db);
+
+            Assert.Equal(Constants.DropSecurityProfileSuccess, result);
+        }
+
+        [Fact]
+        public void DropSecurityProfile_Execute_ProfileDoesNotExist()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            DropSecurityProfile drop = new DropSecurityProfile("FakeProfile");
+            string result = drop.Execute(db);
+
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
+
+        [Fact]
+        public void DropSecurityProfile_Execute_NoPrivileges()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            DropSecurityProfile drop = new DropSecurityProfile("AdminProfile");
+            string result = drop.Execute(db);
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+        }*/
+    }
 }

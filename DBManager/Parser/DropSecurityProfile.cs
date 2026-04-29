@@ -19,8 +19,12 @@ namespace DbManager
         {
             //TODO DEADLINE 5: Run the query and return the appropriate message
             //UsersProfileIsNotGrantedRequiredPrivilege, SecurityProfileDoesNotExistError, DropSecurityProfileSuccess
-            
-            return null;
+            database.SecurityManager.RemoveProfile(this.ProfileName);
+            if (string.IsNullOrEmpty(database.LastErrorMessage))
+            {
+                return Constants.DropSecurityProfileSuccess;
+            }
+            return database.LastErrorMessage;
             
         }
 
