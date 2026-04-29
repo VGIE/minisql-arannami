@@ -19,7 +19,7 @@ namespace DbManager
 
             //Note: The parsing of CREATE TABLE should accept empty columns "()"
             //And then, an execution error should be given if a CreateTable without columns is executed
-            const string createTablePattern = @"^CREATE\s+TABLE\s+(\w+)\s*\((.*)\)\s*$";
+            const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
             const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
@@ -114,43 +114,44 @@ namespace DbManager
 
                 string table = match.Groups[1].Value;
                 string columnsText = match.Groups[2].Value;
-
                 List<ColumnDefinition> columns = new List<ColumnDefinition>();
 
-                if (columnsText.Trim().Length != 0)
+                if (columnsText != "")
                 {
-                    string trimmedColumnsText = columnsText.Trim();
-
-                    if (trimmedColumnsText.StartsWith(",") ||
-                        trimmedColumnsText.EndsWith(",") ||
-                        trimmedColumnsText.Contains(",,"))
+                    if (!Regex.IsMatch(columnsText,@"^[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE)(,[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE))*$"))
                     {
                         return null;
                     }
 
                     List<string> parts = CommaSeparatedNames(columnsText);
-
                     foreach (string part in parts)
                     {
-                        string trimmedPart = part.Trim();
-                        string[] columnParts = Regex.Split(trimmedPart, @"\s+");
-
-                        if (columnParts.Length != 2)
+                        Match columnMatch = Regex.Match(part,@"^([a-zA-Z]\w*)\s+(TEXT|INT|DOUBLE)$");
+                        if (!columnMatch.Success)
+                        {
                             return null;
+                        } 
 
-                        string columnName = columnParts[0].Trim();
-                        string columnType = columnParts[1].Trim();
+                        string columnName = columnMatch.Groups[1].Value;
+                        string columnType = columnMatch.Groups[2].Value;
 
                         ColumnDefinition.DataType type;
-
                         if (columnType == textType)
+                        {
                             type = ColumnDefinition.DataType.String;
-                        else if (columnType == intType)
+                        }                         
+                        else if (columnType == intType) 
+                        { 
                             type = ColumnDefinition.DataType.Int;
+                        }    
                         else if (columnType == doubleType)
+                        {
                             type = ColumnDefinition.DataType.Double;
+                        }
                         else
+                        {
                             return null;
+                        }
 
                         columns.Add(new ColumnDefinition(type, columnName));
                     }
