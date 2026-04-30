@@ -485,17 +485,11 @@ namespace OurTests
         public void Grant_Execute_ProfileConPrivilege()
         {
             Database db = Database.CreateTestDatabase();
-
             Profile profile = new Profile { Name = "TestProfile" };
-            // Añade el privilegio directamente al objeto antes de meterlo al manager
             profile.GrantPrivilege(Table.TestTableName, Privilege.Select);
-
             db.SecurityManager.AddProfile(profile);
-
-            // Ahora el Execute DEBE encontrarlo
             Grant grant = new Grant("Select", Table.TestTableName, "TestProfile");
             string result = grant.Execute(db);
-
             Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
         }
 

@@ -21,7 +21,7 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(=|<>|<|>|<=|>=)\s*('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
@@ -175,7 +175,7 @@ namespace DbManager
                 {
                     var setMatch = Regex.Match(
                         assignment.Trim(),
-                        @"^(\w+)\s*=\s*('[^']*'|\d+(?:\.\d+)?)$"
+                        @"^(\w+)=('[^']*'|\d+)$"
                     );
 
                     if (!setMatch.Success)
@@ -183,9 +183,16 @@ namespace DbManager
 
                     string column = setMatch.Groups[1].Value;
                     string rawValue = setMatch.Groups[2].Value;
-
-                    if (!rawValue.StartsWith("'") && !Regex.IsMatch(rawValue, @"^\d+(\.\d+)?$"))
-                        return null;
+                    if (rawValue.StartsWith("'"))
+                    {
+                        if (!rawValue.EndsWith("'"))
+                            return null;
+                    }
+                    else
+                    {
+                        if (!Regex.IsMatch(rawValue, @"^\d+$"))
+                            return null;
+                    }
 
                     string value = rawValue.Trim('\'');
 
@@ -193,12 +200,24 @@ namespace DbManager
                 }
 
                 Condition condition = null;
-
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
                     string op = match.Groups[4].Value;
-                    string val = match.Groups[5].Value.Trim('\'');
+                    string rawVal = match.Groups[5].Value;
+
+                    if (rawVal.StartsWith("'"))
+                    {
+                        if (!rawVal.EndsWith("'"))
+                            return null;
+                    }
+                    else
+                    {
+                        if (!Regex.IsMatch(rawVal, @"^\d+$"))
+                            return null;
+                    }
+
+                    string val = rawVal.Trim('\'');
 
                     condition = new Condition(col, op, val);
                 }
