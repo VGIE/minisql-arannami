@@ -11,7 +11,7 @@ namespace DbManager
         public static MiniSqlQuery Parse(string miniSQLQuery)
         {
             //TODO DEADLINE 2
-            const string selectPattern = @"^SELECT\s+(\*|[a-zA-Z]\w*(,[a-zA-Z]\w*)*)\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
+            const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
 
             const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s*('[^']*'(?:\s*,\s*'[^']*')*)\s*\)\s?$";
 
@@ -21,12 +21,12 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+([a-zA-Z]\w*=(?:'[^']*'|\d+)(?:,[a-zA-Z]\w*=(?:'[^']*'|\d+))*)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+))?$";
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
             const string createSecurityProfilePattern = @"^CREATE\s+SECURITY\s+PROFILE\s+([a-zA-Z0-9]+)\s*$";
-            
+
             const string dropSecurityProfilePattern = @"^DROP\s+SECURITY\s+PROFILE\s+(\w+)\s*$";
 
             const string grantPattern = @"^GRANT\s+(DELETE|INSERT|SELECT|UPDATE)\s+ON\s+(\w+)\s+TO\s+([a-zA-Z]+)\s*$";
@@ -34,7 +34,7 @@ namespace DbManager
             const string revokePattern = @"^REVOKE\s+(DELETE|INSERT|SELECT|UPDATE)\s+ON\s+(\w+)\s+TO\s+([a-zA-Z]+)\s*$";
 
             const string addUserPattern = @"^ADD\s+USER\s*\(([a-zA-Z]+),([^,]+),([a-zA-Z]+)\)\s*$";
-            
+
             const string deleteUserPattern = @"^DELETE\s+USER\s+([a-zA-Z]+)\s*$";
 
 
@@ -48,31 +48,38 @@ namespace DbManager
 
             //SELECT
             match = Regex.Match(miniSQLQuery, selectPattern);
+            var newSelect = new Select();
             if (match.Success)
             {
-                string columnsRaw = match.Groups[1].Value;
+                string columnNames = match.Groups[1].Value;
+                string[] columnsSelect = columnNames.Split(',').Select(c => c.Trim()).ToArray();
 
-                List<string> columns;
-                if (columnsRaw == "*")
-                    columns = new List<string> { "*" };
-                else
-                    columns = columnsRaw.Split(',').ToList();
+                string tableSelect = match.Groups[2].Value;
 
-                string table = match.Groups[2].Value;
+                Condition conditionsParse = null;
 
-                Condition where = null;
-
-                if (match.Groups[3].Success)
+                if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value))
                 {
-                    string col = match.Groups[3].Value;
-                    string op = match.Groups[4].Value;
-                    string val = match.Groups[5].Value.Trim('\'');
+                    string conditions = match.Groups[3].Value;
+                    string[] eachCondition = conditions.Split(",");
 
-                    where = new Condition(col, op, val);
+                    foreach (var condition in eachCondition)
+                    {
+                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(<=|>=|=|<|>)\s*['""]?([^'""]+)['""]?$");
+                        if (conditionMatch.Success)
+                        {
+                            string col = conditionMatch.Groups[1].Value;
+                            string op = conditionMatch.Groups[2].Value;
+                            string val = conditionMatch.Groups[3].Value;
+
+                            conditionsParse = new Condition(col, op, val);
+                        }
+                    }
                 }
 
-                return new Select(table, columns, where);
+                return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
+
             //INSERT
             match = Regex.Match(miniSQLQuery, insertPattern);
             if (match.Success)
@@ -81,7 +88,7 @@ namespace DbManager
 
                 string literalValues = match.Groups[2].Value;
                 List<string> values = literalValues.Split(',').Select(v => v.Trim().Trim('\'')).ToList();
-                if(!literalValues.Contains("'"))
+                if (!literalValues.Contains("'"))
                 {
                     return null;
                 }
@@ -111,7 +118,7 @@ namespace DbManager
 
                 if (columnsText != "")
                 {
-                    if (!Regex.IsMatch(columnsText,@"^[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE)(,[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE))*$"))
+                    if (!Regex.IsMatch(columnsText, @"^[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE)(,[a-zA-Z]\w*\s+(TEXT|INT|DOUBLE))*$"))
                     {
                         return null;
                     }
@@ -119,11 +126,11 @@ namespace DbManager
                     List<string> parts = CommaSeparatedNames(columnsText);
                     foreach (string part in parts)
                     {
-                        Match columnMatch = Regex.Match(part,@"^([a-zA-Z]\w*)\s+(TEXT|INT|DOUBLE)$");
+                        Match columnMatch = Regex.Match(part, @"^([a-zA-Z]\w*)\s+(TEXT|INT|DOUBLE)$");
                         if (!columnMatch.Success)
                         {
                             return null;
-                        } 
+                        }
 
                         string columnName = columnMatch.Groups[1].Value;
                         string columnType = columnMatch.Groups[2].Value;
@@ -132,11 +139,11 @@ namespace DbManager
                         if (columnType == textType)
                         {
                             type = ColumnDefinition.DataType.String;
-                        }                         
-                        else if (columnType == intType) 
-                        { 
+                        }
+                        else if (columnType == intType)
+                        {
                             type = ColumnDefinition.DataType.Int;
-                        }    
+                        }
                         else if (columnType == doubleType)
                         {
                             type = ColumnDefinition.DataType.Double;
@@ -162,60 +169,59 @@ namespace DbManager
                 string setText = match.Groups[2].Value;
 
                 List<SetValue> values = new List<SetValue>();
-
                 string[] assignments = setText.Split(',');
 
                 foreach (string assignment in assignments)
                 {
-                    string[] parts = assignment.Split('=');
+                    var setMatch = Regex.Match(
+                        assignment.Trim(),
+                        @"^(\w+)=('[^']*'|\d+)$"
+                    );
 
-                    if (parts.Length != 2)
+                    if (!setMatch.Success)
                         return null;
 
-                    string column = parts[0];
-                    string rawValue = parts[1];
-
+                    string column = setMatch.Groups[1].Value;
+                    string rawValue = setMatch.Groups[2].Value;
                     if (rawValue.StartsWith("'"))
                     {
                         if (!rawValue.EndsWith("'"))
                             return null;
-
-                        values.Add(new SetValue(column, rawValue.Substring(1, rawValue.Length - 2)));
                     }
                     else
                     {
                         if (!Regex.IsMatch(rawValue, @"^\d+$"))
                             return null;
-
-                        values.Add(new SetValue(column, rawValue));
                     }
+
+                    string value = rawValue.Trim('\'');
+
+                    values.Add(new SetValue(column, value));
                 }
 
-                Condition where = null;
-
+                Condition condition = null;
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
                     string op = match.Groups[4].Value;
                     string rawVal = match.Groups[5].Value;
-
                     if (rawVal.StartsWith("'"))
                     {
                         if (!rawVal.EndsWith("'"))
                             return null;
-
-                        where = new Condition(col, op, rawVal.Substring(1, rawVal.Length - 2));
                     }
                     else
                     {
                         if (!Regex.IsMatch(rawVal, @"^\d+$"))
                             return null;
-
-                        where = new Condition(col, op, rawVal);
                     }
+
+                    string val = rawVal.Trim('\'');
+
+                    condition = new Condition(col, op, val);
                 }
 
-                return new Update(table, values, where);
+                return new Update(table, values, condition);
             }
 
             //DELETE
@@ -255,7 +261,7 @@ namespace DbManager
                 string profileName = match.Groups[1].Value;
                 return new CreateSecurityProfile(profileName);
             }
-            
+
             //DELETEUSER
 
             match = Regex.Match(miniSQLQuery, deleteUserPattern);
@@ -271,8 +277,8 @@ namespace DbManager
             {
                 string profileName = match.Groups[1].Value;
                 return new DropSecurityProfile(profileName);
-            }   
-            
+            }
+
             //GRANT
             match = Regex.Match(miniSQLQuery, grantPattern);
             if (match.Success)
@@ -304,13 +310,14 @@ namespace DbManager
         {
             string[] textParts = text.Split(",", System.StringSplitOptions.RemoveEmptyEntries);
             List<string> commaSeparator = new List<string>();
-            for(int i=0; i < textParts.Length; i++)
+            for (int i = 0; i < textParts.Length; i++)
             {
                 commaSeparator.Add(textParts[i]);
             }
             return commaSeparator;
         }
-        
+
     }
 }
+
 
