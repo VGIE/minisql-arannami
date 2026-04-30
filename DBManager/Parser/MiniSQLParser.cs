@@ -11,7 +11,7 @@ namespace DbManager
         public static MiniSqlQuery Parse(string miniSQLQuery)
         {
             //TODO DEADLINE 2
-            const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
+            const string selectPattern = @"^SELECT\s+(\*|[a-zA-Z]\w*(,[a-zA-Z]\w*)*)\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
 
             const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(\s*('[^']*'(?:\s*,\s*'[^']*')*)\s*\)\s?$";
 
@@ -21,9 +21,9 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+([a-zA-Z]\w*=(?:'[^']*'|\d+)(?:,[a-zA-Z]\w*=(?:'[^']*'|\d+))*)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+))?$";
 
             const string createSecurityProfilePattern = @"^CREATE\s+SECURITY\s+PROFILE\s+([a-zA-Z0-9]+)\s*$";
             
@@ -48,38 +48,31 @@ namespace DbManager
 
             //SELECT
             match = Regex.Match(miniSQLQuery, selectPattern);
-            var newSelect = new Select();
             if (match.Success)
             {
-                string columnNames = match.Groups[1].Value;
-                string[] columnsSelect = columnNames.Split(',').Select(c => c.Trim()).ToArray();
-                
-                string tableSelect = match.Groups[2].Value;
+                string columnsRaw = match.Groups[1].Value;
 
-                Condition conditionsParse = null;
+                List<string> columns;
+                if (columnsRaw == "*")
+                    columns = new List<string> { "*" };
+                else
+                    columns = columnsRaw.Split(',').ToList();
 
-                if (match.Groups[3].Success && !string.IsNullOrWhiteSpace(match.Groups[3].Value)) 
+                string table = match.Groups[2].Value;
+
+                Condition where = null;
+
+                if (match.Groups[3].Success)
                 {
-                    string conditions = match.Groups[3].Value;
-                    string[] eachCondition = conditions.Split(",");
+                    string col = match.Groups[3].Value;
+                    string op = match.Groups[4].Value;
+                    string val = match.Groups[5].Value.Trim('\'');
 
-                    foreach (var condition in eachCondition)
-                    {
-                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(<=|>=|=|<|>)\s*['""]?([^'""]+)['""]?$");
-                        if (conditionMatch.Success)
-                        {
-                            string col = conditionMatch.Groups[1].Value;
-                            string op = conditionMatch.Groups[2].Value;
-                            string val = conditionMatch.Groups[3].Value;
-
-                            conditionsParse = new Condition(col, op, val);
-                        }
-                    }
+                    where = new Condition(col, op, val);
                 }
 
-                return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
+                return new Select(table, columns, where);
             }
-
             //INSERT
             match = Regex.Match(miniSQLQuery, insertPattern);
             if (match.Success)
@@ -169,37 +162,37 @@ namespace DbManager
                 string setText = match.Groups[2].Value;
 
                 List<SetValue> values = new List<SetValue>();
+
                 string[] assignments = setText.Split(',');
 
                 foreach (string assignment in assignments)
                 {
-                    var setMatch = Regex.Match(
-                        assignment.Trim(),
-                        @"^(\w+)=('[^']*'|\d+)$"
-                    );
+                    string[] parts = assignment.Split('=');
 
-                    if (!setMatch.Success)
+                    if (parts.Length != 2)
                         return null;
 
-                    string column = setMatch.Groups[1].Value;
-                    string rawValue = setMatch.Groups[2].Value;
+                    string column = parts[0];
+                    string rawValue = parts[1];
+
                     if (rawValue.StartsWith("'"))
                     {
                         if (!rawValue.EndsWith("'"))
                             return null;
+
+                        values.Add(new SetValue(column, rawValue.Substring(1, rawValue.Length - 2)));
                     }
                     else
                     {
                         if (!Regex.IsMatch(rawValue, @"^\d+$"))
                             return null;
+
+                        values.Add(new SetValue(column, rawValue));
                     }
-
-                    string value = rawValue.Trim('\'');
-
-                    values.Add(new SetValue(column, value));
                 }
 
-                Condition condition = null;
+                Condition where = null;
+
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
@@ -210,19 +203,19 @@ namespace DbManager
                     {
                         if (!rawVal.EndsWith("'"))
                             return null;
+
+                        where = new Condition(col, op, rawVal.Substring(1, rawVal.Length - 2));
                     }
                     else
                     {
                         if (!Regex.IsMatch(rawVal, @"^\d+$"))
                             return null;
+
+                        where = new Condition(col, op, rawVal);
                     }
-
-                    string val = rawVal.Trim('\'');
-
-                    condition = new Condition(col, op, val);
                 }
 
-                return new Update(table, values, condition);
+                return new Update(table, values, where);
             }
 
             //DELETE
