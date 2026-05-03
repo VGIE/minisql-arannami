@@ -31,8 +31,6 @@ namespace DbManager
 
             if (profile == null)
                 return Constants.SecurityProfileDoesNotExistError;
-
-            // comprobar usuario duplicado
             foreach (var p in database.SecurityManager.Profiles)
             {
                 if (p.Users.Any(u => u.Username == Username))
