@@ -2,11 +2,12 @@ using DbManager.Parser;
 using DbManager.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DbManager
 {
- 
+
     public class AddUser : MiniSqlQuery
     {
         public string Username { get; private set; }
@@ -20,7 +21,7 @@ namespace DbManager
             this.Username = username;
             this.Password = password;
             this.ProfileName = profileName;
-           
+
         }
         public string Execute(Database database)
         {
@@ -29,19 +30,20 @@ namespace DbManager
             var profile = database.SecurityManager.ProfileByName(ProfileName);
 
             if (profile == null)
-            {
                 return Constants.SecurityProfileDoesNotExistError;
-            }
-            var existingUser = database.SecurityManager.UserByName(Username);
-            if (existingUser != null)
+
+            // comprobar usuario duplicado
+            foreach (var p in database.SecurityManager.Profiles)
             {
-                return Constants.Error + "User already exists";
+                if (p.Users.Any(u => u.Username == Username))
+                    return Constants.Error + "User already exists";
             }
+
             User user = new User(Username, Password);
             profile.Users.Add(user);
 
             return Constants.AddUserSuccess;
-        }
 
+        }
     }
 }
