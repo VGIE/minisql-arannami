@@ -132,9 +132,32 @@ namespace DbManager.Security
         public static Manager Load(string databaseName, string username)
         {
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
-            
-            return null;
-            
+
+            Manager manager = new Manager(username);
+            string fileName = databaseName + "_security.txt";
+            if (!File.Exists(fileName))
+                return manager;
+            var lines = File.ReadAllLines(fileName);
+            Profile currentProfile = null;
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("PROFILE:"))
+                {
+                    string profileName = line.Substring("PROFILE:".Length);
+                    currentProfile = new Profile { Name = profileName };
+                    manager.Profiles.Add(currentProfile);
+                }
+                else if (line.StartsWith("USER:") && currentProfile != null)
+                {
+                    var parts = line.Substring("USER:".Length).Split(',');
+                    string usernameFile = parts[0];
+                    string password = parts[1];
+
+                    currentProfile.Users.Add(new User(usernameFile, password));
+                }
+            }
+
+            return manager;
         }
 
         public void Save(string databaseName)
