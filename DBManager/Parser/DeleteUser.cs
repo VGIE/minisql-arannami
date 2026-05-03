@@ -1,7 +1,8 @@
+using DbManager.Parser;
+using DbManager.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DbManager.Parser;
 
 namespace DbManager
 {
@@ -31,6 +32,13 @@ namespace DbManager
             var user = database.SecurityManager.UserByName(Username);
             if (user == null)
                 return Constants.UserDoesNotExistError;
+
+            var profile = database.SecurityManager.ProfileByUser(Username);
+            if (profile == null)
+                return Constants.UserDoesNotExistError;
+
+            profile.Users.Remove(user);
+
 
             return Constants.DeleteUserSuccess;
 

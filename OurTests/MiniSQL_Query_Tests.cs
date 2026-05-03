@@ -423,6 +423,23 @@ namespace OurTests
 
             Assert.Equal(Constants.UserDoesNotExistError, result);
         }
+        [Fact]
+        public void DeleteUser_Execute_UserIsReallyDeleted()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            profile.Users.Add(new User("Juan", "1234"));
+            db.SecurityManager.AddProfile(profile);
+
+            DeleteUser deleteUser = new DeleteUser("Juan");
+
+            deleteUser.Execute(db);
+
+            var user = db.SecurityManager.UserByName("Juan");
+
+            Assert.Null(user); 
+        }
 
         // GRANT
 
