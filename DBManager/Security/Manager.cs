@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DbManager.Security
 {
@@ -30,9 +31,7 @@ namespace DbManager.Security
         public bool IsUserAdmin()
         {
             //TODO DEADLINE 5: Return true if the user logged-in (m_username) is the admin, false otherwise
-
             return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
-
         }
 
         public bool IsPasswordCorrect(string username, string password)
@@ -45,7 +44,6 @@ namespace DbManager.Security
 
             string encryptedPassword = Encryption.Encrypt(password);
             return user.EncryptedPassword.Equals(encryptedPassword);
-
         }
 
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
@@ -58,8 +56,6 @@ namespace DbManager.Security
 
             profile.GrantPrivilege(table, privilege);
         }
-
-
 
         public void RevokePrivilege(string profileName, string table, Privilege privilege)
         {
@@ -80,7 +76,6 @@ namespace DbManager.Security
                     return;
                 }
             }
-
         }
 
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
@@ -90,7 +85,6 @@ namespace DbManager.Security
             var profile = ProfileByUser(username);
             if (profile == null) return false;
             return profile.IsGrantedPrivilege(table, privilege);
-
         }
 
         public void AddProfile(Profile profile)
@@ -103,31 +97,53 @@ namespace DbManager.Security
                 return;
 
             Profiles.Add(profile);
-
         }
 
         public User UserByName(string username)
         {
             //TODO DEADLINE 5: Return the user by name. If it doesn't exist, return null
+            if (string.IsNullOrEmpty(username)) return null;
 
+            for (int i=0; i<Profiles.Count; i++)
+            {
+                var profile = Profiles[i];
+                for (int j=0; j<profile.Users.Count; j++)
+                {
+                    var user = profile.Users[j];
+                    if(user.Username.Equals(username)) return user;
+                }
+            }
             return null;
-
-
         }
 
         public Profile ProfileByName(string profileName)
         {
             //TODO DEADLINE 5: Return the profile by name. If it doesn't exist, return null
-
+            if(string.IsNullOrEmpty(profileName)) return null;
+            
+            for(int i=0; i<Profiles.Count; i++)
+            {
+                var profile = Profiles[i];
+                if(profile.Name.Equals(profileName)) return profile;
+            }
             return null;
         }
 
         public Profile ProfileByUser(string username)
         {
             //TODO DEADLINE 5: Return the profile by user. If the user doesn't exist, return null
+            if(string.IsNullOrEmpty (username)) return null;
+
+            for(int i=0; i < Profiles.Count; i++)
+            {
+                var profile= Profiles[i];
+                for(int j=0; j<profile.Users.Count; j++)
+                {
+                    var user = profile.Users[j];
+                    if (user.Username.Equals(username)) return profile;
+                }
+            }
             return null;
-
-
         }
 
 
@@ -136,8 +152,6 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Remove this profile
 
             return false;
-
-
         }
 
         public static Manager Load(string databaseName, string username)
