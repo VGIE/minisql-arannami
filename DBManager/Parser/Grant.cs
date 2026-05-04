@@ -39,7 +39,6 @@ namespace DbManager
             }
 
             database.SecurityManager.GrantPrivilege(ProfileName, TableName, privilege);
-
             return Constants.GrantPrivilegeSuccess;
         }
 

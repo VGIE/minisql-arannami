@@ -181,6 +181,12 @@ namespace OurTests
         }
 
         [Fact]
+        public void Insert_Execute_TableDoesntExist()
+        {
+
+        }
+
+        [Fact]
         public void Insert_Execute_IncorrectColumns()
         {
             Database db = Database.CreateTestDatabase();
@@ -541,15 +547,7 @@ namespace OurTests
             Assert.Equal("profile", profile.Name);
         }
 
-        /*[Fact]
-        public void DropSecurityProfile_Execute_NoPrivileges()
-        {
-            Database db = Database.CreateTestDatabase();
-
-            DropSecurityProfile drop = new DropSecurityProfile("AdminProfile");
-            string result = drop.Execute(db);
-
-            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
-        }*/
+        //DROP SECURITY PROFILE
+        
     }
 }
