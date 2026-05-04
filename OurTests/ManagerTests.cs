@@ -42,6 +42,12 @@ namespace OurTests
             Assert.True(result);
         }
 
+        //ISPASSWORDCORRECT
+
+        //GRANTPRIVILEGE
+
+        //ISGRANTEDPRIVILEGE
+
 
         //ADDPROFILE
         [Fact]
@@ -78,6 +84,13 @@ namespace OurTests
             Assert.Equal(profile1, manager.ProfileByName("test"));
         }
 
+        //USERBYPROFILE
+
+        //PROFILEBYNAME
+
+        //PROFILEBYUSER
+
+        //REVOKEPRIVILEGE
         [Fact]
         public void RevokePrivilege_RemovesPrivilegeFromProfile()
         {
@@ -101,6 +114,34 @@ namespace OurTests
 
             Assert.Null(manager.ProfileByName("missing"));
         }
+
+        //LOAD
+
+        //SAVE
+        [Fact]
+        public void SaveAndCheckCorrectCredentials()
+        {
+            Manager manager = new Manager("admin");
+            string dbName = "Corrrect";
+
+            manager.Save(dbName);
+            bool esCorrecta = manager.IsPasswordCorrect("admin", "admin");
+            Assert.True(esCorrecta, "La contraseña es correcta");
+            Assert.True(File.Exists(dbName + ".path"));
+        }
+
+        [Fact]
+        public void SaveAndCheckIncorrectCredentials()
+        {
+            Manager manager = new Manager("admin");
+            string dbName = "Incorrect";
+            
+            manager.Save(dbName);
+            bool esCorrecta = manager.IsPasswordCorrect("admin", "1234");
+            Assert.False(esCorrecta, "La contraseña es incorrecta");
+            Assert.True(File.Exists(dbName + ".path"));
+        }
+            
     }
 }
 

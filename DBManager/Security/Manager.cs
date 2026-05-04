@@ -164,6 +164,31 @@ namespace DbManager.Security
         public void Save(string databaseName)
         {
             //TODO DEADLINE 5: Save all the profiles and users/passwords created for this database.
+            string nombreArchivo = databaseName + ".path";
+            string contenidoTotal = "";
+            foreach (var profile in Profiles)
+            {
+                string perfil = $"Profile: {profile.Name}\n";
+                contenidoTotal += perfil;
+                foreach (var user in profile.Users)
+                {
+                    string usuario = $"User: {user.Username}, Password: {user.EncryptedPassword}\n";
+                    contenidoTotal += usuario;
+                }
+                foreach (var entrada in profile.PrivilegesOn)
+                {
+                    string tabla = $"Table: {entrada.Key}\n";
+                    contenidoTotal += tabla;
+                    foreach (var privilege in entrada.Value)
+                    {
+                        string privilegio = $"Privilege: {privilege}\n";
+                        contenidoTotal += privilegio;
+                    }
+                }
+                contenidoTotal += "\n";
+            }
+            File.WriteAllText(nombreArchivo, contenidoTotal);
+
 
         }
     }
