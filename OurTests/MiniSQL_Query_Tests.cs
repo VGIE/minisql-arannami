@@ -67,7 +67,6 @@ namespace OurTests
         }
 
         //ADDUSER
-
        /* [Fact]
         public void AddUser_Execute_Success()
         {
@@ -101,7 +100,6 @@ namespace OurTests
             string result = addUser2.Execute(db);
             Assert.Equal(Constants.Error + "User already exists", result);
         }*/
-
 
         //SELECT
         [Fact]
