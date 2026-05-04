@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace DbManager.Security
 {
     public class Manager
@@ -29,7 +30,6 @@ namespace DbManager.Security
             return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
 
         }
-
 
         public bool IsPasswordCorrect(string username, string password)
         {

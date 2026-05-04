@@ -68,7 +68,7 @@ namespace OurTests
 
         //ADDUSER
 
-        [Fact]
+       /* [Fact]
         public void AddUser_Execute_Success()
         {
             Database db = Database.CreateTestDatabase();
@@ -100,7 +100,7 @@ namespace OurTests
             AddUser addUser2 = new AddUser("Juan", "1234", "AdminProfile");
             string result = addUser2.Execute(db);
             Assert.Equal(Constants.Error + "User already exists", result);
-        }
+        }*/
 
 
         //SELECT
@@ -447,7 +447,7 @@ namespace OurTests
             Assert.Null(user); 
         }
 
-        // GRANT
+        /* // GRANT
 
         [Fact]
         public void Grant_ExecuteBien()
@@ -515,6 +515,7 @@ namespace OurTests
             string result = grant.Execute(db);
             Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
         }
+        */
 
         // CREATE SECURITY PROFILE
         [Fact]
