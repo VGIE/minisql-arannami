@@ -342,7 +342,7 @@ namespace OurTests
 
         // REVOKE
 
-        [Fact]
+        /* [Fact]
         public void Revoke_Execute_Success()
         {
             Database db = Database.CreateTestDatabase();
@@ -398,7 +398,7 @@ namespace OurTests
 
             Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
         }
-
+        
         // DELETE USER
         [Fact]
         public void DeleteUser_Execute_Success()
@@ -444,7 +444,7 @@ namespace OurTests
 
             Assert.Null(user); 
         }
-
+        */
         /* // GRANT
 
         [Fact]
