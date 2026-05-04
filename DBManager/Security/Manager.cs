@@ -96,6 +96,12 @@ namespace DbManager.Security
         public void AddProfile(Profile profile)
         {
             //TODO DEADLINE 5: Add this profile
+            if (profile == null)
+                return;
+
+            if (ProfileByName(profile.Name) != null)
+                return;
+
             Profiles.Add(profile);
 
         }
