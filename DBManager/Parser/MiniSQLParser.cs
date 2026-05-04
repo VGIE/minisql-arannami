@@ -11,7 +11,7 @@ namespace DbManager
         public static MiniSqlQuery Parse(string miniSQLQuery)
         {
             //TODO DEADLINE 2
-            const string selectPattern = @"^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
+            const string selectPattern = @"^SELECT\s+(\w+(?:,\w+)*)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*)\s*)?$";
 
             const string insertPattern = @"^INSERT\s+INTO\s+(\w+)\s+VALUES\s+\(('[^']*'(?:,'[^']*')*)\)\s?$";
 
