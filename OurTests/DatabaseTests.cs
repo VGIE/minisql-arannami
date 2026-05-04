@@ -1,5 +1,6 @@
 using DbManager;
 using DbManager.Parser;
+using Xunit;
 
 namespace OurTests
 {
