@@ -381,15 +381,19 @@ namespace OurTests
         [Fact]
         public void Select_Parse_WithWhere_StringCondition()
         {
-            string query = "SELECT * FROM Users WHERE City='Madrid'";
+            string query = "SELECT Age FROM Users WHERE Name='Rodolfo'";
             var result = MiniSQLParser.Parse(query) as Select;
 
             Assert.NotNull(result);
             Assert.Equal("Users", result.Table);
+
+            Assert.Equal(1, result.Columns.Count);
+            Assert.Equal("Age", result.Columns[0]);
+
             Assert.NotNull(result.Where);
-            Assert.Equal("City", result.Where.ColumnName);
+            Assert.Equal("Name", result.Where.ColumnName);
             Assert.Equal("=", result.Where.Operator);
-            Assert.Equal("Madrid", result.Where.LiteralValue);
+            Assert.Equal("Rodolfo", result.Where.LiteralValue);
         }
 
         [Fact]
@@ -398,6 +402,22 @@ namespace OurTests
             string query1 = "SELECT Name,Age WHERE 'Age'>'18'";
             string query2 = "SELECT  Name WHERE 'Age'>'18'";
             string query3 = "SELECT Name  WHERE 'Age'>'18'";
+
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+            var result3 = MiniSQLParser.Parse(query3);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
+            Assert.Null(result3);
+        }
+
+        [Fact]
+        public void Select_Parse_CommasBetweenColumnNames()
+        {
+            string query1 = "SELECT Name, Age WHERE Age='18'";
+            string query2 = "SELECT Name ,Age WHERE Age='18'";
+            string query3 = "SELECT Name , Age WHERE age='18'";
 
             var result1 = MiniSQLParser.Parse(query1);
             var result2 = MiniSQLParser.Parse(query2);
