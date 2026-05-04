@@ -481,10 +481,14 @@ namespace OurTests
         [Fact]
         public void Insert_Parse_InvalidQuery_ReturnsNull()
         {
-            string query = "INSERT Users VALUES 'Juan'";
-            var result = MiniSQLParser.Parse(query);
+            string query1 = "INSERT Users VALUES 'Juan'";
+            string query2 = "INSERT Users VALUES ('Juan', '20')";
 
-            Assert.Null(result);
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
         }
 
         //DELETEUSER
