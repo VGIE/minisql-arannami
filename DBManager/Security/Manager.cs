@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DbManager.Security
 {
@@ -17,7 +12,7 @@ namespace DbManager.Security
         {
             m_username = username;
             if (ProfileByName("admin") == null)
-            { 
+            {
                 var adminProfile = new Profile()
                 {
                     Name = "admin"
@@ -34,7 +29,7 @@ namespace DbManager.Security
             return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
 
         }
-        
+
 
         public bool IsPasswordCorrect(string username, string password)
         {
@@ -46,7 +41,7 @@ namespace DbManager.Security
 
             string encryptedPassword = Encryption.Encrypt(password);
             return user.EncryptedPassword.Equals(encryptedPassword);
-            
+
         }
 
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
@@ -59,20 +54,23 @@ namespace DbManager.Security
 
             profile.GrantPrivilege(table, privilege);
         }
-       
+
 
 
         public void RevokePrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Remove this privilege on this table to the profile with this name
             //If the profile or the table don't exist, do nothing
-            
+
         }
 
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return true if the username has this privilege on this table. False otherwise (also in case of error)
-            return false;
+            if (IsUserAdmin()) return true;
+            var profile = ProfileByUser(username);
+            if (profile == null) return false;
+            return profile.IsGrantedPrivilege(table, privilege);
 
         }
 
@@ -95,24 +93,23 @@ namespace DbManager.Security
         public Profile ProfileByName(string profileName)
         {
             //TODO DEADLINE 5: Return the profile by name. If it doesn't exist, return null
-            return null;
 
+            return null;
         }
 
         public Profile ProfileByUser(string username)
         {
             //TODO DEADLINE 5: Return the profile by user. If the user doesn't exist, return null
-
-            return Profiles.FirstOrDefault(p => p.Users.Any(u => u.Username == username));
+            return null;
 
 
         }
-            
+
 
         public bool RemoveProfile(string profileName)
         {
             //TODO DEADLINE 5: Remove this profile
-            
+
             return false;
 
 
@@ -122,37 +119,13 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
 
-            Manager manager = new Manager(username);
-            string fileName = databaseName + "_security.txt";
-            if (!File.Exists(fileName))
-                return manager;
-            var lines = File.ReadAllLines(fileName);
-            Profile currentProfile = null;
-            foreach (var line in lines)
-            {
-                if (line.StartsWith("PROFILE:"))
-                {
-                    string profileName = line.Substring("PROFILE:".Length);
-                    currentProfile = new Profile { Name = profileName };
-                    manager.Profiles.Add(currentProfile);
-                }
-                else if (line.StartsWith("USER:") && currentProfile != null)
-                {
-                    var parts = line.Substring("USER:".Length).Split(',');
-                    string usernameFile = parts[0];
-                    string password = parts[1];
-
-                    currentProfile.Users.Add(new User(usernameFile, password));
-                }
-            }
-
-            return manager;
+            return null;
         }
 
         public void Save(string databaseName)
         {
             //TODO DEADLINE 5: Save all the profiles and users/passwords created for this database.
-            
+
         }
     }
 }
