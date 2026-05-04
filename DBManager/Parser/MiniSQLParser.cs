@@ -23,7 +23,7 @@ namespace DbManager
 
             const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']+'|\d+)\s*$";
 
             const string createSecurityProfilePattern = @"^CREATE\s+SECURITY\s+PROFILE\s+([a-zA-Z0-9]+)\s*$";
 
@@ -229,15 +229,13 @@ namespace DbManager
             if (match.Success)
             {
                 string table = match.Groups[1].Value;
-                Condition where = null;
-                if (match.Groups[2].Success && !string.IsNullOrWhiteSpace(match.Groups[2].Value))
-                {
-                    where = new Condition(
+                
+                Condition where = new Condition(
                         match.Groups[2].Value,
                         match.Groups[3].Value,
                         match.Groups[4].Value.Trim('\'')
                     );
-                }
+                
                 return new Delete(table, where);
             }
 

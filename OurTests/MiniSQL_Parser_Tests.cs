@@ -99,6 +99,21 @@ namespace OurTests
         }
 
         [Fact]
+        public void DeleteParse_Numeric()
+        {
+            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Age>'25'");
+
+            Assert.NotNull(result);
+            Assert.IsType<Delete>(result);
+
+            Delete delete = (Delete)result;
+            Assert.Equal("People", delete.Table);
+            Assert.Equal("Age", delete.Where.ColumnName);
+            Assert.Equal(">", delete.Where.Operator);
+            Assert.Equal("25", delete.Where.LiteralValue);
+        }
+
+        [Fact]
         public void Delete_WithWhere()
         {
             var result = MiniSQLParser.Parse("DELETE FROM users WHERE id=5");
@@ -113,35 +128,52 @@ namespace OurTests
             Assert.Equal("5", delete.Where.LiteralValue);
         }
         [Fact]
-        public void DeleteParse_WithoutWhere()
+        public void DeleteParse_WithAColumnMissing()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM users");
-            Assert.IsType<Delete>(result);
-            var delete = (Delete)result;
-            Assert.Equal("users", delete.Table);
-            Assert.Null(delete.Where);
+            var result = MiniSQLParser.Parse("DELETE FROM  WHERE id='5'");
+            var result2 = MiniSQLParser.Parse("DELETE FROM Table WHERE id=''");
+            var result3 = MiniSQLParser.Parse("DELETE FROM Table WHERE>='2000'");
+            var result4 = MiniSQLParser.Parse("DELETE FROM Table WHERE id '3'");
+
+            Assert.Null(result);
+            Assert.Null(result2);
+            Assert.Null(result3);
+            Assert.Null(result4);
+            
+
+            // Assert.IsType<Delete>(result);
+            // var delete = (Delete)result;
+            // Assert.Equal("users", delete.Table);
+            // Assert.Null(delete.Where);
         }
 
         [Fact]
         public void DeleteSyntaxError()
         {
-            var query = MiniSQLParser.Parse("DELETE People WHERE Name = 'Juan'");
-            Assert.Null(query);
+            var result1 = MiniSQLParser.Parse("delete People where Name='Juan'");
+            var result2 = MiniSQLParser.Parse("DELETE People Name = 'Juan'");
+            var result3 = MiniSQLParser.Parse("DELETE FROM People  Name = 'Juan'");
+            var result4 = MiniSQLParser.Parse(" ");
+            
+            Assert.Null(result1);
+            Assert.Null(result2); 
+            Assert.Null(result3);
+            Assert.Null(result4);
+
         }
 
         [Fact]
-        public void DeleteParse_NoSpaceCondition()
+        public void DeleteParse_SpaceCondition()
         {
-        MiniSqlQuery query = MiniSQLParser.Parse("DELETE People WHERE Name= 'Juan'");
-        Assert.Null(query);
+        MiniSqlQuery result1 = MiniSQLParser.Parse("DELETE People WHERE Name= 'Juan'");
+        MiniSqlQuery result2 = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
+        MiniSqlQuery result3 = MiniSQLParser.Parse(" DELETE FROM People WHERE Name='Juan'");
+
+        Assert.Null(result1);
+        Assert.Null(result2);
+        Assert.Null(result3);
         }
 
-        [Fact]
-        public void DeleteParse_MultipleNoSpacesCondition()
-        {
-        MiniSqlQuery query = MiniSQLParser.Parse("DELETE FROM People WHERE Name = 'Juan'");
-        Assert.Null(query);
-        }
 
         [Fact]
         public void DeleteParse_MarksCondition()
@@ -157,19 +189,29 @@ namespace OurTests
         Assert.Null(result);
         }
 
+
         [Fact]
-        public void DeleteParse_Numeric()
+        public void DeleteParse_Capitalization()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM People WHERE Age>25");
+            var result1 = MiniSQLParser.Parse("DELETE FROM PeOpLe WHERE NaMe='JuAn'");
+            var result2 = MiniSQLParser.Parse("DELETE FROM uSeRS WHERE iD>='4'");
+            Assert.NotNull(result1);
+            Assert.NotNull(result2);
+            Assert.IsType<Delete>(result1);
+            Assert.IsType<Delete>(result2);
 
-            Assert.NotNull(result);
-            Assert.IsType<Delete>(result);
+            Delete delete1 = (Delete)result1;
+            Assert.Equal("PeOpLe", delete1.Table);
+            Assert.Equal("NaMe", delete1.Where.ColumnName);
+            Assert.Equal("=", delete1.Where.Operator);
+            Assert.Equal("JuAn", delete1.Where.LiteralValue);   
 
-            Delete delete = (Delete)result;
-            Assert.Equal("People", delete.Table);
-            Assert.Equal("Age", delete.Where.ColumnName);
-            Assert.Equal(">", delete.Where.Operator);
-            Assert.Equal("25", delete.Where.LiteralValue);
+            Delete delete2 = (Delete)result2;
+            Assert.Equal("uSeRS", delete2.Table);
+            Assert.Equal("iD", delete2.Where.ColumnName);
+            Assert.Equal(">=", delete2.Where.Operator);
+            Assert.Equal("4", delete2.Where.LiteralValue);  
+
         }
 
 
