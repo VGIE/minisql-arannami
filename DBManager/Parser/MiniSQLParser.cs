@@ -21,7 +21,7 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(=|<>|<|>|<=|>=)('[^']*'|\d+))?$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(<=|>=|<>|=|<|>)\s*('[^']*'|\d+))?\s*$";
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']*'|\d+(?:\.\d+)?))?\s*;?$";
 
@@ -175,7 +175,7 @@ namespace DbManager
                 {
                     var setMatch = Regex.Match(
                         assignment.Trim(),
-                        @"^(\w+)=('[^']*'|\d+)$"
+                        @"^(\w+)\s*=\s*('[^']*'|\d+)$"
                     );
 
                     if (!setMatch.Success)
