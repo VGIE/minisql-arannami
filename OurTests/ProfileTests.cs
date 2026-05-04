@@ -12,7 +12,66 @@ namespace OurTests
     public class ProfileTests
     {
 
-        //REVOKEPRIVILEGE
+       //GRANTPRIVILEGE
+        [Fact]
+        public void GrantPrivilege_AddsPrivilege()
+        {
+            Profile profile = new Profile();
+
+            profile.GrantPrivilege("users", Privilege.Select);
+
+            Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]
+        public void GrantPrivilege_NotDuplicatePrivileges()
+        {
+            Profile profile = new Profile();
+
+            profile.GrantPrivilege("users", Privilege.Select);
+            Assert.False(profile.GrantPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]
+        public void GrantPrivilege_TableIsEmpty()
+        {
+            Profile profile = new Profile();
+            bool resultado = profile.IsGrantedPrivilege("", Privilege.Select);
+            Assert.False(resultado);
+        }
+
+
+        //ISGRANTEDPRIVILEGE
+        [Fact]
+        public void IsGrantedPrivilege_PrivilegeIsGranted()
+        {
+            Profile profile = new Profile();
+            profile.GrantPrivilege("users", Privilege.Select);                  
+
+            bool result = profile.IsGrantedPrivilege("users", Privilege.Select);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsGrantedPrivilege_PrivilegeIsNotGranted()
+        {
+            Profile profile = new Profile();
+            profile.GrantPrivilege("users", Privilege.Insert);  
+
+            bool result = profile.IsGrantedPrivilege("users", Privilege.Select);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsGrantedPrivilege_TableDoesNotExist()
+        {
+            Profile profile = new Profile();                                            
+            bool result = profile.IsGrantedPrivilege("NoExist", Privilege.Select);
+            Assert.False(result);
+        }
+
+
+       //REVOKEPRIVILEGE
         [Fact]
         public void RevokePrivilege_RemovesExistingPrivilege()
         {
