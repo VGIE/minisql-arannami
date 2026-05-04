@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
-
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DbManager.Security
 {
@@ -61,6 +65,21 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Remove this privilege on this table to the profile with this name
             //If the profile or the table don't exist, do nothing
+
+            if (!IsUserAdmin())
+                return;
+
+            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
+                return;
+
+            foreach (var profile in Profiles)
+            {
+                if (profile.Name == profileName)
+                {
+                    profile.RevokePrivilege(table, privilege);
+                    return;
+                }
+            }
 
         }
 
