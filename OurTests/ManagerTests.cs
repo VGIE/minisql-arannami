@@ -9,7 +9,9 @@ using Xunit;
 namespace OurTests
 {
     public class ManagerTests
-    {
+    {   
+
+        //ISUSERADMIN
         [Fact]
         public void IsUserAdmin_AdminReturnsTrue()
         {
@@ -39,7 +41,43 @@ namespace OurTests
 
             Assert.True(result);
         }
-        
+
+
+        //ADDPROFILE
+        [Fact]
+        public void AddProfile_AddsProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.AddProfile(profile);
+
+            Assert.Equal(profile, manager.ProfileByName("test"));
+        }
+
+        [Fact]
+        public void AddProfile_DoesNotAddNull()
+        {
+            Manager manager = new Manager("admin");
+
+            manager.AddProfile(null);
+
+            Assert.Null(manager.ProfileByName(null));
+        }
+
+        [Fact]
+        public void AddProfile_DoesNotAddDuplicateProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile1 = new Profile { Name = "test" };
+            Profile profile2 = new Profile { Name = "test" };
+
+            manager.AddProfile(profile1);
+            manager.AddProfile(profile2);
+
+            Assert.Equal(profile1, manager.ProfileByName("test"));
+        }
+
     }
 }
 
