@@ -78,6 +78,29 @@ namespace OurTests
             Assert.Equal(profile1, manager.ProfileByName("test"));
         }
 
+        [Fact]
+        public void RevokePrivilege_RemovesPrivilegeFromProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.AddProfile(profile);
+            profile.GrantPrivilege("users", Privilege.Select);
+
+            manager.RevokePrivilege("test", "users", Privilege.Select);
+
+            Assert.False(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]
+        public void RevokePrivilege_DoesNothing_WhenProfileDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+
+            manager.RevokePrivilege("missing", "users", Privilege.Select);
+
+            Assert.Null(manager.ProfileByName("missing"));
+        }
     }
 }
 
