@@ -23,7 +23,7 @@ namespace OurTests
         [Fact]
         public void Update_Parse_WithWhere()
         {
-            string query = "UPDATE Users SET Name='Juan Perez', Age=30 WHERE ID=1";
+            string query = "UPDATE Users SET Name='Juan Perez',Age=30 WHERE ID=1";
 
             var result = MiniSQLParser.Parse(query) as Update;
 
@@ -31,14 +31,23 @@ namespace OurTests
             Assert.Equal("Users", result.Table);
             Assert.Equal(2, result.Columns.Count);
 
-            
             Assert.Equal("Name", result.Columns[0].ColumnName);
             Assert.Equal("Juan Perez", result.Columns[0].Value);
 
+            Assert.Equal("Age", result.Columns[1].ColumnName);
+            Assert.Equal("30", result.Columns[1].Value);
+
             Assert.NotNull(result.Where);
-            Assert.Equal("ID", result.Where.ColumnName);    
-            Assert.Equal("=", result.Where.Operator);     
+            Assert.Equal("ID", result.Where.ColumnName);
+            Assert.Equal("=", result.Where.Operator);
             Assert.Equal("1", result.Where.LiteralValue);
+        }
+        [Fact]
+        public void Update_ParseWithSpacesInSetSReturnNull()
+        {
+            string query = "UPDATE Users SET Name='Juan Perez', Age=30 WHERE ID=1";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
         }
 
         [Fact]

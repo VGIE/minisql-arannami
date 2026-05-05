@@ -21,7 +21,7 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)\s*(<=|>=|<>|=|<|>)\s*('[^']*'|\d+))?\s*$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(<=|>=|<>|=|<|>)('[^']+'|\d+))?\s*$";
 
             const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']+'|\d+)\s*$";
 
@@ -161,7 +161,7 @@ namespace DbManager
 
             }
 
-            //UPDATE
+            // UPDATE
             match = Regex.Match(miniSQLQuery, updateTablePattern);
             if (match.Success)
             {
@@ -173,9 +173,12 @@ namespace DbManager
 
                 foreach (string assignment in assignments)
                 {
+                    if (assignment.StartsWith(" ") || assignment.EndsWith(" "))
+                        return null;
+
                     var setMatch = Regex.Match(
-                        assignment.Trim(),
-                        @"^(\w+)\s*=\s*('[^']*'|\d+)$"
+                        assignment,
+                        @"^(\w+)=('[^']*'|\d+)$"
                     );
 
                     if (!setMatch.Success)
@@ -200,6 +203,7 @@ namespace DbManager
                 }
 
                 Condition condition = null;
+
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
