@@ -498,6 +498,25 @@ namespace OurTests
             Assert.Null(result4);
         }
 
+        [Fact]
+        public void Select_Parse_IncorrectSelectWithSpacesInCondition()
+        {
+            string query1 = "SELECT Name, Age FROM Users WHERE Age = '18'";
+            string query2 = "SELECT Name, Age FROM Users WHERE Age = '18'";
+            string query3 = "SELECT Name, Age FROM Users WHERE Age = ' 18'";
+            string query4 = "SELECT Name, Age FROM Users WHERE Age = '18 '";
+
+            var result1 = MiniSQLParser.Parse(query1);
+            var result2 = MiniSQLParser.Parse(query2);
+            var result3 = MiniSQLParser.Parse(query3);
+            var result4 = MiniSQLParser.Parse(query4);
+
+            Assert.Null(result1);
+            Assert.Null(result2);
+            Assert.Null(result3);
+            Assert.Null(result4);
+        }
+
         //INSERT
 
         [Fact]

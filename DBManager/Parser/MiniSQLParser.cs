@@ -65,7 +65,7 @@ namespace DbManager
 
                     foreach (var condition in eachCondition)
                     {
-                        var conditionMatch = Regex.Match(condition.Trim(), @"(\w+)\s*(<=|>=|=|<|>)\s*['""]?([^'""]+)['""]?$");
+                        var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(<=|>=|=|<|>)'([^'\s]+)'$");
                         if (conditionMatch.Success)
                         {
                             string col = conditionMatch.Groups[1].Value;
