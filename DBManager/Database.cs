@@ -231,24 +231,19 @@ namespace DbManager
 
         public bool Save(string databaseName)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(databaseName))
-                    return false;
 
-                string filePath = databaseName + ".db";
-                var options = new JsonSerializerOptions
-                {
-                    IncludeFields = true
-                };
-                string json = JsonSerializer.Serialize(Tables, options);
-                File.WriteAllText(filePath, json);
-                return true;
-            }
-            catch
-            {
+            if (string.IsNullOrEmpty(databaseName))
                 return false;
-            }
+
+            string filePath = databaseName + ".db";
+            var options = new JsonSerializerOptions
+            {
+                IncludeFields = true
+            };
+            string json = JsonSerializer.Serialize(Tables, options);
+            File.WriteAllText(filePath, json);
+            return true;
+            
         }
 
         public static Database Load(string databaseName, string username, string password)
@@ -257,32 +252,33 @@ namespace DbManager
             //If everything goes ok, return the loaded database (a new instance), null otherwise.
             //DEADLINE 5: When the Database object is created, set the username (create a new method if you must)
             //After loading the database, load the SecurityManager and check the password is correct. If it's not, return null. If it is return the database
-            try
+            
+            if (string.IsNullOrEmpty(databaseName)) 
             {
-                string filePath = databaseName + ".db";
-
-                if (!File.Exists(filePath))
-                    return null;
-                var options = new JsonSerializerOptions
-                {
-                    IncludeFields = true
-                };
-                string json = File.ReadAllText(filePath);
-                List<Table> tables = JsonSerializer.Deserialize<List<Table>>(json, options);
-
-                if (tables == null)
-                    return null;
-
-                Database db = new Database();
-                db.Tables = tables;
-                db.m_username = username;
-                db.SecurityManager = new Manager(username);
-                return db;
+                return null;
             }
-            catch
+            string filePath = databaseName + ".db";
+
+            if (!File.Exists(filePath))
             {
-              return null;
-            }
+                return null;
+            }    
+            var options = new JsonSerializerOptions
+            {
+                IncludeFields = true
+            };
+            string json = File.ReadAllText(filePath);
+            List<Table> tables = JsonSerializer.Deserialize<List<Table>>(json, options);
+
+            if (tables == null)
+                return null;
+
+            Database db = new Database();
+            db.Tables = tables;
+            db.m_username = username;
+            db.SecurityManager = new Manager(username);
+            return db;
+    
         }
 
 
