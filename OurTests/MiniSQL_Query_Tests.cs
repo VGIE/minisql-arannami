@@ -343,7 +343,7 @@ namespace OurTests
 
         // REVOKE
 
-        /* [Fact]
+        [Fact]
         public void Revoke_Execute_Success()
         {
             Database db = Database.CreateTestDatabase();
@@ -445,8 +445,8 @@ namespace OurTests
 
             Assert.Null(user); 
         }
-        */
-// GRANT
+        
+        // GRANT
 
         [Fact]
         public void Grant_ExecuteBien()
