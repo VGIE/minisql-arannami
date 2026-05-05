@@ -150,10 +150,107 @@ namespace OurTests
         }
 
         //USERBYPROFILE
+        [Fact]
+        public void UserByName_ReturnsUser_Exists()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+            User user = new User("juan", Encryption.Encrypt("1234"));
+
+            profile.Users.Add(user);
+            manager.AddProfile(profile);
+
+            var result = manager.UserByName("juan");
+
+            Assert.Equal(user, result);
+        }
+
+        [Fact]
+        public void UserByName_ReturnsNull_UserDoesntExist()
+        {
+            Manager manager = new Manager("admin");
+
+            var result = manager.UserByName("ghost");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void UserByName_ReturnsNull_WhenUsernameIsNullOrEmpty()
+        {
+            Manager manager = new Manager("admin");
+
+            Assert.Null(manager.UserByName(null));
+            Assert.Null(manager.UserByName(""));
+        }
 
         //PROFILEBYNAME
+        [Fact]
+        public void ProfileByName_ReturnsProfile_Exists()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "dev" };
+
+            manager.AddProfile(profile);
+
+            var result = manager.ProfileByName("dev");
+
+            Assert.Equal(profile, result);
+        }
+
+        [Fact]
+        public void ProfileByName_ReturnsNull_DoesntExists()
+        {
+            Manager manager = new Manager("admin");
+
+            var result = manager.ProfileByName("ghost");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void ProfileByName_ReturnsNull_WhenNameIsNullOrEmpty()
+        {
+            Manager manager = new Manager("admin");
+
+            Assert.Null(manager.ProfileByName(null));
+            Assert.Null(manager.ProfileByName(""));
+        }
 
         //PROFILEBYUSER
+        [Fact]
+        public void ProfileByUser_ReturnsProfile_UserExists()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "dev" };
+            User user = new User("juan", Encryption.Encrypt("1234"));
+
+            profile.Users.Add(user);
+            manager.AddProfile(profile);
+
+            var result = manager.ProfileByUser("juan");
+
+            Assert.Equal(profile, result);
+        }
+
+        [Fact]
+        public void ProfileByUser_ReturnsNull_UserDoesntExist()
+        {
+            Manager manager = new Manager("admin");
+
+            var result = manager.ProfileByUser("noExistente");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void ProfileByUser_ReturnsNull_WhenUsernameIsNullOrEmpty()
+        {
+            Manager manager = new Manager("admin");
+
+            Assert.Null(manager.ProfileByUser(null));
+            Assert.Null(manager.ProfileByUser(""));
+        }
 
         //REVOKEPRIVILEGE
         [Fact]

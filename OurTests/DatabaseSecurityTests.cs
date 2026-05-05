@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OurTests
+{
+    public class DatabaseSecurityTests
+    {
+        [Fact]
+        public void DatabaseSecurityLoad_Success()
+        {
+
+        }
+    }
+}

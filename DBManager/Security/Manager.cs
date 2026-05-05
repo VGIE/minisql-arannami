@@ -146,7 +146,6 @@ namespace DbManager.Security
             return null;
         }
 
-
         public bool RemoveProfile(string profileName)
         {
             //TODO DEADLINE 5: Remove this profile
