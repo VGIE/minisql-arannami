@@ -158,9 +158,63 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
 
-            return null;
-        }
+            string fileName = databaseName + ".path";
+            Manager manager = new Manager(username);
+            if (!File.Exists(fileName))
+              return manager;
 
+            string[] lines = File.ReadAllLines(fileName);
+            Profile currentProfile = null;
+            string currentTable = null;
+
+            foreach (string line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                if (line.StartsWith("Profile: "))
+                {
+                    string profileName = line.Substring("Profile: ".Length).Trim();
+                    currentProfile = new Profile()
+                    {
+                        Name = profileName
+                    };
+
+                    manager.Profiles.Add(currentProfile);
+                }
+                else if (line.StartsWith("User: "))
+                {
+                    if (currentProfile == null) continue;
+                    string content = line.Substring("User: ".Length);
+                    string[] parts = content.Split(',');
+                    string usernamePart = parts[0].Trim();
+                    string passwordPart = parts[1].Trim();
+                    string userName = usernamePart;
+                    string password = passwordPart.Replace("Password: ", "").Trim();
+
+                    currentProfile.Users.Add(new User(userName, password));
+                }
+                else if (line.StartsWith("Table: "))
+                {
+                    currentTable = line.Substring("Table: ".Length).Trim();
+                }
+                else if (line.StartsWith("Privilege: "))
+                {
+                    if (currentProfile == null || currentTable == null)
+                        continue;
+
+                    string privilegeStr = line.Substring("Privilege: ".Length).Trim();
+
+                    if (Enum.TryParse(privilegeStr, out Privilege privilege))
+                    {
+                        currentProfile.GrantPrivilege(currentTable, privilege);
+                    }
+                }
+            }
+
+            return manager;
+        }
+        
         public void Save(string databaseName)
         {
             //TODO DEADLINE 5: Save all the profiles and users/passwords created for this database.

@@ -68,7 +68,7 @@ namespace OurTests
         }
 
         //ADDUSER
-       /* [Fact]
+       [Fact]
         public void AddUser_Execute_Success()
         {
             Database db = Database.CreateTestDatabase();
@@ -100,7 +100,7 @@ namespace OurTests
             AddUser addUser2 = new AddUser("Juan", "1234", "AdminProfile");
             string result = addUser2.Execute(db);
             Assert.Equal(Constants.Error + "User already exists", result);
-        }*/
+        }
 
         //SELECT
         [Fact]
@@ -446,14 +446,12 @@ namespace OurTests
             Assert.Null(user); 
         }
         */
-        /* // GRANT
+// GRANT
 
         [Fact]
         public void Grant_ExecuteBien()
         {
             Database db = Database.CreateTestDatabase();
-
-            // Nombres ÚNICOS para este test específico
             string uniqueTableName = "TablaNuevaGrantOK";
             string uniqueProfileName = "TestProfileGrantOK";
 
@@ -464,8 +462,6 @@ namespace OurTests
 
             Profile profile = new Profile { Name = uniqueProfileName };
             db.SecurityManager.AddProfile(profile);
-
-            // Ahora ejecutamos el Grant sobre algo que sabemos 100% que está vacío
             Grant grant = new Grant("Select", uniqueTableName, uniqueProfileName);
             string result = grant.Execute(db);
 
@@ -514,7 +510,7 @@ namespace OurTests
             string result = grant.Execute(db);
             Assert.Equal(Constants.ProfileAlreadyHasPrivilege, result);
         }
-        */
+        
 
         // CREATE SECURITY PROFILE
         // [Fact]
