@@ -16,9 +16,7 @@ namespace OurTests
         public void IsUserAdmin_AdminReturnsTrue()
         {
             Manager manager = new Manager("admin");
-
             bool result = manager.IsUserAdmin();
-
             Assert.True(result);
         }
 
@@ -26,9 +24,7 @@ namespace OurTests
         public void IsUserAdmin_NotAdminReturnsFalse()
         {
             Manager manager = new Manager("juan");
-
             bool result = manager.IsUserAdmin();
-
             Assert.False(result);
         }
 
@@ -36,10 +32,15 @@ namespace OurTests
         public void IsUserAdmin_Insensitive()
         {
             Manager manager = new Manager("ADMIN");
-
             bool result = manager.IsUserAdmin();
-
             Assert.True(result);
+        }
+        [Fact]
+        public void IsUserAdmin_ReturnsFalse_WhenUsernameIsEmpty()
+        {
+            Manager manager = new Manager("");
+            bool result = manager.IsUserAdmin();
+            Assert.False(result);
         }
 
         //ISPASSWORDCORRECT
@@ -95,7 +96,19 @@ namespace OurTests
             bool result = manager.IsPasswordCorrect("admin", "admin ");
             Assert.False(result);
         }
-
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalse_WhenPasswordIsNull()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", null);
+            Assert.False(result);
+        }
+        [Fact]
+        public void IsPasswordCorrect_WorksWithDefaultAdminUser()
+        {
+            Manager manager = new Manager("admin");
+            Assert.True(manager.IsPasswordCorrect("admin", "admin"));
+        }
         //GRANTPRIVILEGE
 
         //ISGRANTEDPRIVILEGE
@@ -167,8 +180,97 @@ namespace OurTests
             Assert.Null(manager.ProfileByName("missing"));
         }
 
-      
+        //LOAD
+        [Fact]
+        public void Load_LoadsProfilesAndUsersCorrectly()
+        {
+            string dbName = "testdb_load_basic";
 
+            try
+            {
+                File.WriteAllText(dbName + ".path",
+        @"Profile: dev
+User: alice, Password: " + Encryption.Encrypt("1234") + @"
+");
+
+                Manager manager = Manager.Load(dbName, "admin");
+
+                Assert.NotNull(manager.ProfileByName("dev"));
+                Assert.NotNull(manager.UserByName("alice"));
+            }
+            finally
+            {
+                File.Delete(dbName + ".path");
+            }
+        }
+        [Fact]
+        public void Load_LoadsPrivileges()
+        {
+            string dbName = "testdb_load_priv";
+
+            File.WriteAllText(dbName + ".path",
+                    @"Profile: dev
+            User: alice, Password: " + Encryption.Encrypt("1234") + @"
+            Table: users
+            Privilege: Select
+            ");
+
+            Manager manager = Manager.Load(dbName, "admin");
+            bool hasPrivilege = manager.IsGrantedPrivilege("alice", "users", Privilege.Select);
+            Assert.True(hasPrivilege);
+        }
+        [Fact]
+        public void Load_FileDoesNotExistReturnsDefaultManager()
+        {
+            string dbName = "file_that_does_not_exist_xxx";
+            Manager manager = Manager.Load(dbName, "admin");
+            Assert.NotNull(manager);
+            Assert.True(manager.IsUserAdmin());
+        }
+        [Fact]
+        public void Load_LoadsFullStructureCorrectly()
+        {
+            string dbName = "testdb_full";
+
+            File.WriteAllText(dbName + ".path",
+@"Profile: dev
+User: alice, Password: " + Encryption.Encrypt("1234") + @"
+User: bob, Password: " + Encryption.Encrypt("5678") + @"
+Table: users
+Privilege: Select
+Privilege: Insert
+");
+
+            Manager manager = Manager.Load(dbName, "admin");
+
+            Assert.NotNull(manager.ProfileByName("dev"));
+            Assert.NotNull(manager.UserByName("alice"));
+            Assert.NotNull(manager.UserByName("bob"));
+            Assert.True(manager.IsGrantedPrivilege("alice", "users", Privilege.Select));
+            Assert.True(manager.IsGrantedPrivilege("alice", "users", Privilege.Insert));
+        }
+        [Fact]
+        public void Load_IgnoresMalformedUserLine()
+        {
+            string dbName = "testdb_malformed";
+
+            File.WriteAllText(dbName + ".path",
+                        @"Profile: dev
+                User: alice
+                ");
+
+            Manager manager = Manager.Load(dbName, "admin");
+            Assert.NotNull(manager.ProfileByName("dev"));
+            Assert.Null(manager.UserByName("alice"));
+        }
+        [Fact]
+        public void Load_EmptyFile_ReturnsOnlyAdmin()
+        {
+            string dbName = "testdb_empty";
+            File.WriteAllText(dbName + ".path", "");
+            Manager manager = Manager.Load(dbName, "admin");
+            Assert.NotNull(manager.ProfileByName("admin"));
+        }
 
         //SAVE
         [Fact]
@@ -176,7 +278,6 @@ namespace OurTests
         {
             Manager manager = new Manager("admin");
             string dbName = "Corrrect";
-
             manager.Save(dbName);
             bool esCorrecta = manager.IsPasswordCorrect("admin", "admin");
             Assert.True(esCorrecta, "La contraseña es correcta");
@@ -187,8 +288,7 @@ namespace OurTests
         public void SaveAndCheckIncorrectCredentials()
         {
             Manager manager = new Manager("admin");
-            string dbName = "Incorrect";
-            
+            string dbName = "Incorrect";  
             manager.Save(dbName);
             bool esCorrecta = manager.IsPasswordCorrect("admin", "1234");
             Assert.False(esCorrecta, "La contraseña es incorrecta");

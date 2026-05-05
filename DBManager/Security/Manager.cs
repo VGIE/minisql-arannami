@@ -157,12 +157,10 @@ namespace DbManager.Security
         public static Manager Load(string databaseName, string username)
         {
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
-
             string fileName = databaseName + ".path";
             Manager manager = new Manager(username);
             if (!File.Exists(fileName))
-              return manager;
-
+                return manager;
             string[] lines = File.ReadAllLines(fileName);
             Profile currentProfile = null;
             string currentTable = null;
@@ -174,7 +172,10 @@ namespace DbManager.Security
 
                 if (line.StartsWith("Profile: "))
                 {
+                    currentTable = null;
+
                     string profileName = line.Substring("Profile: ".Length).Trim();
+
                     currentProfile = new Profile()
                     {
                         Name = profileName
@@ -184,11 +185,18 @@ namespace DbManager.Security
                 }
                 else if (line.StartsWith("User: "))
                 {
-                    if (currentProfile == null) continue;
+                    if (currentProfile == null)
+                        continue;
+
                     string content = line.Substring("User: ".Length);
                     string[] parts = content.Split(',');
+
+                    if (parts.Length < 2)
+                        continue;
+
                     string usernamePart = parts[0].Trim();
                     string passwordPart = parts[1].Trim();
+
                     string userName = usernamePart;
                     string password = passwordPart.Replace("Password: ", "").Trim();
 
@@ -200,9 +208,10 @@ namespace DbManager.Security
                 }
                 else if (line.StartsWith("Privilege: "))
                 {
-                    if (currentProfile == null || currentTable == null)
+                    if (currentProfile == null)
                         continue;
-
+                    if (string.IsNullOrWhiteSpace(currentTable)) //HAU KENDU LEIKE goiku ---> WIYHOUT table null testa kendute ra
+                        continue;
                     string privilegeStr = line.Substring("Privilege: ".Length).Trim();
 
                     if (Enum.TryParse(privilegeStr, out Privilege privilege))
@@ -214,6 +223,7 @@ namespace DbManager.Security
 
             return manager;
         }
+        
         
         public void Save(string databaseName)
         {
