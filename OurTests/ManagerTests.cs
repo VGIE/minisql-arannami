@@ -43,7 +43,58 @@ namespace OurTests
         }
 
         //ISPASSWORDCORRECT
-       
+
+        [Fact]
+        public void IsPasswordCorrect_ReturnsTruePasswordCorrect()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", "admin");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalsePasswordIncorrect()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", "wrongpassword");
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalseUserDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("nonexistent", "admin");
+            Assert.False(result);
+        }
+        [Fact]
+        public void IsPasswordCorrect_EncryptionCorrectly()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", "admin");
+            Assert.True(result);
+        }
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalseUsernameNull()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect(null, "admin");
+            Assert.False(result);
+        }
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalsePasswordEmpty()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", "");
+            Assert.False(result);
+        }
+        [Fact]
+        public void IsPasswordCorrect_ReturnsFalsePasswordExtraSpaces()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsPasswordCorrect("admin", "admin ");
+            Assert.False(result);
+        }
 
         //GRANTPRIVILEGE
 
@@ -116,7 +167,8 @@ namespace OurTests
             Assert.Null(manager.ProfileByName("missing"));
         }
 
-        //LOAD
+      
+
 
         //SAVE
         [Fact]
