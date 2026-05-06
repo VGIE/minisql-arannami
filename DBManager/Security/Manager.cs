@@ -153,9 +153,22 @@ namespace DbManager.Security
         public bool RemoveProfile(string profileName)
         {
             //TODO DEADLINE 5: Remove this profile
+            if (!IsUserAdmin())
+                return false;
 
-            return false;
+            if (string.IsNullOrEmpty(profileName))
+                return false;
+            if (profileName.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            var profile = ProfileByName(profileName);
+
+            if (profile == null)
+                return false;
+
+            return Profiles.Remove(profile);
         }
+        
 
         public static Manager Load(string databaseName, string username)
         {

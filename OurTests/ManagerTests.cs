@@ -9,7 +9,7 @@ using Xunit;
 namespace OurTests
 {
     public class ManagerTests
-    {   
+    {
 
         //ISUSERADMIN
         [Fact]
@@ -109,7 +109,7 @@ namespace OurTests
             Manager manager = new Manager("admin");
             Assert.True(manager.IsPasswordCorrect("admin", "admin"));
         }
-        
+
         //GRANTPRIVILEGE
         [Fact]
         public void GrantPrivilege_AddsPrivilegeToProfile()
@@ -118,7 +118,7 @@ namespace OurTests
             Profile profile = new Profile { Name = "test" };
             manager.AddProfile(profile);
             manager.GrantPrivilege("test", "users", Privilege.Select);
-            
+
             Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
         }
 
@@ -127,7 +127,7 @@ namespace OurTests
         {
             Manager manager = new Manager("admin");
             manager.GrantPrivilege("missing", "users", Privilege.Select);
-            
+
             Assert.Null(manager.ProfileByName("missing"));
         }
 
@@ -141,7 +141,7 @@ namespace OurTests
             manager.AddProfile(profile);
             manager.GrantPrivilege("test", "users", Privilege.Select);
             bool result = manager.IsGrantedPrivilege("test", "users", Privilege.Select);
-            
+
             Assert.True(result);
         }
 
@@ -154,9 +154,9 @@ namespace OurTests
             profile.Users.Add(user);
             manager.AddProfile(profile);
             bool result = manager.IsGrantedPrivilege("Juan", "users", Privilege.Select);
-            
+
             Assert.False(result);
-        }  
+        }
 
         [Fact]
         public void IsGrantedPrivilege_AdminAlwaysPrivilege()
@@ -164,7 +164,7 @@ namespace OurTests
             Manager manager = new Manager("admin");
             bool result = manager.IsGrantedPrivilege("admin", "CualquierTabla", Privilege.Delete);
             Assert.True(result);
-        } 
+        }
 
         //ADDPROFILE
         [Fact]
@@ -478,18 +478,114 @@ Privilege: Insert
         public void SaveAndCheckIncorrectCredentials()
         {
             Manager manager = new Manager("admin");
-            string dbName = "Incorrect";  
+            string dbName = "Incorrect";
             manager.Save(dbName);
             bool esCorrecta = manager.IsPasswordCorrect("admin", "1234");
             Assert.False(esCorrecta, "La contraseña es incorrecta");
             Assert.True(File.Exists(dbName + ".path"));
         }
-            
+
+        //REMOVE
+        [Fact]
+        public void RemoveProfile_RemovesExistingProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.AddProfile(profile);
+
+            bool result = manager.RemoveProfile("test");
+
+            Assert.True(result);
+            Assert.Null(manager.ProfileByName("test"));
+        }
+        [Fact]
+        public void RemoveProfile_FalseProfileDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.RemoveProfile("ghost");
+            Assert.False(result);
+        }
+        [Fact]
+        public void RemoveProfile_NotAdminCannotRemove()
+        {
+            Manager manager = new Manager("user");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.Profiles.Add(profile);
+
+            bool result = manager.RemoveProfile("test");
+
+            Assert.False(result);
+            Assert.NotNull(manager.ProfileByName("test"));
+        }
+        [Fact]
+        public void RemoveProfile_ReturnsFalse_WhenNameIsNull()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.RemoveProfile(null);
+            Assert.False(result);
+        }
+        [Fact]
+        public void RemoveProfile_ReturnsFalse_WhenNameIsEmpty()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.RemoveProfile("");
+            Assert.False(result);
+        }
+        [Fact]
+        public void RemoveProfile_CannotRemoveAdmin()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.RemoveProfile("admin");
+            Assert.False(result);
+            Assert.NotNull(manager.ProfileByName("admin"));
+        }
+        [Fact]
+        public void RemoveProfile_CannotRemoveAdmin_CaseInsensitive()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.RemoveProfile("ADMIN");
+            Assert.False(result);
+        }
+        [Fact]
+        public void RemoveProfile_RemovesProfileWithUsers()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "dev" };
+            profile.Users.Add(new User("juan", Encryption.Encrypt("1234")));
+            manager.AddProfile(profile);
+            bool result = manager.RemoveProfile("dev");
+            Assert.True(result);
+            Assert.Null(manager.ProfileByName("dev"));
+            Assert.Null(manager.UserByName("juan"));
+        }
+        [Fact]
+        public void RemoveProfile_RemovesProfileWithPrivileges()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "dev" };
+            profile.GrantPrivilege("users", Privilege.Select);
+            manager.AddProfile(profile);
+            bool result = manager.RemoveProfile("dev");
+            Assert.True(result);
+            Assert.Null(manager.ProfileByName("dev"));
+        }
+        [Fact]
+        public void RemoveProfile_RemovesOnlySpecifiedProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile p1 = new Profile { Name = "p1" };
+            Profile p2 = new Profile { Name = "p2" };
+            manager.AddProfile(p1);
+            manager.AddProfile(p2);
+            manager.RemoveProfile("p1");
+            Assert.Null(manager.ProfileByName("p1"));
+            Assert.NotNull(manager.ProfileByName("p2"));
+        }
+
     }
 }
-
-
-     
 
 
 
