@@ -122,6 +122,9 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Return the profile by name. If it doesn't exist, return null
             if(string.IsNullOrEmpty(profileName)) return null;
+
+            //if (profileName.Equals("admin", StringComparison.OrdinalIgnoreCase)) return new Profile { Name = "admin" };
+
             for (int i=0; i<Profiles.Count; i++)
             {
                 var profile = Profiles[i];
