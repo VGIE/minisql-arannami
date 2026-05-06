@@ -62,14 +62,14 @@ namespace DbManager
                 {
                     string conditions = match.Groups[3].Value;
                     string[] eachCondition = conditions.Split(",");
-                    bool validCondition = true;
+                    bool validCond = true;
 
                     foreach (var condition in eachCondition)
                     {
                         var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(<=|>=|=|<|>)'([^'\s]+)'$");
                         if (!conditionMatch.Success)
                         {
-                            validCondition = false;
+                            validCond = false;
                             break;
                         }
 
@@ -79,7 +79,8 @@ namespace DbManager
 
                         conditionsParse = new Condition(col, op, val);
                     }
-                    if (!validCondition) return null;
+
+                    if (!validCond) return null;
                 }
                 return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
