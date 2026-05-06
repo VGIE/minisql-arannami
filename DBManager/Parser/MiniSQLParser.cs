@@ -21,9 +21,9 @@ namespace DbManager
             //And then, an execution error should be given if a CreateTable without columns is executed
             const string createTablePattern = @"^CREATE\s+TABLE\s+([a-zA-Z]\w*)\s*\((.*)\)$";
 
-            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(<=|>=|<>|=|<|>)('[^']+'+))?\s*$";
+            const string updateTablePattern = @"^UPDATE\s+(\w+)\s+SET\s+(.+?)(?:\s+WHERE\s+(\w+)(<=|>=|<>|=|<|>)('[^']+'|\d+))?\s*$";
 
-            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']+'|\d+)\s*$";
+            const string deletePattern = @"^DELETE\s+FROM\s+(\w+)\s+WHERE\s+(\w+)(=|<>|<=|>=|<|>)('[^']+')\s*$";
 
             const string createSecurityProfilePattern = @"^CREATE\s+SECURITY\s+PROFILE\s+([a-zA-Z0-9]+)\s*$";
 
@@ -62,14 +62,14 @@ namespace DbManager
                 {
                     string conditions = match.Groups[3].Value;
                     string[] eachCondition = conditions.Split(",");
-                    bool validCondition = true;
+                    bool validCond = true;
 
                     foreach (var condition in eachCondition)
                     {
                         var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(<=|>=|=|<|>)'([^'\s]+)'$");
                         if (!conditionMatch.Success)
                         {
-                            validCondition = false;
+                            validCond = false;
                             break;
                         }
 
@@ -79,7 +79,8 @@ namespace DbManager
 
                         conditionsParse = new Condition(col, op, val);
                     }
-                    if (!validCondition) return null;
+
+                    if (!validCond) return null;
                 }
                 return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
