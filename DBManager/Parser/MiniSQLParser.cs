@@ -62,21 +62,25 @@ namespace DbManager
                 {
                     string conditions = match.Groups[3].Value;
                     string[] eachCondition = conditions.Split(",");
+                    bool validCondition = true;
 
                     foreach (var condition in eachCondition)
                     {
                         var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(<=|>=|=|<|>)'([^'\s]+)'$");
-                        if (conditionMatch.Success)
+                        if (!conditionMatch.Success)
                         {
-                            string col = conditionMatch.Groups[1].Value;
-                            string op = conditionMatch.Groups[2].Value;
-                            string val = conditionMatch.Groups[3].Value;
-
-                            conditionsParse = new Condition(col, op, val);
+                            validCondition = false;
+                            break;
                         }
-                    }
-                }
 
+                        string col = conditionMatch.Groups[1].Value;
+                        string op = conditionMatch.Groups[2].Value;
+                        string val = conditionMatch.Groups[3].Value;
+
+                        conditionsParse = new Condition(col, op, val);
+                    }
+                    if (!validCondition) return null;
+                }
                 return new Select(tableSelect, columnsSelect.ToList(), conditionsParse);
             }
 
