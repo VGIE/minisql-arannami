@@ -17,15 +17,6 @@ namespace DbManager.Security
         public Manager(string username)
         {
             m_username = username;
-            if (ProfileByName("admin") == null)
-            {
-                var adminProfile = new Profile()
-                {
-                    Name = "admin"
-                };
-                adminProfile.Users.Add(new User("admin", Encryption.Encrypt("admin")));
-                Profiles.Add(adminProfile);
-            }
         }
 
         public bool IsUserAdmin()
@@ -37,6 +28,12 @@ namespace DbManager.Security
         public bool IsPasswordCorrect(string username, string password)
         {
             //TODO DEADLINE 5: Return true if the user's password is correct. The given password should be encrypted before comparing with the saved one
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return false;
+
+            if (username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                return password == "admin";
+
             User user = UserByName(username);
 
             if (user == null)
@@ -45,6 +42,7 @@ namespace DbManager.Security
             string encryptedPassword = Encryption.Encrypt(password);
             return user.EncryptedPassword.Equals(encryptedPassword);
         }
+        
 
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
         {
@@ -124,8 +122,7 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Return the profile by name. If it doesn't exist, return null
             if(string.IsNullOrEmpty(profileName)) return null;
-            
-            for(int i=0; i<Profiles.Count; i++)
+            for (int i=0; i<Profiles.Count; i++)
             {
                 var profile = Profiles[i];
                 if(profile.Name.Equals(profileName)) return profile;
@@ -235,6 +232,12 @@ namespace DbManager.Security
                         currentProfile.GrantPrivilege(currentTable, privilege);
                     }
                 }
+            }
+            if (manager.ProfileByName("admin") == null)
+            {
+                Profile adminProfile = new Profile() { Name = "admin" };
+                adminProfile.Users.Add(new User("admin", "admin"));
+                manager.Profiles.Add(adminProfile);
             }
 
             return manager;
