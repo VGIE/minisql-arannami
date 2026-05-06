@@ -53,9 +53,11 @@ namespace DbManager.Security
             if (!PrivilegesOn.ContainsKey(tableName))
                 return false;
 
+            if (string.IsNullOrEmpty(table))
+                return false;
+
             return PrivilegesOn[tableName].Remove(privilege);
         }
-
         
     }
 }

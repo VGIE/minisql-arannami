@@ -68,14 +68,12 @@ namespace DbManager.Security
             if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
                 return;
 
-            foreach (var profile in Profiles)
-            {
-                if (profile.Name == profileName)
-                {
-                    profile.RevokePrivilege(table, privilege);
-                    return;
-                }
-            }
+            Profile profile = ProfileByName(profileName);
+
+            if (profile == null)
+                return;
+
+            profile.RevokePrivilege(table, privilege);
         }
 
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
@@ -90,7 +88,13 @@ namespace DbManager.Security
         public void AddProfile(Profile profile)
         {
             //TODO DEADLINE 5: Add this profile
+            if (!IsUserAdmin())
+                return;
+
             if (profile == null)
+                return;
+
+            if (string.IsNullOrEmpty(profile.Name))
                 return;
 
             if (ProfileByName(profile.Name) != null)
