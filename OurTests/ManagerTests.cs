@@ -201,6 +201,18 @@ namespace OurTests
             Assert.Equal(profile1, manager.ProfileByName("test"));
         }
 
+        [Fact]
+        public void AddProfile_NotBeingAdminShouldDoNothing()
+        {
+            Manager manager = new Manager("mikel");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.AddProfile(profile);
+
+            Assert.Null(manager.ProfileByName("test"));
+        }
+
+
         //USERBYPROFILE
         [Fact]
         public void UserByName_ReturnsUser_Exists()
@@ -328,6 +340,35 @@ namespace OurTests
 
             Assert.Null(manager.ProfileByName("missing"));
         }
+
+        [Fact]
+        public void RevokePrivilege_NotBeingAdminShouldDoNothing()
+        {
+            Manager manager = new Manager("mikel");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.Profiles.Add(profile);
+            profile.GrantPrivilege("users", Privilege.Select);
+
+            manager.RevokePrivilege("test", "users", Privilege.Select);
+
+            Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]
+        public void RevokePrivilege_DoesNothing_WhenTableDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.AddProfile(profile);
+            profile.GrantPrivilege("users", Privilege.Select);
+
+            manager.RevokePrivilege("test", "orders", Privilege.Select);
+
+            Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
 
         //LOAD
         [Fact]
