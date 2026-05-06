@@ -160,8 +160,7 @@ namespace DbManager
                 return new CreateTable(table, columns);
 
             }
-
-            // UPDATE
+            //UPDATE
             match = Regex.Match(miniSQLQuery, updateTablePattern);
             if (match.Success)
             {
@@ -175,53 +174,38 @@ namespace DbManager
                 {
                     if (assignment.StartsWith(" ") || assignment.EndsWith(" "))
                         return null;
-
+                    string cleanAssignment = assignment.Trim();
                     var setMatch = Regex.Match(
-                        assignment,
+                        cleanAssignment,
                         @"^(\w+)=('[^']*')$"
                     );
 
                     if (!setMatch.Success)
                         return null;
-                    string column = setMatch.Groups[1].Value;
-                    string rawValue = setMatch.Groups[2].Value;
-                    if (rawValue.StartsWith("'"))
-                    {
-                        if (!rawValue.EndsWith("'"))
-                            return null;
-                    }
-                    else
-                    {
-                        if (!Regex.IsMatch(rawValue, @"^\d+$"))
-                            return null;
-                    }
 
-                    string value = rawValue.Trim('\'');
+                    string column = setMatch.Groups[1].Value;
+                    string value = setMatch.Groups[2].Value.Trim('\'');
 
                     values.Add(new SetValue(column, value));
                 }
 
                 Condition condition = null;
-
                 if (match.Groups[3].Success)
                 {
                     string col = match.Groups[3].Value;
                     string op = match.Groups[4].Value;
                     string rawVal = match.Groups[5].Value;
-                    if (rawVal.StartsWith("'"))
+
+                    if (rawVal.StartsWith("'") && rawVal.EndsWith("'"))
                     {
-                        if (!rawVal.EndsWith("'"))
-                            return null;
+                        rawVal = rawVal.Trim('\'');
                     }
-                    else
+                    else if (!Regex.IsMatch(rawVal, @"^\d+$"))
                     {
-                        if (!Regex.IsMatch(rawVal, @"^\d+$"))
-                            return null;
+                        return null;
                     }
 
-                    string val = rawVal.Trim('\'');
-
-                    condition = new Condition(col, op, val);
+                    condition = new Condition(col, op, rawVal);
                 }
 
                 return new Update(table, values, condition);

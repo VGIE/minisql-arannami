@@ -23,7 +23,7 @@ namespace OurTests
         [Fact]
         public void Update_Parse_WithWhere()
         {
-            string query = "UPDATE Users SET Name='Juan Perez',Age=30 WHERE ID=1";
+            string query = "UPDATE Users SET Name='Juan Perez',Age='30' WHERE ID='1'";
 
             var result = MiniSQLParser.Parse(query) as Update;
 
@@ -53,7 +53,7 @@ namespace OurTests
         [Fact]
         public void Update_Parse_WithoutWhere()
         {
-            string query = "UPDATE Inventory SET Stock=10";
+            string query = "UPDATE Inventory SET Stock='10'";
 
             var result = MiniSQLParser.Parse(query) as Update;
 
