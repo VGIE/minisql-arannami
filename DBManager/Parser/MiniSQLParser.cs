@@ -183,7 +183,6 @@ namespace DbManager
 
                     if (!setMatch.Success)
                         return null;
-
                     string column = setMatch.Groups[1].Value;
                     string rawValue = setMatch.Groups[2].Value;
                     if (rawValue.StartsWith("'"))
