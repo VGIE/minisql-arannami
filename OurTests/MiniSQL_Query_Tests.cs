@@ -180,12 +180,6 @@ namespace OurTests
         }
 
         [Fact]
-        public void Insert_Execute_TableDoesntExist()
-        {
-
-        }
-
-        [Fact]
         public void Insert_Execute_IncorrectColumns()
         {
             Database db = Database.CreateTestDatabase();
