@@ -178,7 +178,7 @@ namespace DbManager
 
                     var setMatch = Regex.Match(
                         assignment,
-                        @"^(\w+)=('[^']*'|\d+)$"
+                        @"^(\w+)=('[^']*')$"
                     );
 
                     if (!setMatch.Success)
