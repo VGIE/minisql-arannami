@@ -132,7 +132,7 @@ namespace OurTests
         [Fact]
         public void Delete_WithWhere()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id=5");
+            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id='5'");
 
             Assert.IsType<Delete>(result);
             var delete = (Delete)result;
@@ -156,11 +156,6 @@ namespace OurTests
             Assert.Null(result3);
             Assert.Null(result4);
             
-
-            // Assert.IsType<Delete>(result);
-            // var delete = (Delete)result;
-            // Assert.Equal("users", delete.Table);
-            // Assert.Null(delete.Where);
         }
 
         [Fact]
