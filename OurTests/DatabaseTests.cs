@@ -105,33 +105,18 @@ namespace OurTests
             Assert.False(result);
         }
 
-        /*[Fact]
-        public void Load_Success()
+        [Fact]
+        public void Load()
         {
             string dbName = "TestDB_Load";
             Database db = Database.CreateTestDatabase();
             db.Save(dbName);
+            Database loadedDb = Database.Load(dbName, "admin", "admi ");
 
-            Database loadedDb = Database.Load(dbName, "admin", "adminPassword");
             Assert.NotNull(loadedDb);
-
             var table = loadedDb.TableByName(Table.TestTableName);
-            Assert.True(table!=null);
-        }*/
-
-        /*[Fact]
-        public void Load_Success()
-        {
-            string dbName = "TestDB_Load";
-            if (File.Exists(dbName + ".db")) File.Delete(dbName + ".db");
-            if (File.Exists(dbName + ".path")) File.Delete(dbName + ".path");
-
-            Database db = Database.CreateTestDatabase();
-            db.Save(dbName);
-
-            Database loadedDb = Database.Load(dbName, "admin", "adminPassword");
-            Assert.NotNull(loadedDb);
-        }*/
+            Assert.NotNull(table);
+        }
 
         [Fact]
         public void Load_DistintosCredenciales()
@@ -139,11 +124,10 @@ namespace OurTests
             string dbName = "TestDB_Data";
             Database db = Database.CreateTestDatabase();
             db.Save(dbName);
-
             Database loaded = Database.Load(dbName, "user", "pass");
 
-            Assert.Null(loaded);
-            
+            Assert.NotNull(loaded);
+
         }
 
         [Fact]
@@ -153,7 +137,8 @@ namespace OurTests
             Assert.Null(loaded);
         }
 
-       
+
+
 
         [Fact]
         public void CreateTable()

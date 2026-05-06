@@ -28,9 +28,12 @@ namespace DbManager
         public string Execute(Database database)
         {
             //TODO DEADLINE 3: Run the query and return the table as a string (or the last error in the database)
-            database.Select(this.Table, this.Columns, this.Where);
-            return database.LastErrorMessage;
-            
+            Table table = database.Select(this.Table, this.Columns, this.Where);
+            if(table == null)
+            {
+                return database.LastErrorMessage;
+            }
+            return table.ToString();
         }
     }
 }
