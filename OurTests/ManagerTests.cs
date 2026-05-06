@@ -109,10 +109,62 @@ namespace OurTests
             Manager manager = new Manager("admin");
             Assert.True(manager.IsPasswordCorrect("admin", "admin"));
         }
+        
         //GRANTPRIVILEGE
+        [Fact]
+        public void GrantPrivilege_AddsPrivilegeToProfile()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+            manager.AddProfile(profile);
+            manager.GrantPrivilege("test", "users", Privilege.Select);
+            
+            Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]
+        public void GrantPrivilege_ProfileDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            manager.GrantPrivilege("missing", "users", Privilege.Select);
+            
+            Assert.Null(manager.ProfileByName("missing"));
+        }
+
 
         //ISGRANTEDPRIVILEGE
+        [Fact]
+        public void IsGrantedPrivilege_PrivilegeIsGranted()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+            manager.AddProfile(profile);
+            manager.GrantPrivilege("test", "users", Privilege.Select);
+            bool result = manager.IsGrantedPrivilege("test", "users", Privilege.Select);
+            
+            Assert.True(result);
+        }
 
+        [Fact]
+        public void IsGrantedPrivilege_PrivilegeIsNotGranted()
+        {
+            Manager manager = new Manager("Juan");
+            Profile profile = new Profile { Name = "test" };
+            User user = new User("Juan", Encryption.Encrypt("1234"));
+            profile.Users.Add(user);
+            manager.AddProfile(profile);
+            bool result = manager.IsGrantedPrivilege("Juan", "users", Privilege.Select);
+            
+            Assert.False(result);
+        }  
+
+        [Fact]
+        public void IsGrantedPrivilege_AdminAlwaysPrivilege()
+        {
+            Manager manager = new Manager("admin");
+            bool result = manager.IsGrantedPrivilege("admin", "CualquierTabla", Privilege.Delete);
+            Assert.True(result);
+        } 
 
         //ADDPROFILE
         [Fact]

@@ -23,7 +23,7 @@ namespace OurTests
         [Fact]
         public void Update_Parse_WithWhere()
         {
-            string query = "UPDATE Users SET Name='Juan Perez',Age=30 WHERE ID=1";
+            string query = "UPDATE Users SET Name='Juan Perez',Age='30' WHERE ID='1'";
 
             var result = MiniSQLParser.Parse(query) as Update;
 
@@ -53,7 +53,7 @@ namespace OurTests
         [Fact]
         public void Update_Parse_WithoutWhere()
         {
-            string query = "UPDATE Inventory SET Stock=10";
+            string query = "UPDATE Inventory SET Stock='10'";
 
             var result = MiniSQLParser.Parse(query) as Update;
 
@@ -88,6 +88,13 @@ namespace OurTests
             Assert.Equal("AdminUser", result.Username);
             Assert.Equal("Pass123", result.Password);
             Assert.Equal("AdminProfile", result.ProfileName);
+        }
+        [Fact]
+        public void Update_SpaceBeforeSecondSetNull()
+        {
+            string query = "UPDATE Table SET ColA='1', ColB='3' WHERE ColA='0'";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
         }
 
         //DELETE
@@ -125,7 +132,7 @@ namespace OurTests
         [Fact]
         public void Delete_WithWhere()
         {
-            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id=5");
+            var result = MiniSQLParser.Parse("DELETE FROM users WHERE id='5'");
 
             Assert.IsType<Delete>(result);
             var delete = (Delete)result;
@@ -149,11 +156,6 @@ namespace OurTests
             Assert.Null(result3);
             Assert.Null(result4);
             
-
-            // Assert.IsType<Delete>(result);
-            // var delete = (Delete)result;
-            // Assert.Equal("users", delete.Table);
-            // Assert.Null(delete.Where);
         }
 
         [Fact]
