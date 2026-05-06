@@ -1,5 +1,3 @@
-using DbManager.Parser;
-using DbManager.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using DbManager.Parser;
+using DbManager.Security;
 
 namespace DbManager
 {
@@ -231,19 +232,25 @@ namespace DbManager
 
         public bool Save(string databaseName)
         {
+            //DEADLINE 1.C: Save this database to disk with the given name
+            //If everything goes ok, return true, false otherwise.
+            //DEADLINE 5: Save the SecurityManager so that it can be loaded with the database in Load()
 
             if (string.IsNullOrEmpty(databaseName))
                 return false;
 
             string filePath = databaseName + ".db";
-            var options = new JsonSerializerOptions
-            {
-                IncludeFields = true
-            };
-            string json = JsonSerializer.Serialize(Tables, options);
+            var options = new JsonSerializerOptions { IncludeFields = true };
+
+            string json = JsonSerializer.Serialize(this.Tables, options);
             File.WriteAllText(filePath, json);
+
+            if(this.SecurityManager != null)
+            {
+                this.SecurityManager.Save(databaseName);
+            }
+
             return true;
-            
         }
 
         public static Database Load(string databaseName, string username, string password)
@@ -251,7 +258,8 @@ namespace DbManager
             //DEADLINE 1.C: Load the (previously saved) database of name databaseName
             //If everything goes ok, return the loaded database (a new instance), null otherwise.
             //DEADLINE 5: When the Database object is created, set the username (create a new method if you must)
-            //After loading the database, load the SecurityManager and check the password is correct. If it's not, return null. If it is return the database
+            //After loading the database, load the SecurityManager and check the password is correct. If it's not,
+            //return null. If it is return the database
             
             if (string.IsNullOrEmpty(databaseName)) 
             {
@@ -262,21 +270,24 @@ namespace DbManager
             if (!File.Exists(filePath))
             {
                 return null;
-            }    
-            var options = new JsonSerializerOptions
+            }
+
+            Manager verifManager = Manager.Load(databaseName, username);
+            if (!verifManager.IsPasswordCorrect(username, password)) 
             {
-                IncludeFields = true
-            };
+                return null;
+            }
+
             string json = File.ReadAllText(filePath);
+            var options = new JsonSerializerOptions { IncludeFields = true };
             List<Table> tables = JsonSerializer.Deserialize<List<Table>>(json, options);
 
-            if (tables == null)
-                return null;
+            if (tables == null) return null;
 
             Database db = new Database();
             db.Tables = tables;
             db.m_username = username;
-            db.SecurityManager = new Manager(username);
+            db.SecurityManager = verifManager;
             return db;
     
         }
