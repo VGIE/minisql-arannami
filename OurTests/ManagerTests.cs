@@ -131,6 +131,27 @@ namespace OurTests
             Assert.Null(manager.ProfileByName("missing"));
         }
 
+        [Fact]
+        public void GrantPrivilege_NotBeingAdminShouldDoNothing()
+        {            
+            Manager manager = new Manager("user");
+            Profile profile = new Profile { Name = "test" };
+            manager.AddProfile(profile);    
+            manager.GrantPrivilege("test", "users", Privilege.Select);
+            Assert.False(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
+        [Fact]  
+        public void GrantPrivilege_TableDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+            manager.AddProfile(profile);
+            manager.GrantPrivilege("test", "noExiste", Privilege.Select);
+
+            Assert.True(profile.IsGrantedPrivilege("noExiste", Privilege.Select));
+        }
+
 
         //ISGRANTEDPRIVILEGE
         [Fact]
@@ -165,6 +186,7 @@ namespace OurTests
             bool result = manager.IsGrantedPrivilege("admin", "CualquierTabla", Privilege.Delete);
             Assert.True(result);
         }
+        
 
         //ADDPROFILE
         [Fact]
