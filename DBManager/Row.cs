@@ -20,7 +20,6 @@ namespace DbManager
             this.ColumnDefinitions = columnDefinitions;
             this.Values = values;
         }
-
         public void SetValue(string columnName, string value)
         {
             //TODO DEADLINE 1.A: Given a column name and value, change the value in that column
@@ -38,7 +37,6 @@ namespace DbManager
             }
 
         }
-
         public string GetValue(string columnName)
         {
             //TODO DEADLINE 1.A: Given a column name, return the value in that column
@@ -56,7 +54,6 @@ namespace DbManager
             return null;
 
         }
-
         public bool IsTrue(Condition condition)
         {
             //TODO DEADLINE 1.A: Given a condition (column name, operator and literal value, return whether it is true or not

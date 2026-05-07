@@ -398,22 +398,16 @@ namespace OurTests
         {
             string dbName = "testdb_load_basic";
 
-            try
-            {
-                File.WriteAllText(dbName + ".path",
+            File.WriteAllText(dbName + ".path",
         @"Profile: dev
 User: alice, Password: " + Encryption.Encrypt("1234") + @"
 ");
+            Manager manager = Manager.Load(dbName, "admin");
 
-                Manager manager = Manager.Load(dbName, "admin");
+            Assert.NotNull(manager.ProfileByName("dev"));
+            Assert.NotNull(manager.UserByName("alice"));
 
-                Assert.NotNull(manager.ProfileByName("dev"));
-                Assert.NotNull(manager.UserByName("alice"));
-            }
-            finally
-            {
-                File.Delete(dbName + ".path");
-            }
+            File.Delete(dbName + ".path");
         }
         [Fact]
         public void Load_LoadsPrivileges()

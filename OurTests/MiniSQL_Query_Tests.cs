@@ -69,7 +69,7 @@ namespace OurTests
 
         //ADDUSER
        [Fact]
-        public void AddUser_Execute_Success()
+        public void AddUser_ExecuteSuccess()
         {
             Database db = Database.CreateTestDatabase();
             db.SecurityManager.AddProfile(new Profile { Name = "AdminProfile" });
@@ -81,7 +81,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void AddUser_Execute_ProfileDoesNotExist()
+        public void AddUser_ExecuteProfileDoesNotExist()
         {
             Database db = Database.CreateTestDatabase();
             AddUser addUser = new AddUser("Juan", "1234", "PerfilFake");
@@ -90,7 +90,7 @@ namespace OurTests
         }
 
         [Fact]
-        public void AddUser_Execute_UserAlreadyExists()
+        public void AddUser_ExecuteUserAlreadyExists()
         {
             Database db = Database.CreateTestDatabase();
 
@@ -101,6 +101,77 @@ namespace OurTests
             string result = addUser2.Execute(db);
             Assert.Equal(Constants.Error + "User already exists", result);
         }
+        [Fact]
+        public void AddUser_ExecuteUserIsNotAdmin()
+        {
+            Database db = new Database("user", "1234");
+            db.SecurityManager.AddProfile(new Profile { Name = "AdminProfile" });
+            AddUser addUser = new AddUser("Juan", "1234", "AdminProfile");
+            string result = addUser.Execute(db);
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+        }
+        [Fact]
+        public void AddUser_ExecuteUserAddedToCorrectProfile()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile p1 = new Profile { Name = "P1" };
+            Profile p2 = new Profile { Name = "P2" };
+            db.SecurityManager.AddProfile(p1);
+            db.SecurityManager.AddProfile(p2);
+            AddUser addUser = new AddUser("Juan", "1234", "P2");
+            addUser.Execute(db);
+            Assert.Null(p1.Users.Find(u => u.Username == "Juan"));
+            Assert.NotNull(p2.Users.Find(u => u.Username == "Juan"));
+        }
+        [Fact]
+        public void AddUser_ExecutePasswordEncrypted()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile profile = new Profile { Name = "AdminProfile" };
+            db.SecurityManager.AddProfile(profile);
+            AddUser addUser = new AddUser("Juan", "1234", "AdminProfile");
+            addUser.Execute(db);
+            User user = db.SecurityManager.UserByName("Juan");
+            Assert.NotEqual("1234", user.EncryptedPassword);
+        }
+        [Fact]
+        public void AddUser_ExecuteCorrectEncryptedPassword()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile profile = new Profile { Name = "AdminProfile" };
+            db.SecurityManager.AddProfile(profile);
+            AddUser addUser = new AddUser("Juan", "1234", "AdminProfile");
+            addUser.Execute(db);
+            User user = db.SecurityManager.UserByName("Juan");
+            Assert.Equal(Encryption.Encrypt("1234"), user.EncryptedPassword);
+        }
+        [Fact]
+        public void AddUser_ExecuteUserAlreadyExistsInAnotherProfile()
+        {
+            Database db = Database.CreateTestDatabase();
+
+            Profile p1 = new Profile { Name = "P1" };
+            Profile p2 = new Profile { Name = "P2" };
+            p1.Users.Add(new User("Juan", "1234"));
+            db.SecurityManager.AddProfile(p1);
+            db.SecurityManager.AddProfile(p2);
+            AddUser addUser = new AddUser("Juan", "abcd", "P2");
+            string result = addUser.Execute(db);
+            Assert.Equal(Constants.Error + "User already exists", result);
+        }
+        [Fact]
+        public void AddUser_ExecuteUserAddedOnce()
+        {
+            Database db = Database.CreateTestDatabase();
+            Profile profile = new Profile { Name = "AdminProfile" };
+            db.SecurityManager.AddProfile(profile);
+            AddUser addUser1 = new AddUser("Juan", "1234", "AdminProfile");
+            AddUser addUser2 = new AddUser("Juan", "1234", "AdminProfile");
+            addUser1.Execute(db);
+            addUser2.Execute(db);
+            Assert.Single(profile.Users);
+        }
+        
 
         //SELECT
         [Fact]
