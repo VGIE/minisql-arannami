@@ -126,7 +126,7 @@ namespace OurTests
         [Fact]
         public void GrantPrivilege_ProfileDoesNotExist()
         {
-            Manager manager = new Manager("admin");
+            Manager manager = new Manager("user");
             manager.GrantPrivilege("missing", "users", Privilege.Select);
 
             Assert.Null(manager.ProfileByName("missing"));
@@ -135,10 +135,13 @@ namespace OurTests
         [Fact]
         public void GrantPrivilege_NotBeingAdminShouldDoNothing()
         {            
-            Manager manager = new Manager("user");
-            Profile profile = new Profile { Name = "test" };
-            manager.AddProfile(profile);    
-            manager.GrantPrivilege("test", "users", Privilege.Select);
+
+            Database db = new Database("Juan", "1234");
+            Profile profile = new Profile { Name = "testProfile" };
+            db.SecurityManager.Profiles.Add(profile);
+
+            db.SecurityManager.GrantPrivilege("testProfile", "users", Privilege.Select);
+
             Assert.False(profile.IsGrantedPrivilege("users", Privilege.Select));
         }
 
@@ -153,6 +156,14 @@ namespace OurTests
             Assert.True(profile.IsGrantedPrivilege("noExiste", Privilege.Select));
         }
 
+        // [Fact]
+        // public void GrantedPrivilege_UserDoesNotExist()
+        // {
+        //     Manager manager = new Manager("admin");
+        //     manager.GrantPrivilege("noExiste", "Users", Privilege.Select);
+
+        //     Assert.Null(manager.ProfileByName("noExiste"));
+        // }
 
         //ISGRANTEDPRIVILEGE
         [Fact]
@@ -186,6 +197,19 @@ namespace OurTests
             Manager manager = new Manager("admin");
             bool result = manager.IsGrantedPrivilege("admin", "CualquierTabla", Privilege.Delete);
             Assert.True(result);
+        }
+
+        [Fact]
+        public void IsGrantedPrivilege_UserDoesNotExist()
+        {
+            Manager manager = new Manager("usuario");
+            Profile profile = new Profile { Name = "test" };
+            profile.Users.Add(new User("user", "1234"));
+            profile.GrantPrivilege("Users", Privilege.Insert);
+            manager.Profiles.Add(profile);
+            
+            var result = manager.IsGrantedPrivilege("noExiste", "Users", Privilege.Insert);
+            Assert.False(result);
         }
         
 

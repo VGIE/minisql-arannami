@@ -18,6 +18,10 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Grant this privilege on this table. Return false if there is an error, true otherwise
             string tableName = table.ToUpper();
+            if (string.IsNullOrEmpty(tableName) || privilege == null)
+            {
+                return false;
+            }
 
             if (!PrivilegesOn.ContainsKey(tableName))
             {
@@ -36,6 +40,10 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Return whether this profile is granted this privilege on this table
             string tableName = table.ToUpper();
+            if (string.IsNullOrEmpty(tableName) || privilege == null)
+            {
+                return false;
+            }
             if (PrivilegesOn.ContainsKey(tableName))
             {
                 return PrivilegesOn[tableName].Contains(privilege);
