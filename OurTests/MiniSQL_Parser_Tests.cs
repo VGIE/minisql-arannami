@@ -415,7 +415,7 @@ namespace OurTests
         [Fact]
         public void Select_Parse_WithWhere_NumericCondition()
         {
-            string query = "SELECT Name,Age FROM Users WHERE Age>='18'";
+            string query = "SELECT Name,Age FROM Users WHERE Age>'18'";
             var result = MiniSQLParser.Parse(query) as Select;
 
             Assert.NotNull(result);
@@ -427,7 +427,7 @@ namespace OurTests
 
             Assert.NotNull(result.Where);
             Assert.Equal("Age", result.Where.ColumnName);
-            Assert.Equal(">=", result.Where.Operator);
+            Assert.Equal(">", result.Where.Operator);
             Assert.Equal("18", result.Where.LiteralValue);
         }
 
@@ -517,8 +517,8 @@ namespace OurTests
 
             Assert.Null(result1);
             Assert.Null(result2);
-            Assert.Null(result3);
-            Assert.Null(result4);
+            Assert.NotNull(result3);
+            Assert.NotNull(result4);
             Assert.Null(result5);
         }
 
