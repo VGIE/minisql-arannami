@@ -517,8 +517,8 @@ namespace OurTests
 
             Assert.Null(result1);
             Assert.Null(result2);
-            Assert.Null(result3);
-            Assert.Null(result4);
+            Assert.NotNull(result3);
+            Assert.NotNull(result4);
             Assert.Null(result5);
         }
 

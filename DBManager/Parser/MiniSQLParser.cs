@@ -66,7 +66,7 @@ namespace DbManager
 
                     foreach (var condition in eachCondition)
                     {
-                        var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(<=|>=|=|<|>)'([^'\s]+)'$");
+                        var conditionMatch = Regex.Match(condition.Trim(), @"^(\w+)(=|<|>)'([^']*)'$");
                         if (!conditionMatch.Success)
                         {
                             validCond = false;
