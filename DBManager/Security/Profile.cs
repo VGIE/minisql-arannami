@@ -56,13 +56,14 @@ namespace DbManager.Security
         public bool RevokePrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Revoke this privilege on this table. Return false if there is an error, true otherwise
+            if (string.IsNullOrEmpty(table))
+                return false;
+
             string tableName = table.ToUpper();
 
             if (!PrivilegesOn.ContainsKey(tableName))
                 return false;
 
-            if (string.IsNullOrEmpty(table))
-                return false;
 
             return PrivilegesOn[tableName].Remove(privilege);
         }

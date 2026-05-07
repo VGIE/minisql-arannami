@@ -156,6 +156,19 @@ namespace OurTests
             Assert.True(profile.IsGrantedPrivilege("noExiste", Privilege.Select));
         }
 
+        [Fact]
+        public void GrantPrivilege_GrantPrivilege_NonAdminCannotGrantPrivilege()
+        {
+            Manager manager = new Manager("user");
+            Profile profile = new Profile { Name = "test" };
+
+            manager.Profiles.Add(profile);
+
+            manager.GrantPrivilege("test", "users", Privilege.Select);
+
+            Assert.False(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
         // [Fact]
         // public void GrantedPrivilege_UserDoesNotExist()
         // {
@@ -403,6 +416,24 @@ namespace OurTests
 
             Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
         }
+
+        [Fact]
+        public void RevokePrivilege_NotBeingAdminShouldDoNothing_AfterPrivilegeExists()
+        {
+            Manager adminManager = new Manager("admin");
+            Profile profile = new Profile { Name = "test" };
+
+            adminManager.AddProfile(profile);
+            adminManager.GrantPrivilege("test", "users", Privilege.Select);
+
+            Manager normalManager = new Manager("mikel");
+            normalManager.Profiles.Add(profile);
+
+            normalManager.RevokePrivilege("test", "users", Privilege.Select);
+
+            Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
+        }
+
 
         [Fact]
         public void RevokePrivilege_DoesNothing_WhenTableDoesNotExist()
