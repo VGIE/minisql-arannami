@@ -538,6 +538,41 @@ namespace OurTests
         }
 
         //DROP SECURITY PROFILE
-        
+        [Fact]
+        public void DropSecurityProfile_Execute_Success()
+        {
+            Database db = new Database("admin", "admin");
+
+            var createQuery = new CreateSecurityProfile("profile");
+            createQuery.Execute(db);
+
+            var dropQuery = new DropSecurityProfile("profile");
+            string result = dropQuery.Execute(db);
+
+            Assert.Equal(Constants.DropSecurityProfileSuccess, result);
+            Assert.Null(db.SecurityManager.ProfileByName("profile"));
+        }
+
+        [Fact]
+        public void DropSecurityProfile_Execute_UsersProfileIsNotGrantedRequiredPrivilege()
+        {
+            Database db = new Database("user", "1234");
+
+            var dropQuery = new DropSecurityProfile("profile");
+            string result = dropQuery.Execute(db);
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+        }
+
+        [Fact]
+        public void DropSecurityProfile_Execute_ProfileDoesNotExist()
+        {
+            Database db = new Database("admin", "admin");
+
+            var dropQuery = new DropSecurityProfile("notExistantProfile");
+            string result = dropQuery.Execute(db);
+
+            Assert.Equal(Constants.SecurityProfileDoesNotExistError, result);
+        }
     }
 }
