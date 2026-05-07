@@ -1,5 +1,6 @@
 ﻿using DbManager;
 using DbManager.Parser;
+using DbManager.Security;
 using Xunit;
 
 
@@ -76,6 +77,13 @@ namespace OurTests
 
             Assert.Null(result);
         }
+        [Fact]
+        public void Update_SpaceBeforeSecondSetNull()
+        {
+            string query = "UPDATE Table SET ColA='1', ColB='3' WHERE ColA='0'";
+            var result = MiniSQLParser.Parse(query);
+            Assert.Null(result);
+        }
 
         //ADDUSER
 
@@ -89,14 +97,6 @@ namespace OurTests
             Assert.Equal("Pass123", result.Password);
             Assert.Equal("AdminProfile", result.ProfileName);
         }
-        [Fact]
-        public void Update_SpaceBeforeSecondSetNull()
-        {
-            string query = "UPDATE Table SET ColA='1', ColB='3' WHERE ColA='0'";
-            var result = MiniSQLParser.Parse(query);
-            Assert.Null(result);
-        }
-
         //DELETE
 
         [Fact]
