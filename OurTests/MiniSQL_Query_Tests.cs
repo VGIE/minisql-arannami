@@ -464,7 +464,25 @@ namespace OurTests
 
             Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
         }
-        
+
+
+        [Fact]
+        public void Revoke_Execute_NotAdminShouldDoNothing()
+        {
+            Database db = new Database("test", "mikel");
+
+            Profile profile = new Profile { Name = "TestProfile" };
+            db.SecurityManager.Profiles.Add(profile);
+            profile.GrantPrivilege(Table.TestTableName, Privilege.Select);
+
+            Revoke revoke = new Revoke("Select", Table.TestTableName, "TestProfile");
+
+            string result = revoke.Execute(db);
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.True(profile.IsGrantedPrivilege(Table.TestTableName, Privilege.Select));
+        }
+
         // DELETE USER
         [Fact]
         public void DeleteUser_Execute_Success()
