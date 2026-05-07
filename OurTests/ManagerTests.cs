@@ -1,4 +1,5 @@
-﻿using DbManager.Security;
+﻿using DbManager;
+using DbManager.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -366,13 +367,15 @@ namespace OurTests
         [Fact]
         public void RevokePrivilege_NotBeingAdminShouldDoNothing()
         {
-            Manager manager = new Manager("mikel");
-            Profile profile = new Profile { Name = "test" };
+            Database db = new Database("test", "mikel");
 
-            manager.Profiles.Add(profile);
+            Profile profile = new Profile { Name = "test" };
+            profile.Users.Add(new User("mikel", "1234"));
             profile.GrantPrivilege("users", Privilege.Select);
 
-            manager.RevokePrivilege("test", "users", Privilege.Select);
+            db.SecurityManager.Profiles.Add(profile);
+
+            db.SecurityManager.RevokePrivilege("test", "users", Privilege.Select);
 
             Assert.True(profile.IsGrantedPrivilege("users", Privilege.Select));
         }
