@@ -246,6 +246,8 @@ namespace DbManager
             };
             string json = JsonSerializer.Serialize(Tables, options);
             File.WriteAllText(filePath, json);
+
+            SecurityManager?.Save(databaseName);
             return true;
         }
 

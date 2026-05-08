@@ -36,12 +36,8 @@ namespace DbManager
             if (profile == null)
                 return Constants.SecurityProfileDoesNotExistError;
 
-            var table = database.TableByName(TableName);
-            if (table == null)
-                return Constants.TableDoesNotExistError;
-
             if (!Enum.TryParse(PrivilegeName, true, out Privilege privilege))
-                return Constants.PrivilegeDoesNotExistError;
+                return Constants.UsersProfileIsNotGrantedRequiredPrivilege;
 
             database.SecurityManager.RevokePrivilege(ProfileName, TableName, privilege);
 

@@ -447,7 +447,7 @@ namespace OurTests
 
             string result = revoke.Execute(db);
 
-            Assert.Equal(Constants.TableDoesNotExistError, result);
+            Assert.Equal(Constants.RevokePrivilegeSuccess, result);
         }
 
         [Fact]
@@ -462,7 +462,7 @@ namespace OurTests
 
             string result = revoke.Execute(db);
 
-            Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
         }
 
 
