@@ -47,12 +47,14 @@ namespace DbManager.Security
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Add this privilege on this table to the profile with this name
+            
+            if (!IsUserAdmin())
+                return;
             if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
                 return;
             var profile = ProfileByName(profileName);
             //if (profile == null) return;
-            if (!IsUserAdmin())
-                return;
+
             if (profile.IsGrantedPrivilege(table, privilege))
                 return;
 
