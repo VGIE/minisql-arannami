@@ -404,7 +404,7 @@ namespace OurTests
         [Fact]
         public void RevokePrivilege_NotBeingAdminShouldDoNothing()
         {
-            Database db = new Database("test", "mikel");
+            Database db = new Database("test2", "mikel");
 
             Profile profile = new Profile { Name = "test" };
             profile.Users.Add(new User("mikel", "1234"));
