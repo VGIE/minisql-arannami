@@ -225,7 +225,11 @@ namespace DbManager.Security
                     string userName = usernamePart;
                     string password = passwordPart.Replace("Password: ", "").Trim();
 
-                    currentProfile.Users.Add(new User(userName, Encryption.Encrypt(password)));
+                    currentProfile.Users.Add(new User()
+                    {
+                        Username = userName,
+                        EncryptedPassword = password
+                    });
                 }
                 else if (line.StartsWith("Table: "))
                 {
