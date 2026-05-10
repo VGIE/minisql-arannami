@@ -185,7 +185,15 @@ namespace DbManager.Security
             string fileName = databaseName + ".path";
             Manager manager = new Manager(username);
             if (!File.Exists(fileName))
+            {
+                Profile adminProfile = new Profile()
+                {
+                    Name = "admin"
+                };
+                adminProfile.Users.Add(new User("admin", "admin"));
+                manager.Profiles.Add(adminProfile);
                 return manager;
+            }
             string[] lines = File.ReadAllLines(fileName);
             Profile currentProfile = null;
             string currentTable = null;
