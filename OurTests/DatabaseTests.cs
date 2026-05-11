@@ -105,13 +105,18 @@ namespace OurTests
             Assert.False(result);
         }
 
-        /*[Fact]
+        [Fact]
         public void Load()
         {
             string dbName = "TestDB_Load";
             Database db = Database.CreateTestDatabase();
+
             db.Save(dbName);
-            Database loadedDb = Database.Load(dbName, "admin", "admi ");
+            Database loadedDb = Database.Load(
+                dbName,
+                "admin",
+                "admin"
+            );
 
             Assert.NotNull(loadedDb);
             var table = loadedDb.TableByName(Table.TestTableName);
@@ -123,12 +128,12 @@ namespace OurTests
         {
             string dbName = "TestDB_Data";
             Database db = Database.CreateTestDatabase();
+
             db.Save(dbName);
+
             Database loaded = Database.Load(dbName, "user", "pass");
-
-            Assert.NotNull(loaded);
-
-        }*/
+            Assert.Null(loaded);
+        }
 
         [Fact]
         public void Load_NoExiste()
