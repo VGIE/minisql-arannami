@@ -198,8 +198,9 @@ namespace DbManager.Security
             Profile currentProfile = null;
             string currentTable = null;
 
-            foreach (string line in lines)
+            foreach (string linea in lines)
             {
+                string line = linea.Trim();
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
