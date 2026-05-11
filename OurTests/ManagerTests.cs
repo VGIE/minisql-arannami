@@ -169,14 +169,17 @@ namespace OurTests
             Assert.False(profile.IsGrantedPrivilege("users", Privilege.Select));
         }
 
-        // [Fact]
-        // public void GrantedPrivilege_UserDoesNotExist()
-        // {
-        //     Manager manager = new Manager("admin");
-        //     manager.GrantPrivilege("noExiste", "Users", Privilege.Select);
+        [Fact]
+        public void GrantedPrivilege_UserDoesNotExist()
+        {
+            Manager manager = new Manager("admin");
+            Profile profile = new Profile { Name = "dev" };
+            profile.GrantPrivilege("users", Privilege.Select);
+            manager.Profiles.Add(profile);
 
-        //     Assert.Null(manager.ProfileByName("noExiste"));
-        // }
+            bool result = manager.IsGrantedPrivilege("noExiste", "users", Privilege.Select);
+            Assert.False(result);
+        }
 
         //ISGRANTEDPRIVILEGE
         [Fact]
