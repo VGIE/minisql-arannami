@@ -53,7 +53,8 @@ namespace DbManager.Security
             if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
                 return;
             var profile = ProfileByName(profileName);
-            //if (profile == null) return;
+            
+            if (profile == null) return;
 
             if (profile.IsGrantedPrivilege(table, privilege))
                 return;

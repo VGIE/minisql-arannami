@@ -32,6 +32,13 @@ namespace DbManager
             Tables = new List<Table>();
             m_username = adminUsername;
             SecurityManager = new Manager(adminUsername);
+
+            Profile adminProfile = new Profile()
+            {
+                Name = Profile.AdminProfileName,
+            };
+            adminProfile.Users.Add(new User(adminUsername, adminPassword));
+            SecurityManager.AddProfile(adminProfile);
         }
 
         public bool AddTable(Table table)
