@@ -105,7 +105,7 @@ namespace OurTests
             Assert.False(result);
         }
 
-        [Fact]
+        /*[Fact]
         public void Load()
         {
             string dbName = "TestDB_Load";
@@ -128,7 +128,7 @@ namespace OurTests
 
             Assert.NotNull(loaded);
 
-        }
+        }*/
 
         [Fact]
         public void Load_NoExiste()

@@ -259,32 +259,33 @@ namespace DbManager
             //After loading the database, load the SecurityManager and check the password is correct. If it's not,
             //return null. If it is return the database
 
-            if (string.IsNullOrEmpty(databaseName))
-            {
+            if (string.IsNullOrEmpty(databaseName) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
-            }
+
             string filePath = databaseName + ".db";
 
             if (!File.Exists(filePath))
-            {
                 return null;
-            }
+
+            string json = File.ReadAllText(filePath);
+
             var options = new JsonSerializerOptions
             {
                 IncludeFields = true
             };
-            string json = File.ReadAllText(filePath);
+
             List<Table> tables = JsonSerializer.Deserialize<List<Table>>(json, options);
 
-            if (tables == null)
+            Manager manager = Manager.Load(databaseName, username);
+
+            if (manager == null || !manager.IsPasswordCorrect(username, password))
                 return null;
 
             Database db = new Database();
             db.Tables = tables;
             db.m_username = username;
-            db.SecurityManager = new Manager(username);
+            db.SecurityManager = manager;
             return db;
-
         }
 
 
