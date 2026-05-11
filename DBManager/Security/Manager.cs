@@ -87,7 +87,6 @@ namespace DbManager.Security
                 return false;
             
             var profile = ProfileByUser(username);
-            if (IsUserAdmin()) return true;
             if (profile == null) return false;
             return profile.IsGrantedPrivilege(table, privilege);
         }

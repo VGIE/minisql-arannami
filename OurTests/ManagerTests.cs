@@ -184,11 +184,13 @@ namespace OurTests
         {
             Manager manager = new Manager("admin");
             Profile profile = new Profile { Name = "test" };
+            profile.Users.Add(new User("Juan", Encryption.Encrypt("1234")));
             manager.AddProfile(profile);
             manager.GrantPrivilege("test", "users", Privilege.Select);
-            bool result = manager.IsGrantedPrivilege("test", "users", Privilege.Select);
+            bool result = manager.IsGrantedPrivilege("Juan", "users", Privilege.Select);
 
             Assert.True(result);
+
         }
 
         [Fact]
@@ -208,8 +210,15 @@ namespace OurTests
         public void IsGrantedPrivilege_AdminAlwaysPrivilege()
         {
             Manager manager = new Manager("admin");
-            bool result = manager.IsGrantedPrivilege("admin", "CualquierTabla", Privilege.Delete);
+            Assert.False(manager.IsGrantedPrivilege("admin", "users", Privilege.Delete));
+
+            Profile adminProfile = new Profile { Name = "admin" };
+            adminProfile.Users.Add(new User("admin", "admin"));
+            manager.AddProfile(adminProfile);
+            manager.GrantPrivilege("admin", "users", Privilege.Delete);
+            bool result = manager.IsGrantedPrivilege("admin", "users", Privilege.Delete);
             Assert.True(result);
+
         }
 
         [Fact]
