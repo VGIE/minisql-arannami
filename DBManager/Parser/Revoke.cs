@@ -37,7 +37,7 @@ namespace DbManager
                 return Constants.SecurityProfileDoesNotExistError;
 
             if (!Enum.TryParse(PrivilegeName, true, out Privilege privilege))
-                return Constants.UsersProfileIsNotGrantedRequiredPrivilege;
+                return Constants.PrivilegeDoesNotExistError;
 
             database.SecurityManager.RevokePrivilege(ProfileName, TableName, privilege);
 

@@ -462,7 +462,7 @@ namespace OurTests
 
             string result = revoke.Execute(db);
 
-            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.Equal(Constants.PrivilegeDoesNotExistError, result);
         }
 
 
