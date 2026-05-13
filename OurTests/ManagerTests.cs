@@ -476,6 +476,7 @@ namespace OurTests
 
 
         //LOAD
+        [Fact]
         public void Load_LoadsFullStructureCorrectly()
         {
             string dbName = "testdb_full";
