@@ -17,12 +17,9 @@ namespace DbManager.Security
         public bool GrantPrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Grant this privilege on this table. Return false if there is an error, true otherwise
+            if(string.IsNullOrEmpty(table) || privilege==null) return false;
+            
             string tableName = table.ToUpper();
-            if (string.IsNullOrEmpty(tableName) || privilege == null)
-            {
-                return false;
-            }
-
             if (!PrivilegesOn.ContainsKey(tableName))
             {
                 PrivilegesOn[tableName] = new List<Privilege>();
@@ -39,11 +36,9 @@ namespace DbManager.Security
         public bool IsGrantedPrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return whether this profile is granted this privilege on this table
+            if (string.IsNullOrEmpty(table) || privilege == null) return false;
+            
             string tableName = table.ToUpper();
-            if (string.IsNullOrEmpty(tableName) || privilege == null)
-            {
-                return false;
-            }
             if (PrivilegesOn.ContainsKey(tableName))
             {
                 return PrivilegesOn[tableName].Contains(privilege);
@@ -56,16 +51,16 @@ namespace DbManager.Security
         public bool RevokePrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Revoke this privilege on this table. Return false if there is an error, true otherwise
-            if (string.IsNullOrEmpty(table))
-                return false;
+            if (string.IsNullOrEmpty(table)) return false;
 
             string tableName = table.ToUpper();
 
-            if (!PrivilegesOn.ContainsKey(tableName))
-                return false;
+            if (PrivilegesOn.ContainsKey(tableName))
+            {
+                return PrivilegesOn[tableName].Remove(privilege);
+            }
 
-
-            return PrivilegesOn[tableName].Remove(privilege);
+            return false;
         }
         
     }

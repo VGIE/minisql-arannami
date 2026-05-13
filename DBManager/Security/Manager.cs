@@ -22,22 +22,18 @@ namespace DbManager.Security
         public bool IsUserAdmin()
         {
             //TODO DEADLINE 5: Return true if the user logged-in (m_username) is the admin, false otherwise
-            return m_username.Equals("admin", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(m_username, "admin");
         }
 
         public bool IsPasswordCorrect(string username, string password)
         {
             //TODO DEADLINE 5: Return true if the user's password is correct. The given password should be encrypted before comparing with the saved one
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return false;
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return false;
 
-            if (username.Equals("admin", StringComparison.OrdinalIgnoreCase))
-                return password == "admin";
+            if(username.Equals("admin") && password=="admin") return true;
 
             User user = UserByName(username);
-
-            if (user == null)
-                return false;
+            if (user == null) return false;
 
             string encryptedPassword = Encryption.Encrypt(password);
             return user.EncryptedPassword.Equals(encryptedPassword);
@@ -47,65 +43,42 @@ namespace DbManager.Security
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Add this privilege on this table to the profile with this name
-            
-            if (!IsUserAdmin())
-                return;
-            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
-                return;
-            var profile = ProfileByName(profileName);
-            
-            if (profile == null) return;
+            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table) || privilege == null) return false;
 
-            if (profile.IsGrantedPrivilege(table, privilege))
-                return;
+            if (!IsUserAdmin()) return;
 
-            profile.GrantPrivilege(table, privilege);
+            Profile profile = ProfileByName(profileName);
+            
+            if(profile != null) profile.GrantPrivilege(table, privilege);
         }
 
         public void RevokePrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Remove this privilege on this table to the profile with this name
             //If the profile or the table don't exist, do nothing
-
-            if (!IsUserAdmin())
-                return;
-
-            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table))
-                return;
+            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table) || privilege == null) return false;
+            if (!IsUserAdmin()) return;
 
             Profile profile = ProfileByName(profileName);
 
-            if (profile == null)
-                return;
-
-            profile.RevokePrivilege(table, privilege);
+            if (profile != null) profile.RevokePrivilege(table, privilege);
         }
 
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return true if the username has this privilege on this table. False otherwise (also in case of error)
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table) || privilege == null)
-                return false;
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table) || privilege == null) return false;
             
-            var profile = ProfileByUser(username);
-            if (profile == null) return false;
-            return profile.IsGrantedPrivilege(table, privilege);
+            Profile profile = ProfileByUser(username);
+            return profile != null && profile.IsGrantedPrivilege(table, privilege);
         }
 
         public void AddProfile(Profile profile)
         {
             //TODO DEADLINE 5: Add this profile
-            if (!IsUserAdmin())
-                return;
-
-            if (profile == null)
-                return;
-
-            if (string.IsNullOrEmpty(profile.Name))
-                return;
-
-            if (ProfileByName(profile.Name) != null)
-                return;
+            if (!IsUserAdmin() || profile == null || string.IsNullOrEmpty(profile.Name)) return;
+            
+            if (ProfileByName(profile.Name) != null) return;
 
             Profiles.Add(profile);
         }
@@ -162,20 +135,12 @@ namespace DbManager.Security
         public bool RemoveProfile(string profileName)
         {
             //TODO DEADLINE 5: Remove this profile
-            if (!IsUserAdmin())
-                return false;
+            if (!IsUserAdmin() || string.IsNullOrEmpty(profileName)) return false;
+            if (profileName.Equals("admin")) return false;
 
-            if (string.IsNullOrEmpty(profileName))
-                return false;
-            if (profileName.Equals("admin", StringComparison.OrdinalIgnoreCase))
-                return false;
+            Profile profile = ProfileByName(profileName);
 
-            var profile = ProfileByName(profileName);
-
-            if (profile == null)
-                return false;
-
-            return Profiles.Remove(profile);
+            return profile!=null && Profiles.Remove(profile);
         }
         
 
@@ -183,88 +148,36 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
             string fileName = databaseName + ".path";
-            Manager manager = new Manager(username);
-            if (!File.Exists(fileName))
-            {
-                Profile adminProfile = new Profile()
-                {
-                    Name = "admin"
-                };
-                adminProfile.Users.Add(new User("admin", "admin"));
-                manager.Profiles.Add(adminProfile);
-                return manager;
-            }
-            string[] lines = File.ReadAllLines(fileName);
+            Manager manager = new Manager(username); 
+            if (!File.Exists(fileName)) return manager;
+
             Profile currentProfile = null;
             string currentTable = null;
 
-            foreach (string linea in lines)
+            foreach (string line in File.ReadAllLines(fileName))
             {
-                string line = linea.Trim();
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
-
-                if (line.StartsWith("Profile: "))
+                string trimmed = line.Trim();
+                if (trimmed.StartsWith("Profile: "))
                 {
-                    currentTable = null;
-
-                    string profileName = line.Substring("Profile: ".Length).Trim();
-
-                    currentProfile = new Profile()
-                    {
-                        Name = profileName
-                    };
-
+                    currentProfile = new Profile { Name = trimmed.Substring(9) };
                     manager.Profiles.Add(currentProfile);
                 }
-                else if (line.StartsWith("User: "))
+                else if (trimmed.StartsWith("User: ") && currentProfile != null)
                 {
-                    if (currentProfile == null)
-                        continue;
-
-                    string content = line.Substring("User: ".Length);
-                    string[] parts = content.Split(',');
-
-                    if (parts.Length < 2)
-                        continue;
-
-                    string usernamePart = parts[0].Trim();
-                    string passwordPart = parts[1].Trim();
-
-                    string userName = usernamePart;
-                    string password = passwordPart.Replace("Password: ", "").Trim();
-
-                    currentProfile.Users.Add(new User()
-                    {
-                        Username = userName,
-                        EncryptedPassword = password
-                    });
+                    var parts = trimmed.Substring(6).Split(new[] { ", Password: " }, StringSplitOptions.None);
+                    if (parts.Length == 2)
+                        currentProfile.Users.Add(new User { Username = parts[0], EncryptedPassword = parts[1] });
                 }
-                else if (line.StartsWith("Table: "))
+                else if (trimmed.StartsWith("Table: "))
                 {
-                    currentTable = line.Substring("Table: ".Length).Trim();
+                    currentTable = trimmed.Substring(7); 
                 }
-                else if (line.StartsWith("Privilege: "))
+                else if (trimmed.StartsWith("Privilege: ") && currentProfile != null && currentTable != null)
                 {
-                    if (currentProfile == null)
-                        continue;
-                    if (string.IsNullOrWhiteSpace(currentTable)) //HAU KENDU LEIKE goiku ---> WIYHOUT table null testa kendute ra
-                        continue;
-                    string privilegeStr = line.Substring("Privilege: ".Length).Trim();
-
-                    if (Enum.TryParse(privilegeStr, out Privilege privilege))
-                    {
-                        currentProfile.GrantPrivilege(currentTable, privilege);
-                    }
+                    if (Enum.TryParse(trimmed.Substring(11), out Privilege priv))
+                        currentProfile.GrantPrivilege(currentTable, priv);
                 }
             }
-            if (manager.ProfileByName("admin") == null)
-            {
-                Profile adminProfile = new Profile() { Name = "admin" };
-                adminProfile.Users.Add(new User("admin", "admin"));
-                manager.Profiles.Add(adminProfile);
-            }
-
             return manager;
         }
         
@@ -272,32 +185,21 @@ namespace DbManager.Security
         public void Save(string databaseName)
         {
             //TODO DEADLINE 5: Save all the profiles and users/passwords created for this database.
-            string nombreArchivo = databaseName + ".path";
-            string contenidoTotal = "";
+            string fileName = databaseName + ".path";
+            List<string> lines = new List<string>();
             foreach (var profile in Profiles)
             {
-                string perfil = $"Profile: {profile.Name}\n";
-                contenidoTotal += perfil;
+                lines.Add($"Profile: {profile.Name}");
                 foreach (var user in profile.Users)
+                    lines.Add($"User: {user.Username}, Password: {user.EncryptedPassword}");
+                foreach (var entry in profile.PrivilegesOn)
                 {
-                    string usuario = $"User: {user.Username}, Password: {user.EncryptedPassword}\n";
-                    contenidoTotal += usuario;
+                    lines.Add($"Table: {entry.Key}");
+                    foreach (var priv in entry.Value)
+                        lines.Add($"Privilege: {priv}");
                 }
-                foreach (var entrada in profile.PrivilegesOn)
-                {
-                    string tabla = $"Table: {entrada.Key}\n";
-                    contenidoTotal += tabla;
-                    foreach (var privilege in entrada.Value)
-                    {
-                        string privilegio = $"Privilege: {privilege}\n";
-                        contenidoTotal += privilegio;
-                    }
-                }
-                contenidoTotal += "\n";
             }
-            File.WriteAllText(nombreArchivo, contenidoTotal);
-
-
+            File.WriteAllLines(fileName, lines);
         }
     }
 }
