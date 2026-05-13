@@ -325,13 +325,17 @@ namespace OurTests
         public void ProfileByName_ReturnsProfile_Exists()
         {
             Manager manager = new Manager("admin");
-            Profile profile = new Profile { Name = "dev" };
+            Profile profile1 = new Profile { Name = "yes" };
+            Profile profile2 = new Profile { Name = "no" };
 
-            manager.AddProfile(profile);
+            manager.AddProfile(profile1);
+            manager.AddProfile(profile2);
 
-            var result = manager.ProfileByName("dev");
+            var result1 = manager.ProfileByName("yes");
+            var result2 = manager.ProfileByName("no");
 
-            Assert.Equal(profile, result);
+            Assert.Equal(profile1, result1);
+            Assert.Equal(profile2, result2);
         }
 
         [Fact]
@@ -357,16 +361,26 @@ namespace OurTests
         [Fact]
         public void ProfileByUser_ReturnsProfile_UserExists()
         {
+            User user1 = new User("juan", "1234");
+            User user2 = new User("Admin", "1023");
+
             Manager manager = new Manager("admin");
-            Profile profile = new Profile { Name = "dev" };
-            User user = new User("juan", Encryption.Encrypt("1234"));
 
-            profile.Users.Add(user);
-            manager.AddProfile(profile);
+            Profile p1 = new Profile();
+            p1.Users.Add(user1);
+            p1.Name = "yes";
+            Profile p2 = new Profile();
+            p2.Users.Add(user2);
+            p2.Name = "no";
 
-            var result = manager.ProfileByUser("juan");
+            manager.AddProfile(p1);
+            manager.AddProfile(p2);
 
-            Assert.Equal(profile, result);
+            var result1 = manager.ProfileByUser("juan");
+            var result2 = manager.ProfileByUser("Admin");
+
+            Assert.Equal(p1, result1);
+            Assert.Equal(p2, result2);
         }
 
         [Fact]
