@@ -17,7 +17,7 @@ namespace DbManager.Security
         public bool GrantPrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Grant this privilege on this table. Return false if there is an error, true otherwise
-            if(string.IsNullOrEmpty(table) || privilege==null) return false;
+            if(string.IsNullOrEmpty(table)) return false;
             
             string tableName = table.ToUpper();
             if (!PrivilegesOn.ContainsKey(tableName))
@@ -36,7 +36,7 @@ namespace DbManager.Security
         public bool IsGrantedPrivilege(string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return whether this profile is granted this privilege on this table
-            if (string.IsNullOrEmpty(table) || privilege == null) return false;
+            if (string.IsNullOrEmpty(table)) return false;
             
             string tableName = table.ToUpper();
             if (PrivilegesOn.ContainsKey(tableName))
