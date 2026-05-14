@@ -43,7 +43,7 @@ namespace DbManager.Security
         public void GrantPrivilege(string profileName, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Add this privilege on this table to the profile with this name
-            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table) || privilege == null) return;
+            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table)) return;
 
             if (!IsUserAdmin()) return;
 
@@ -56,7 +56,7 @@ namespace DbManager.Security
         {
             //TODO DEADLINE 5: Remove this privilege on this table to the profile with this name
             //If the profile or the table don't exist, do nothing
-            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table) || privilege == null) return;
+            if (string.IsNullOrEmpty(profileName) || string.IsNullOrEmpty(table)) return;
             if (!IsUserAdmin()) return;
 
             Profile profile = ProfileByName(profileName);
@@ -67,7 +67,7 @@ namespace DbManager.Security
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return true if the username has this privilege on this table. False otherwise (also in case of error)
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table) || privilege == null) return false;
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table)) return false;
             
             Profile profile = ProfileByUser(username);
             return profile != null && profile.IsGrantedPrivilege(table, privilege);
