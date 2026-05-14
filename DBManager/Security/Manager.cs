@@ -149,16 +149,10 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Load all the profiles and users saved for this database. The Manager instance should be created with the given username
             string fileName = databaseName + ".path";
             Manager manager = new Manager(username);
+
             if (!File.Exists(fileName))
-            {
-                Profile adminProfile = new Profile()
-                {
-                    Name = "admin"
-                };
-                adminProfile.Users.Add(new User("admin", "admin"));
-                manager.Profiles.Add(adminProfile);
                 return manager;
-            }
+
             string[] lines = File.ReadAllLines(fileName);
             Profile currentProfile = null;
             string currentTable = null;
@@ -166,6 +160,7 @@ namespace DbManager.Security
             foreach (string linea in lines)
             {
                 string line = linea.Trim();
+
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
@@ -187,17 +182,18 @@ namespace DbManager.Security
                     if (currentProfile == null)
                         continue;
 
-                    string content = line.Substring("User: ".Length);
-                    string[] parts = content.Split(',');
+                    string content = line.Substring("User: ".Length).Trim();
 
-                    if (parts.Length < 2)
+                    string[] parts = content.Split(
+                        new[] { ", Password: " },
+                        StringSplitOptions.None
+                    );
+
+                    if (parts.Length != 2)
                         continue;
 
-                    string usernamePart = parts[0].Trim();
-                    string passwordPart = parts[1].Trim();
-
-                    string userName = usernamePart;
-                    string password = passwordPart.Replace("Password: ", "").Trim();
+                    string userName = parts[0].Trim();
+                    string password = parts[1].Trim();
 
                     currentProfile.Users.Add(new User()
                     {
@@ -213,8 +209,10 @@ namespace DbManager.Security
                 {
                     if (currentProfile == null)
                         continue;
-                    if (string.IsNullOrWhiteSpace(currentTable)) //HAU KENDU LEIKE goiku ---> WIYHOUT table null testa kendute ra
+
+                    if (string.IsNullOrWhiteSpace(currentTable))
                         continue;
+
                     string privilegeStr = line.Substring("Privilege: ".Length).Trim();
 
                     if (Enum.TryParse(privilegeStr, out Privilege privilege))
@@ -222,12 +220,6 @@ namespace DbManager.Security
                         currentProfile.GrantPrivilege(currentTable, privilege);
                     }
                 }
-            }
-            if (manager.ProfileByName("admin") == null)
-            {
-                Profile adminProfile = new Profile() { Name = "admin" };
-                adminProfile.Users.Add(new User("admin", "admin"));
-                manager.Profiles.Add(adminProfile);
             }
 
             return manager;
@@ -239,19 +231,27 @@ namespace DbManager.Security
             //TODO DEADLINE 5: Save all the profiles and users/passwords created for this database.
             string fileName = databaseName + ".path";
             List<string> lines = new List<string>();
+
             foreach (var profile in Profiles)
             {
                 lines.Add($"Profile: {profile.Name}");
+
                 foreach (var user in profile.Users)
+                {
                     lines.Add($"User: {user.Username}, Password: {user.EncryptedPassword}");
+                }
+
                 foreach (var entry in profile.PrivilegesOn)
                 {
                     lines.Add($"Table: {entry.Key}");
+
                     foreach (var priv in entry.Value)
+                    {
                         lines.Add($"Privilege: {priv}");
+                    }
                 }
-                lines.Add("");
             }
+
             File.WriteAllLines(fileName, lines);
         }
     }

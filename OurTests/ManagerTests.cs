@@ -585,8 +585,11 @@ Privilege: Insert
         {
             string dbName = "testdb_empty";
             File.WriteAllText(dbName + ".path", "");
+
             Manager manager = Manager.Load(dbName, "admin");
-            Assert.NotNull(manager.ProfileByName("admin"));
+
+            Assert.NotNull(manager);
+            Assert.Empty(manager.Profiles);
         }
 
         //SAVE
