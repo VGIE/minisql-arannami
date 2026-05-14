@@ -250,6 +250,7 @@ namespace DbManager.Security
                     foreach (var priv in entry.Value)
                         lines.Add($"Privilege: {priv}");
                 }
+                lines.Add("");
             }
             File.WriteAllLines(fileName, lines);
         }
