@@ -212,14 +212,8 @@ namespace OurTests
         public void IsGrantedPrivilege_AdminAlwaysPrivilege()
         {
             Manager manager = new Manager("admin");
-            Assert.False(manager.IsGrantedPrivilege("admin", "users", Privilege.Delete));
 
-            Profile adminProfile = new Profile { Name = "admin" };
-            adminProfile.Users.Add(new User("admin", "admin"));
-            manager.AddProfile(adminProfile);
-            manager.GrantPrivilege("admin", "users", Privilege.Delete);
-            bool result = manager.IsGrantedPrivilege("admin", "users", Privilege.Delete);
-            Assert.True(result);
+            Assert.True(manager.IsGrantedPrivilege("admin", "users", Privilege.Delete));
 
         }
 

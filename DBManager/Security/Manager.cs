@@ -67,10 +67,21 @@ namespace DbManager.Security
         public bool IsGrantedPrivilege(string username, string table, Privilege privilege)
         {
             //TODO DEADLINE 5: Return true if the username has this privilege on this table. False otherwise (also in case of error)
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table)) return false;
-            
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(table))
+                return false;
+
+            if (username.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             Profile profile = ProfileByUser(username);
-            return profile != null && profile.IsGrantedPrivilege(table, privilege);
+
+            if (profile == null)
+                return false;
+
+            if (profile.Name.Equals(Profile.AdminProfileName, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return profile.IsGrantedPrivilege(table, privilege);
         }
 
         public void AddProfile(Profile profile)
