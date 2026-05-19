@@ -711,6 +711,100 @@ Privilege: Insert
             Assert.NotNull(manager.ProfileByName("p2"));
         }
 
+        //PRUEBAS DE TESTS
+
+        [Fact]
+        public void RevokePrivilegeNotBeingAdminShouldDoNothing()
+        {
+            string dbName = "test_revoke_not_admin";
+
+            Database db = new Database("admin", "admin");
+
+            db.ExecuteMiniSQLQuery("CREATE TABLE users (name TEXT)");
+            db.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE normal");
+            db.ExecuteMiniSQLQuery("ADD USER (juan,1234,normal)");
+            db.ExecuteMiniSQLQuery("GRANT SELECT ON users TO normal");
+
+            db.Save(dbName);
+
+            Database loadedDb = Database.Load(dbName, "juan", "1234");
+
+            string result = loadedDb.ExecuteMiniSQLQuery("REVOKE SELECT ON users TO normal");
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.True(loadedDb.SecurityManager.ProfileByName("normal").IsGrantedPrivilege("users", Privilege.Select));
+
+            File.Delete(dbName + ".db");
+            File.Delete(dbName + ".path");
+        }
+
+        [Fact]
+        public void CreateProfileNotBeingAdminShouldDoNothing()
+        {
+            string dbName = "test_create_profile_not_admin";
+
+            Database db = new Database("admin", "admin");
+
+            db.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE normal");
+            db.ExecuteMiniSQLQuery("ADD USER (juan,1234,normal)");
+            db.Save(dbName);
+
+            Database loadedDb = Database.Load(dbName, "juan", "1234");
+
+            string result = loadedDb.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE hacker");
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.Null(loadedDb.SecurityManager.ProfileByName("hacker"));
+
+            File.Delete(dbName + ".db");
+            File.Delete(dbName + ".path");
+        }
+
+        [Fact]
+        public void RemoveProfileNotBeingAdminShouldDoNothing()
+        {
+            string dbName = "test_remove_profile_not_admin";
+
+            Database db = new Database("admin", "admin");
+
+            db.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE normal");
+            db.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE other");
+            db.ExecuteMiniSQLQuery("ADD USER (juan,1234,normal)");
+            db.Save(dbName);
+
+            Database loadedDb = Database.Load(dbName, "juan", "1234");
+
+            string result = loadedDb.ExecuteMiniSQLQuery("DROP SECURITY PROFILE other");
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.NotNull(loadedDb.SecurityManager.ProfileByName("other"));
+
+            File.Delete(dbName + ".db");
+            File.Delete(dbName + ".path");
+        }
+
+        [Fact]
+        public void GrantPrivilegeNotBeingAdminShouldDoNothing()
+        {
+            string dbName = "test_grant_not_admin";
+
+            Database db = new Database("admin", "admin");
+
+            db.ExecuteMiniSQLQuery("CREATE TABLE users (name TEXT)");
+            db.ExecuteMiniSQLQuery("CREATE SECURITY PROFILE normal");
+            db.ExecuteMiniSQLQuery("ADD USER (juan,1234,normal)");
+            db.Save(dbName);
+
+            Database loadedDb = Database.Load(dbName, "juan", "1234");
+
+            string result = loadedDb.ExecuteMiniSQLQuery("GRANT SELECT ON users TO normal");
+
+            Assert.Equal(Constants.UsersProfileIsNotGrantedRequiredPrivilege, result);
+            Assert.False(loadedDb.SecurityManager.ProfileByName("normal").IsGrantedPrivilege("users", Privilege.Select));
+
+            File.Delete(dbName + ".db");
+            File.Delete(dbName + ".path");
+        }
     }
 }
 
